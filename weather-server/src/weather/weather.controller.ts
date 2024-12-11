@@ -8,7 +8,7 @@ export class WeatherController {
   @Get('test')
   async testWeather(){
     const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
-    const launchOption = this.isDev ? { headless: false, slowMo: 150 } : { headless: 'shell' as const }
+    const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
     const browser = await puppeteer.launch(launchOption);
     const page = await browser.newPage();
 
@@ -31,9 +31,19 @@ export class WeatherController {
     // evaluate 브라우저환경에서만 실행 
     // 브라우저 페이지 내부의 JavaScript 컨텍스트에서 실행됨 
     const regionCode = await regionWrap.evaluate(async wrap => {
-      const wait = (ms:number) => new Promise((res) => setInterval(res, ms))
+      const wait = (ms:number) => new Promise((res) => setTimeout(res, ms))
       const codeWrapper = []
-      
+
+      const links = wrap.querySelectorAll('a.addr-chk-btn[data-level="1"');
+      console.log(links.length)
+
+      for(let i = 0 ; i < links.length ; i++){
+        const link = links[i] as HTMLElement
+        console.log(link.innerText)
+        link.click()
+        await wait(2000)
+      }
+
       return codeWrapper
       // return Array.from(links).map(link => ({
       //   code: link.getAttribute('data-code'),
