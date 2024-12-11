@@ -34,15 +34,46 @@ export class WeatherController {
       const wait = (ms:number) => new Promise((res) => setTimeout(res, ms))
       const codeWrapper = []
 
-      const links = wrap.querySelectorAll('a.addr-chk-btn[data-level="1"');
+      const links = wrap.querySelectorAll('a.addr-chk-btn[data-level="1"]');
       console.log(links.length)
 
       for(let i = 0 ; i < links.length ; i++){
         const link = links[i] as HTMLElement
-        console.log(link.innerText)
+        console.log(link.innerText, 'it is si * do!!!!')
         link.click()
         await wait(2000)
+
+        // Level 2 작업
+        let guElements = wrap.querySelectorAll('a.addr-chk-btn[data-level="2"]');
+        for (let guidx = 0; guidx < guElements.length; guidx++) {
+          const guHtmlElement = guElements[guidx] as HTMLElement;
+          console.log(guHtmlElement.innerText, 'level is 2!!!')
+          // if (guHtmlElement.getAttribute('data-goto')) continue;
+          guHtmlElement.click(); 
+          await wait(2000);
+
+          // Level 3 작업
+          const dongElements = wrap.querySelectorAll('a.addr-chk-btn[data-level="3"]');
+          for(const doneElement of dongElements){
+            const dongHtmlElement = doneElement as HTMLElement
+            console.log(dongHtmlElement.innerText)
+          }
+          const gotoCity = wrap.querySelector('a.addr-chk-btn[data-goto="CITY"]') as HTMLElement
+          gotoCity.click()
+
+          await wait(1000)
+          guElements = wrap.querySelectorAll('a.addr-chk-btn[data-level="2"]');
+        }
+        
+        
       }
+
+
+      // 확실히 별개로 작업함 
+      // links.forEach( async (link:HTMLElement) => {
+      //   console.log(link.innerText)
+      //   await wait(2000)
+      // })
 
       return codeWrapper
       // return Array.from(links).map(link => ({
