@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
-import puppeteer from 'puppeteer';
+import puppeteer, { Page } from 'puppeteer';
+import * as fs from 'fs';
 
 @Controller('weather')
 export class WeatherController {
@@ -9,7 +10,7 @@ export class WeatherController {
   async testWeather(){
     const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
     const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
-    const browser = await puppeteer.launch(launchOption);
+    const browser = await puppeteer.launch({ headless: 'shell' as const });
     const page = await browser.newPage();
 
     await page.goto(weatherUrl);
@@ -34,14 +35,15 @@ export class WeatherController {
       const wait = (ms:number) => new Promise((res) => setTimeout(res, ms))
       const codeWrapper = []
 
-      const links = wrap.querySelectorAll('a.addr-chk-btn[data-level="1"]');
-      console.log(links.length)
+      let sidoLinks = wrap.querySelectorAll('a.addr-chk-btn[data-level="1"]');
+      console.log(sidoLinks.length)
+      const lenSido = sidoLinks.length
 
-      for(let i = 0 ; i < links.length ; i++){
-        const link = links[i] as HTMLElement
+      for(let i = 0 ; i < lenSido ; i++){
+        const link = sidoLinks[i] as HTMLElement
         console.log(link.innerText, 'it is si * do!!!!')
         link.click()
-        await wait(2000)
+        await wait(500)
 
         // Level 2 작업
         let guElements = wrap.querySelectorAll('a.addr-chk-btn[data-level="2"]');
@@ -50,25 +52,37 @@ export class WeatherController {
           console.log(guHtmlElement.innerText, 'level is 2!!!')
           // if (guHtmlElement.getAttribute('data-goto')) continue;
           guHtmlElement.click(); 
-          await wait(2000);
+          await wait(500);
 
           // Level 3 작업
           const dongElements = wrap.querySelectorAll('a.addr-chk-btn[data-level="3"]');
           for(const doneElement of dongElements){
             const dongHtmlElement = doneElement as HTMLElement
-            console.log(dongHtmlElement.innerText)
+            console.log(dongHtmlElement.getAttribute('data-name'))
+            const attributes = {
+              code: dongHtmlElement.getAttribute('data-code'),
+              name: dongHtmlElement.getAttribute('data-name'),
+              lat: dongHtmlElement.getAttribute('data-lat'),
+              lon: dongHtmlElement.getAttribute('data-lon')
+            };
+
+            codeWrapper.push(attributes)
           }
           const gotoCity = wrap.querySelector('a.addr-chk-btn[data-goto="CITY"]') as HTMLElement
           gotoCity.click()
 
-          await wait(1000)
+          await wait(200)
           guElements = wrap.querySelectorAll('a.addr-chk-btn[data-level="2"]');
         }
-        
+        const gotoWide = wrap.querySelector('a.addr-chk-btn[data-goto="WIDE"]') as HTMLElement
+        gotoWide.click()
+        await wait(200)
+        sidoLinks = wrap.querySelectorAll('a.addr-chk-btn[data-level="1"]');
         
       }
 
-
+      console.log('Loop END it is over!!!! ')
+      console.log('inner codes', codeWrapper)
       // 확실히 별개로 작업함 
       // links.forEach( async (link:HTMLElement) => {
       //   console.log(link.innerText)
@@ -76,92 +90,21 @@ export class WeatherController {
       // })
 
       return codeWrapper
-      // return Array.from(links).map(link => ({
-      //   code: link.getAttribute('data-code'),
-      //   name: link.getAttribute('data-name'),
-      //   lat: link.getAttribute('data-lat'),
-      //   lon: link.getAttribute('data-lon')
-      // }));
     }) 
-    console.log(regionCode, 'code')
+    console.log('code')
+
+    // fs.writeFileSync('weather.json', JSON.stringify(regionCode), 'utf8');
+    if (regionCode && regionCode.length > 0) {
+      fs.writeFileSync('weather.json', JSON.stringify(regionCode), 'utf8');
+      console.log('File written successfully!');
+    }
+    else{
+      console.error('hi?')
+    }
 
     await browser.close();
+
+    return regionCode
   }
 
-  @Get('test2')
-  async testWeather2(){
-    
-    // const regionCode = await regionWrap.evaluate(async wrap => {
-    //   const wait = (ms:number) => new Promise((res) => setInterval(res, ms))
-    //   const clickAndWait = async (element: HTMLElement, ms = 1000) => {
-    //     if (element) {
-    //       element.click();
-    //       await wait(ms);
-    //     }
-    //   };
-    //   const codeWrapper = []
-
-    //   let links = wrap.querySelectorAll('a.addr-chk-btn');
-
-    //   const siLoop = async(index: number) => {
-        
-    //     const siLink = links[index] as HTMLElement
-    //     await clickAndWait(siLink);
-
-    //     let guLinks = wrap.querySelectorAll('a.addr-chk-btn');
-
-    //     const plz = async(index: number) => {
-    //       const guLinkElement = guLinks[index] as HTMLElement;
-    //       await clickAndWait(guLinkElement, 500);
-
-    //       const dongLinks = wrap.querySelectorAll('a.addr-chk-btn');
-    //       for (const dongLink of dongLinks) {
-    //         const dongLinkElement = dongLink as HTMLElement;
-    //         if (dongLinkElement.getAttribute('data-goto')) continue;
-    //         console.log(dongLinkElement.innerText)
-            
-    //         const codes = {
-    //           code: dongLinkElement.getAttribute('data-code'),
-    //           name: dongLinkElement.getAttribute('data-name'),
-    //           lat: dongLinkElement.getAttribute('data-lat'),
-    //           lon: dongLinkElement.getAttribute('data-lon')
-    //         }
-
-    //         codeWrapper.push(codes)
-    //       }
-    //       const dongGoto = dongLinks[0] as HTMLElement
-    //       await clickAndWait(dongGoto, 500);
-    //       guLinks = wrap.querySelectorAll('a.addr-chk-btn');
-    //     }
-
-    //     const guList = Array.from(guLinks)
-    //     guList.splice(0, 1)
-        
-    //     // guLinks.forEach(async ( _, index) => await plz(index))
-    //     for(let i = 0; i < guList.length ; i++){
-    //       await plz(index)
-    //     }
-
-    //     const guGoto = guLinks[0] as HTMLElement
-    //     await clickAndWait(guGoto, 500);
-    //   }
-
-    //   // links.forEach(async ( _, index) => await siLoop(index))
-    //   for (let index = 0; index < links.length; index++) {
-    //     await siLoop(index);
-    //     links = wrap.querySelectorAll('a.addr-chk-btn');
-    //   }
-
-    //   return codeWrapper
-    //   // return Array.from(links).map(link => ({
-    //   //   code: link.getAttribute('data-code'),
-    //   //   name: link.getAttribute('data-name'),
-    //   //   lat: link.getAttribute('data-lat'),
-    //   //   lon: link.getAttribute('data-lon')
-    //   // }));
-    // }) 
-    // console.log(regionCode, 'code')
-
-
-  }
 }

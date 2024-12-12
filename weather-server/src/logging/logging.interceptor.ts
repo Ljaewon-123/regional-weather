@@ -18,7 +18,7 @@ export class LoggingInterceptor implements NestInterceptor {
     return next
       .handle()
       .pipe(
-        timeout(2000),
+        // timeout(2000),
         tap(() => console.log(`After... ${Date.now() - now}ms`)),
         catchError(err => {
           console.log('interceptor catchError!!!!')
