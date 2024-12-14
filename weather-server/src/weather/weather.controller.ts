@@ -13,6 +13,7 @@ export class WeatherController {
     const data = await readFile('./weather.json', 'utf-8');
     const parseWeather = JSON.parse(data)
     const code = testArray[0].code
+    const name = testArray[0].name
     
     const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
     const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
@@ -41,8 +42,16 @@ export class WeatherController {
       return result;
     });
   
-    console.log(weather); 
+    // console.log(weather); 
     await browser.close();
+
+    const finallyObject = {
+      code: code,
+      name: name,
+      weather
+    }
+
+    console.log(finallyObject)
   }
 
   @Get('test')
