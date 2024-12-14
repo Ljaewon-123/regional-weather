@@ -10,7 +10,7 @@ export class WeatherController {
   async testWeather(){
     const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
     const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
-    const browser = await puppeteer.launch({ headless: 'shell' as const });
+    const browser = await puppeteer.launch({ headless: 'shell' as const, protocolTimeout: 210000 });
     const page = await browser.newPage();
 
     await page.goto(weatherUrl);
@@ -99,7 +99,7 @@ export class WeatherController {
       console.log('File written successfully!');
     }
     else{
-      console.error('hi?')
+      console.error('JSON load error?')
     }
 
     await browser.close();
