@@ -1,10 +1,49 @@
 import { Controller, Get } from '@nestjs/common';
 import puppeteer, { Page } from 'puppeteer';
 import * as fs from 'fs';
+import { readFile } from 'fs/promises';
 
 @Controller('weather')
 export class WeatherController {
   private isDev = process.env.NODE_ENV == 'dev'
+
+  @Get('test2')
+  async dayWeather(){
+    const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}]
+    const data = await readFile('./weather.json', 'utf-8');
+    const parseWeather = JSON.parse(data)
+    const code = testArray[0].code
+    
+    const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
+    const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
+    const browser = await puppeteer.launch({ headless: 'shell' as const });
+    const page = await browser.newPage();
+    await page.goto(`${weatherUrl}#dong/${code}`);
+    await page.setViewport({width: 1080, height: 1024});
+    const sliders = '.dfs-slider .slide-wrap'
+    await page.waitForSelector(sliders);
+
+    const weather = await page.evaluate(() => {
+      const listItems = document.querySelectorAll('.dfs-slider .slide-wrap .daily .item-wrap > ul > li');
+      const result = {};
+  
+      listItems.forEach(li => {
+        const keyElement = li.querySelector('.hid');
+        const valueElement = li.querySelector('span:not(.hid)');
+        
+        if (keyElement && valueElement) {
+          const key = keyElement.textContent.trim().replace(':', '');
+          const value = valueElement.textContent.trim() || '-';
+          result[key] = value;
+        }
+      });
+  
+      return result;
+    });
+  
+    console.log(weather); 
+    await browser.close();
+  }
 
   @Get('test')
   async testWeather(){
