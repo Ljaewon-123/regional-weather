@@ -9,49 +9,45 @@ export class WeatherController {
 
   @Get('test2')
   async dayWeather(){
-    const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}]
+    const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
+    const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
     const data = await readFile('./weather.json', 'utf-8');
     const parseWeather = JSON.parse(data)
-    const code = testArray[0].code
-    const name = testArray[0].name
-    
     const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
-    const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
     const browser = await puppeteer.launch({ headless: 'shell' as const });
     const page = await browser.newPage();
-    await page.goto(`${weatherUrl}#dong/${code}`);
-    await page.setViewport({width: 1080, height: 1024});
-    const sliders = '.dfs-slider .slide-wrap'
-    await page.waitForSelector(sliders);
 
-    const weather = await page.evaluate(() => {
-      const listItems = document.querySelectorAll('.dfs-slider .slide-wrap .daily .item-wrap > ul > li');
-      const result = {};
-  
-      listItems.forEach(li => {
-        const keyElement = li.querySelector('.hid');
-        const valueElement = li.querySelector('span:not(.hid)');
-        
-        if (keyElement && valueElement) {
-          const key = keyElement.textContent.trim().replace(':', '');
-          const value = valueElement.textContent.trim() || '-';
-          result[key] = value;
-        }
+    // net::ERR_ABORTED at https://www.weather.go.kr/w/weather/forecast/short-term.do#dong/5115061500
+    // 이게있어야 에러가 안난다. 아마 뭔가 web에서 뭐가 달라서그런듯 
+    // const imitCode = parseWeather[0].code
+    // await page.goto(`${weatherUrl}#dong/${imitCode}`);
+
+    const weatherObjectArray = [] as any[];
+
+    for (const object of parseWeather) {
+      await page.goto(`${weatherUrl}#dong/${object.code}`);
+      await page.waitForSelector('.dfs-slider .slide-wrap');
+      
+      const weather = await page.evaluate(() => {
+        const listItems = document.querySelectorAll('.dfs-slider .slide-wrap .daily .item-wrap > ul > li');
+        const result = {};
+        listItems.forEach(li => {
+          const keyElement = li.querySelector('.hid');
+          const valueElement = li.querySelector('span:not(.hid)');
+          if (keyElement && valueElement) {
+            const key = keyElement.textContent.trim().replace(':', '');
+            const value = valueElement.textContent.trim() || '-';
+            result[key] = value;
+          }
+        });
+        return result;
       });
-  
-      return result;
-    });
-  
-    // console.log(weather); 
-    await browser.close();
-
-    const finallyObject = {
-      code: code,
-      name: name,
-      weather
+    
+      weatherObjectArray.push({ ...object, weather });
     }
 
-    console.log(finallyObject)
+    console.log(weatherObjectArray)
+    return weatherObjectArray
   }
 
   @Get('test')
