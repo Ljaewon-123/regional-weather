@@ -2,6 +2,8 @@ import { Controller, Get } from '@nestjs/common';
 import puppeteer, { Page } from 'puppeteer';
 import * as fs from 'fs';
 import { readFile } from 'fs/promises';
+import pLimit from '@common.js/p-limit'
+// import pLimit from "p-limit";
 
 @Controller('weather')
 export class WeatherController {
@@ -15,37 +17,43 @@ export class WeatherController {
     const parseWeather = JSON.parse(data)
     const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
     const browser = await puppeteer.launch({ headless: 'shell' as const });
-    const page = await browser.newPage();
+    // const page = await browser.newPage();
 
-    // net::ERR_ABORTED at https://www.weather.go.kr/w/weather/forecast/short-term.do#dong/5115061500
-    // 이게있어야 에러가 안난다. 아마 뭔가 web에서 뭐가 달라서그런듯 
-    // const imitCode = parseWeather[0].code
-    // await page.goto(`${weatherUrl}#dong/${imitCode}`);
+    // Only five promise is run at once
+    // const pLimit = (await import('p-limit')).default; // 너 왜이러는데 ㅋㅋㅋ 
+    const limit = pLimit(5); // 최대 5개씩 크롤링
+    const weatherObjectArray = await Promise.all(
+      parseWeather.map((object: { code: any; }) =>
+        limit(async () => {
+          const page = await browser.newPage();
+          await page.goto(`${weatherUrl}#dong/${object.code}`);
+          await page.waitForSelector('.dfs-slider .slide-wrap');
+          
+          const weather = await page.evaluate(() => {
+            const listItems = document.querySelectorAll('.dfs-slider .slide-wrap .daily .item-wrap > ul > li');
+            const result: Record<string, string> = {};
+            
+            listItems.forEach(li => {
+              const keyElement = li.querySelector('.hid');
+              const valueElement = li.querySelector('span:not(.hid)');
+              if (keyElement && valueElement) {
+                const key = keyElement.textContent.trim().replace(':', '');
+                const value = valueElement.textContent.trim() || '-';
+                result[key] = value;
+              }
+            });
+            return result;
+          });
+          
+          await page.close();
+          return { ...object, weather };
+        })
+      )
+    );
+  
+    await browser.close();
 
-    const weatherObjectArray = [] as any[];
-
-    for (const object of parseWeather) {
-      await page.goto(`${weatherUrl}#dong/${object.code}`);
-      await page.waitForSelector('.dfs-slider .slide-wrap');
-      
-      const weather = await page.evaluate(() => {
-        const listItems = document.querySelectorAll('.dfs-slider .slide-wrap .daily .item-wrap > ul > li');
-        const result = {};
-        listItems.forEach(li => {
-          const keyElement = li.querySelector('.hid');
-          const valueElement = li.querySelector('span:not(.hid)');
-          if (keyElement && valueElement) {
-            const key = keyElement.textContent.trim().replace(':', '');
-            const value = valueElement.textContent.trim() || '-';
-            result[key] = value;
-          }
-        });
-        return result;
-      });
-    
-      weatherObjectArray.push({ ...object, weather });
-    }
-
+    // some db save code
     console.log(weatherObjectArray)
     return weatherObjectArray
   }
