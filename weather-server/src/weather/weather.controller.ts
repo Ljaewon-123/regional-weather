@@ -2,7 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import puppeteer, { Page } from 'puppeteer';
 import * as fs from 'fs';
 import { readFile } from 'fs/promises';
-import pLimit from '@common.js/p-limit'
+// import pLimit from '@common.js/p-limit'
 // import pLimit from "p-limit";
 
 @Controller('weather')
@@ -21,36 +21,52 @@ export class WeatherController {
 
     // Only five promise is run at once
     // const pLimit = (await import('p-limit')).default; // 너 왜이러는데 ㅋㅋㅋ 
-    const limit = pLimit(5); // 최대 5개씩 크롤링
-    const weatherObjectArray = await Promise.all(
-      parseWeather.map((object: { code: any; }) =>
-        limit(async () => {
-          const page = await browser.newPage();
-          await page.goto(`${weatherUrl}#dong/${object.code}`);
-          await page.waitForSelector('.dfs-slider .slide-wrap');
-          
-          const weather = await page.evaluate(() => {
-            const listItems = document.querySelectorAll('.dfs-slider .slide-wrap .daily .item-wrap > ul > li');
-            const result: Record<string, string> = {};
-            
-            listItems.forEach(li => {
-              const keyElement = li.querySelector('.hid');
-              const valueElement = li.querySelector('span:not(.hid)');
-              if (keyElement && valueElement) {
-                const key = keyElement.textContent.trim().replace(':', '');
-                const value = valueElement.textContent.trim() || '-';
-                result[key] = value;
-              }
-            });
-            return result;
-          });
-          
-          await page.close();
-          return { ...object, weather };
-        })
-      )
-    );
+    const weatherObjectArray: any[] = [];
+    const maxConcurrency = 5; // 동시에 실행할 최대 작업 수
   
+    // Promise.allSettled를 사용하여 제한된 동시 실행
+    for (let i = 0; i < parseWeather.length; i += maxConcurrency) {
+      const batch = parseWeather.slice(i, i + maxConcurrency);
+      
+      const batchResults = await Promise.allSettled(
+        batch.map((object: { code: any }) => 
+          (async () => {
+            const page = await browser.newPage();
+            await page.goto(`${weatherUrl}#dong/${object.code}`);
+            await page.waitForSelector('.dfs-slider .slide-wrap');
+  
+            const weather = await page.evaluate(() => {
+              const listItems = document.querySelectorAll('.dfs-slider .slide-wrap .daily .item-wrap > ul > li');
+              const result: Record<string, string> = {};
+  
+              listItems.forEach(li => {
+                const keyElement = li.querySelector('.hid');
+                const valueElement = li.querySelector('span:not(.hid)');
+                if (keyElement && valueElement) {
+                  const key = keyElement.textContent.trim().replace(':', '');
+                  const value = valueElement.textContent.trim() || '-';
+                  result[key] = value;
+                }
+              });
+              return result;
+            });
+  
+            await page.close();
+            return { ...object, weather };
+          })()
+        )
+      );
+  
+      // 배치에서 성공한 결과만 추가
+      batchResults.forEach(result => {
+        if (result.status === 'fulfilled') {
+          weatherObjectArray.push(result.value);
+        } else {
+          console.error(result.reason); // 실패한 경우
+        }
+      });
+    }
+
     await browser.close();
 
     // some db save code
