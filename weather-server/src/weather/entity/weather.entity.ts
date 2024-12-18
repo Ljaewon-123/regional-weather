@@ -10,6 +10,9 @@ export class Weather {
   @JoinColumn({ name: 'locationId' })
   location: Locations;
 
+  @Column()  // 날짜
+  date: string;
+
   @Column({ length: 10 })  // 시간
   time: string;
 

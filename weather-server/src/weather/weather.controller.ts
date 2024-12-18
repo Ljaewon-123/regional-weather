@@ -19,7 +19,7 @@ export class WeatherController {
   @Get('test2')
   async dayWeather(){
     const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
-    // const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
+    const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
     const data = await readFile('./weather.json', 'utf-8');
     const parseWeather = JSON.parse(data)
     const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
@@ -28,22 +28,38 @@ export class WeatherController {
 
     const weatherObjectArray = [] as any[];
 
-    for (const object of parseWeather) {
+    for (const object of testArray) {
       await page.goto(`${weatherUrl}#dong/${object.code}`);
       await page.waitForSelector('.dfs-slider .slide-wrap');
       
       const weather = await page.evaluate(() => {
-        const listItems = document.querySelectorAll('.dfs-slider .slide-wrap .daily .item-wrap > ul > li');
-        const result = {};
-        listItems.forEach(li => {
-          const keyElement = li.querySelector('.hid');
-          const valueElement = li.querySelector('span:not(.hid)');
-          if (keyElement && valueElement) {
-            const key = keyElement.textContent.trim().replace(':', '');
-            const value = valueElement.textContent.trim() || '-';
-            result[key] = value;
-          }
+        const result = [];
+        const ulElements = document.querySelectorAll('.dfs-slider .slide-wrap .daily .item-wrap > ul');
+      
+        ulElements.forEach(ul => {
+          const date = ul.getAttribute('data-date');
+          const time = ul.getAttribute('data-time');
+          
+          const dailyWeather = {
+            date,
+            time,
+            weatherDetails: {}
+          };
+      
+          const listItems = ul.querySelectorAll('li');
+          listItems.forEach(li => {
+            const keyElement = li.querySelector('.hid');
+            const valueElement = li.querySelector('span:not(.hid)');
+            if (keyElement && valueElement) {
+              const key = keyElement.textContent.trim().replace(':', '');
+              const value = valueElement.textContent.trim() || '-';
+              dailyWeather.weatherDetails[key] = value;
+            }
+          });
+      
+          result.push(dailyWeather);
         });
+      
         return result;
       });
     
@@ -51,9 +67,9 @@ export class WeatherController {
     }
 
     // some db save code
-    console.log(weatherObjectArray)
+    console.log(weatherObjectArray[0].weather[2])
 
-    await this.weatherService.saveWeatherData(weatherObjectArray)
+    // await this.weatherService.saveWeatherData(weatherObjectArray)
 
     return weatherObjectArray
   }
