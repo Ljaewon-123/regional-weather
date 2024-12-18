@@ -34,11 +34,10 @@ export class WeatherController {
       
       const weather = await page.evaluate(() => {
         const result = [];
-        const ulElements = document.querySelectorAll('.dfs-slider .slide-wrap .daily .item-wrap > ul');
+        const ulElements = document.querySelector('.dfs-slider .slide-wrap .daily .item-wrap > ul');
       
-        ulElements.forEach(ul => {
-          const date = ul.getAttribute('data-date');
-          const time = ul.getAttribute('data-time');
+        const date = ulElements.getAttribute('data-date');
+          const time = ulElements.getAttribute('data-time');
           
           const dailyWeather = {
             date,
@@ -46,7 +45,7 @@ export class WeatherController {
             weatherDetails: {}
           };
       
-          const listItems = ul.querySelectorAll('li');
+          const listItems = ulElements.querySelectorAll('li');
           listItems.forEach(li => {
             const keyElement = li.querySelector('.hid');
             const valueElement = li.querySelector('span:not(.hid)');
@@ -58,7 +57,6 @@ export class WeatherController {
           });
       
           result.push(dailyWeather);
-        });
       
         return result;
       });
