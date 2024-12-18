@@ -7,7 +7,9 @@ export class WeatherService {
   private readonly logger = new Logger(WeatherService.name);
   private isDev = process.env.NODE_ENV == 'dev'
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_10_MINUTES, {
+    timeZone: "Asia/Seoul"
+  })
   async weatherCollector() {
     // puppeteer dev option??? 
     // {

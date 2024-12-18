@@ -1,11 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 @Entity()
-export class Location {
+export class Locations {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 50 })
+  @Column({ length: 50, unique: true })
   code: string;
 
   @Column({ length: 100 })

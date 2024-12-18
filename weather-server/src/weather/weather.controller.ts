@@ -2,10 +2,17 @@ import { Controller, Get } from '@nestjs/common';
 import puppeteer, { Page } from 'puppeteer';
 import * as fs from 'fs';
 import { readFile } from 'fs/promises';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Locations } from './entity/location.entity';
 
 @Controller('weather')
 export class WeatherController {
   private isDev = process.env.NODE_ENV == 'dev'
+  constructor(
+    @InjectRepository(Locations)
+    private readonly locationRepo: Repository<Locations>
+  ){}
 
   @Get('test2')
   async dayWeather(){
@@ -145,6 +152,23 @@ export class WeatherController {
     await browser.close();
 
     return regionCode
+  }
+
+  @Get('local')
+  async updateJsonLocalData(){
+    try{
+      const locationsFromJson = fs.readFileSync('weather.json', 'utf-8');
+      console.log(typeof locationsFromJson)
+      const locations = JSON.parse(locationsFromJson) as Locations[]
+
+      await this.locationRepo.upsert(locations, { conflictPaths: ['code'] });
+
+      console.log('Locations synced successfully.');
+    }
+    catch (error) {
+      console.error('Error syncing locations:', error);
+      throw Error(error);
+    }
   }
 
 }

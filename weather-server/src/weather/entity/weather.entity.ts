@@ -1,13 +1,14 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Locations } from "./location.entity";
 
 @Entity()
 export class Weather {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Location, { eager: true })
+  @ManyToOne(() => Locations, { eager: true })
   @JoinColumn({ name: 'locationId' })
-  location: Location;
+  location: Locations;
 
   @Column({ length: 10 })  // 시간
   time: string;
