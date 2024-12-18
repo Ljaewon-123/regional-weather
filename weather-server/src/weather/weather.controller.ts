@@ -67,7 +67,7 @@ export class WeatherController {
     // some db save code
     console.log(weatherObjectArray[0].weather[2])
 
-    // await this.weatherService.saveWeatherData(weatherObjectArray)
+    await this.weatherService.saveWeatherData(weatherObjectArray)
 
     return weatherObjectArray
   }

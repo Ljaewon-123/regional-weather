@@ -24,19 +24,23 @@ export class WeatherService {
       const location = await this.locationsRepository.findOne({
         where: { code: data.code },
       });
-  
+      
+      // 앞선날짜가 초기화 되면 쓸모없어질 거라고 생각해서? 처음꺼 하나만 가져오기로함함
+      const weatherOne = data.weather[0]
+
       if (location) {
         const weather = this.weatherRepository.create({
           location,
-          time: data.weather.시각,
-          weatherCondition: data.weather.날씨,
-          perceivedTemperature: data.weather.체감온도 || null,
-          precipitation: data.weather.강수량 || null,
-          precipitationProbability: data.weather.강수확률,
-          wind: data.weather.바람,
-          humidity: data.weather.습도,
-          coldWaveEffect: data.weather.한파영향 || null,
-          snowfallIntensity: data.weather.적설강도 || null,
+          date: weatherOne.date,
+          time: weatherOne.time,
+          weatherCondition: weatherOne.weatherDetails.날씨,
+          perceivedTemperature: weatherOne.weatherDetails.체감온도 || null,
+          precipitation: weatherOne.weatherDetails.강수량 || null,
+          precipitationProbability: weatherOne.weatherDetails.강수확률,
+          wind: weatherOne.weatherDetails.바람,
+          humidity: weatherOne.weatherDetails.습도,
+          coldWaveEffect: weatherOne.weatherDetails.한파영향 || null,
+          snowfallIntensity: weatherOne.weatherDetails.적설강도 || null,
         });
   
         weatherToSave.push(weather);  // 데이터를 배열에 모은다
