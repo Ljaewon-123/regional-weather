@@ -34,7 +34,7 @@ export class Weather {
   @Column({ nullable: true })  // 한파영향향
   coldWaveEffect: string;
 
-  @Column({ length: 50 })   // 적설강도 
+  @Column({ length: 50, nullable: true })   // 적설강도 
   snowfallIntensity: string;
 
   @CreateDateColumn()

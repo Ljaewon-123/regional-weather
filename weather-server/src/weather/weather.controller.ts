@@ -5,11 +5,13 @@ import { readFile } from 'fs/promises';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Locations } from './entity/location.entity';
+import { WeatherService } from './weather.service';
 
 @Controller('weather')
 export class WeatherController {
   private isDev = process.env.NODE_ENV == 'dev'
   constructor(
+    private readonly weatherService: WeatherService,
     @InjectRepository(Locations)
     private readonly locationRepo: Repository<Locations>
   ){}
@@ -17,7 +19,7 @@ export class WeatherController {
   @Get('test2')
   async dayWeather(){
     const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
-    const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
+    // const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
     const data = await readFile('./weather.json', 'utf-8');
     const parseWeather = JSON.parse(data)
     const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
@@ -50,6 +52,9 @@ export class WeatherController {
 
     // some db save code
     console.log(weatherObjectArray)
+
+    await this.weatherService.saveWeatherData(weatherObjectArray)
+
     return weatherObjectArray
   }
 

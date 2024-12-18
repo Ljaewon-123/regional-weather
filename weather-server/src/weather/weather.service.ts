@@ -1,11 +1,54 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import puppeteer from 'puppeteer';
+import { Locations } from './entity/location.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Weather } from './entity/weather.entity';
 
 @Injectable()
 export class WeatherService {
   private readonly logger = new Logger(WeatherService.name);
   private isDev = process.env.NODE_ENV == 'dev'
+  constructor(
+    @InjectRepository(Locations)
+    private locationsRepository: Repository<Locations>,
+    @InjectRepository(Weather)
+    private weatherRepository: Repository<Weather>,
+  ){}
+
+  async saveWeatherData(weatherData: any[]) {
+    const weatherToSave = [];
+  
+    for (const data of weatherData) {
+      const location = await this.locationsRepository.findOne({
+        where: { code: data.code },
+      });
+  
+      if (location) {
+        const weather = this.weatherRepository.create({
+          location,
+          time: data.weather.시각,
+          weatherCondition: data.weather.날씨,
+          perceivedTemperature: data.weather.체감온도 || null,
+          precipitation: data.weather.강수량 || null,
+          precipitationProbability: data.weather.강수확률,
+          wind: data.weather.바람,
+          humidity: data.weather.습도,
+          coldWaveEffect: data.weather.한파영향 || null,
+          snowfallIntensity: data.weather.적설강도 || null,
+        });
+  
+        weatherToSave.push(weather);  // 데이터를 배열에 모은다
+      } else {
+        console.error(`Location not found for code: ${data.code}`);
+      }
+    }
+  
+    if (weatherToSave.length > 0) {
+      await this.weatherRepository.save(weatherToSave);  // 한 번에 저장
+    }
+  }
 
   @Cron(CronExpression.EVERY_10_MINUTES, {
     timeZone: "Asia/Seoul"

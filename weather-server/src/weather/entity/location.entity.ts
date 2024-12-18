@@ -1,10 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 @Entity()
 export class Locations {
   @PrimaryGeneratedColumn()
   id: number;
 
+  // 기본키 값은 수정해서는 안 됩니다 => 수정... 될수도있지 않을까???
   @Column({ length: 50, unique: true })
   code: string;
 
