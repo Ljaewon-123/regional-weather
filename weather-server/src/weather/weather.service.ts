@@ -32,7 +32,24 @@ export class WeatherService {
   }
 
   async locationInfo(code: string){
+    console.log(code)
     return await this.locationsRepository.findOne({ 
+      where: {
+        code
+      } 
+    })
+  }
+
+  async getSido(code: string){
+    return await this.sidoRepo.findOne({ 
+      where: {
+        code
+      } 
+    })
+  }
+
+  async getGu(code: string){
+    return await this.guDataRepo.findOne({ 
       where: {
         code
       } 

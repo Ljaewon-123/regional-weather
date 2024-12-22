@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import puppeteer, { Page } from 'puppeteer';
 import * as fs from 'fs';
 import { readFile } from 'fs/promises';
@@ -8,6 +8,8 @@ import { Locations } from './entity/location.entity';
 import { WeatherService } from './weather.service';
 import { GuData } from './entity/gu-data.entity';
 import { Sido } from './entity/sido.entity';
+import { CodeDto } from './dto/code.dto';
+import { FilterDto } from './dto/filter.dto';
 
 @Controller('weather')
 export class WeatherController {
@@ -23,13 +25,23 @@ export class WeatherController {
   ){}
 
   @Get('locations')
-  async locationsInfo(){
-    return await this.weatherService.locationsInfo()
+  async locationsInfo(@Query() filterDto: FilterDto){
+    return await this.weatherService.locationsInfo(filterDto)
   }
 
-  @Get('locations')
-  async locationInfo(code: string){
-    return await this.weatherService.locationInfo(code)
+  @Get('location')
+  async locationInfo(@Query() dto: CodeDto){
+    return await this.weatherService.locationInfo(dto.code)
+  }
+
+  @Get('sido')
+  async sido(@Query() dto: CodeDto){
+    return await this.weatherService.getSido(dto.code)
+  }
+
+  @Get('gu')
+  async gu(@Query() dto: CodeDto){
+    return await this.weatherService.getGu(dto.code)
   }
 
   @Get('test2')
