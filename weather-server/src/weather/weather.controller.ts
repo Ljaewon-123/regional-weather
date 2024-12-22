@@ -16,10 +16,15 @@ export class WeatherController {
     private readonly locationRepo: Repository<Locations>
   ){}
 
+  @Get('region')
+  async regionInfo(){
+    // await this.locationRepo.find
+  }
+
   @Get('test2')
   async dayWeather(){
     const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
-    const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
+    // const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
     const data = await readFile('./weather.json', 'utf-8');
     const parseWeather = JSON.parse(data)
     const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
@@ -28,7 +33,7 @@ export class WeatherController {
 
     const weatherObjectArray = [] as any[];
 
-    for (const object of testArray) {
+    for (const object of parseWeather) {
       await page.goto(`${weatherUrl}#dong/${object.code}`);
       await page.waitForSelector('.dfs-slider .slide-wrap');
       
@@ -65,7 +70,7 @@ export class WeatherController {
     }
 
     // some db save code
-    console.log(weatherObjectArray[0].weather[2])
+    // console.log(weatherObjectArray[0].weather[2])
 
     await this.weatherService.saveWeatherData(weatherObjectArray)
 
