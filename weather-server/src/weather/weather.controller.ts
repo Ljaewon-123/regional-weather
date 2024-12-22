@@ -44,6 +44,8 @@ export class WeatherController {
     return await this.weatherService.getGu(dto.code)
   }
 
+  // 흠...날씨데이터는 front진행이 되어야 하기쉬울듯
+
   @Get('test2')
   async dayWeather(){
     const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
