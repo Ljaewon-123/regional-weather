@@ -24,7 +24,7 @@ export class WeatherController {
 
   @Get('locations')
   async locationsInfo(){
-    return await this.weatherService.locationsInfo({ code: '5115061500' })
+    return await this.weatherService.locationsInfo()
   }
 
   @Get('test2')

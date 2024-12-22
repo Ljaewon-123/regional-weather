@@ -84,7 +84,7 @@ export class WeatherService {
 
   async upsertGuData(guData: GuData[], sidos: Sido[]): Promise<GuData[]> {
     const guWithRelations = guData.map((gu) => {
-      const relatedSido = sidos.find((sido) => sido.code.slice(0, 2) == gu.code.slice(0, 2));
+      const relatedSido = sidos.find((sido) => this.matchCode(sido.code, gu.code, 2));
       if (!relatedSido) {
         throw new Error(`Sido not found for Gu: ${gu.code}`);
       }
@@ -99,7 +99,7 @@ export class WeatherService {
 
   async upsertLocations(locations: Locations[], guData: GuData[]): Promise<void> {
     const locationsWithRelations = locations.map((location) => {
-      const relatedGu = guData.find((gu) => gu.code.slice(0, 4) == location.code.slice(0, 4));
+      const relatedGu = guData.find((gu) => this.matchCode(gu.code, location.code, 4));
       if (!relatedGu) {
         throw new Error(`GuData not found for Location: ${location.code}`);
       }
@@ -107,6 +107,10 @@ export class WeatherService {
     });
 
     await this.locationsRepository.upsert(locationsWithRelations, { conflictPaths: ['code'] });
+  }
+
+  matchCode(baseCode: string, targetCode: string, sliceLength: number): boolean {
+    return baseCode.slice(0, sliceLength) == targetCode.slice(0, sliceLength);
   }
 
   @Cron(CronExpression.EVERY_10_MINUTES, {
