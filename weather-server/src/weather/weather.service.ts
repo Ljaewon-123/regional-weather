@@ -5,6 +5,8 @@ import { Locations } from './entity/location.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Weather } from './entity/weather.entity';
+import { Sido } from './entity/sido.entity';
+import { GuData } from './entity/gu-data.entity';
 
 @Injectable()
 export class WeatherService {
@@ -15,6 +17,10 @@ export class WeatherService {
     private locationsRepository: Repository<Locations>,
     @InjectRepository(Weather)
     private weatherRepository: Repository<Weather>,
+    @InjectRepository(Sido) 
+    private sidoRepo: Repository<Sido>,
+    @InjectRepository(GuData)
+    private guDataRepo: Repository<GuData>,
   ){}
 
   async locationsInfo(filter?: { [key: string]: any }) {
@@ -71,8 +77,37 @@ export class WeatherService {
   }
 
 
+  async upsertSidos(sidoData: Sido[]): Promise<Sido[]> {
+    await this.sidoRepo.upsert(sidoData, { conflictPaths: ['code'] });
+    return this.sidoRepo.find();
+  }
 
+  async upsertGuData(guData: GuData[], sidos: Sido[]): Promise<GuData[]> {
+    const guWithRelations = guData.map((gu) => {
+      const relatedSido = sidos.find((sido) => sido.code.slice(0, 2) == gu.code.slice(0, 2));
+      if (!relatedSido) {
+        throw new Error(`Sido not found for Gu: ${gu.code}`);
+      }
+      return { ...gu, sido: relatedSido };
+    });
 
+    await this.guDataRepo.upsert(guWithRelations, { conflictPaths: ['code'] });
+    // Eager에 해당하지 않는 관계된 sido도 뽑을수있게된다.
+    // console.log(await this.guDataRepo.find({ relations: ['sido'] }), 'guData@@@@')
+    return this.guDataRepo.find();
+  }
+
+  async upsertLocations(locations: Locations[], guData: GuData[]): Promise<void> {
+    const locationsWithRelations = locations.map((location) => {
+      const relatedGu = guData.find((gu) => gu.code.slice(0, 4) == location.code.slice(0, 4));
+      if (!relatedGu) {
+        throw new Error(`GuData not found for Location: ${location.code}`);
+      }
+      return { ...location, guData: relatedGu };
+    });
+
+    await this.locationsRepository.upsert(locationsWithRelations, { conflictPaths: ['code'] });
+  }
 
   @Cron(CronExpression.EVERY_10_MINUTES, {
     timeZone: "Asia/Seoul"

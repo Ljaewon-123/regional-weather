@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { GuData } from "./gu-data.entity";
 
 @Entity()
 export class Locations {
@@ -17,4 +18,7 @@ export class Locations {
 
   @Column('decimal', { precision: 9, scale: 6 })
   lon: number;
+
+  @ManyToOne(() => GuData, guData => guData.locations) 
+  guData: GuData
 }

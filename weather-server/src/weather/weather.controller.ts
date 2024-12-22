@@ -6,6 +6,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Locations } from './entity/location.entity';
 import { WeatherService } from './weather.service';
+import { GuData } from './entity/gu-data.entity';
+import { Sido } from './entity/sido.entity';
 
 @Controller('weather')
 export class WeatherController {
@@ -13,7 +15,11 @@ export class WeatherController {
   constructor(
     private readonly weatherService: WeatherService,
     @InjectRepository(Locations)
-    private readonly locationRepo: Repository<Locations>
+    private readonly locationRepo: Repository<Locations>,
+    @InjectRepository(GuData)
+    private readonly gudataRepo: Repository<GuData>,
+    @InjectRepository(Sido)
+    private readonly sidoRepo: Repository<Sido>
   ){}
 
   @Get('locations')
@@ -25,7 +31,7 @@ export class WeatherController {
   async dayWeather(){
     const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
     // const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
-    const data = await readFile('./weather.json', 'utf-8');
+    const data = await readFile('./region.json', 'utf-8');
     const parseWeather = JSON.parse(data)
     const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
     const browser = await puppeteer.launch({ headless: 'shell' as const });
@@ -195,11 +201,27 @@ export class WeatherController {
   @Get('local')
   async updateJsonLocalData(){
     try{
-      const locationsFromJson = fs.readFileSync('weather.json', 'utf-8');
-      console.log(typeof locationsFromJson)
+      const locationsFromJson = fs.readFileSync('region.json', 'utf-8');
+      const guFromJson = fs.readFileSync('guData.json', 'utf-8');
+      const sidoFromJson = fs.readFileSync('sido.json', 'utf-8');
+      // console.log(typeof locationsFromJson) // string
       const locations = JSON.parse(locationsFromJson) as Locations[]
+      const locationsGu = JSON.parse(guFromJson) as GuData[]
+      const locationsSido = JSON.parse(sidoFromJson) as Sido[]
 
-      await this.locationRepo.upsert(locations, { conflictPaths: ['code'] });
+      // await this.sidoRepo.upsert(locationsSido, { conflictPaths: ['code'] });
+      // await this.gudataRepo.upsert(locationsGu, { conflictPaths: ['code'] });
+      // await this.locationRepo.upsert(locations, { conflictPaths: ['code'] });
+
+      // 1. Sido 업데이트
+      const savedSidos = await this.weatherService.upsertSidos(locationsSido);
+
+      // 2. GuData 업데이트
+      const savedGuData = await this.weatherService.upsertGuData(locationsGu, savedSidos);
+
+      // 3. Locations 업데이트
+      await this.weatherService.upsertLocations(locations, savedGuData);
+
 
       console.log('Locations synced successfully.');
     }
@@ -207,6 +229,11 @@ export class WeatherController {
       console.error('Error syncing locations:', error);
       throw Error(error);
     }
+  }
+
+  @Get('test3')
+  async test3(){
+    return await this.sidoRepo.find()
   }
 
 }
