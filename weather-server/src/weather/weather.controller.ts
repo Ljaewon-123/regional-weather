@@ -27,6 +27,11 @@ export class WeatherController {
     return await this.weatherService.locationsInfo()
   }
 
+  @Get('locations')
+  async locationInfo(code: string){
+    return await this.weatherService.locationInfo(code)
+  }
+
   @Get('test2')
   async dayWeather(){
     const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
