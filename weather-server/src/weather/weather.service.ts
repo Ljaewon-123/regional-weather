@@ -17,6 +17,22 @@ export class WeatherService {
     private weatherRepository: Repository<Weather>,
   ){}
 
+  async locationsInfo(filter?: { [key: string]: any }) {
+    if (filter) {
+      return await this.locationsRepository.find({ where: filter });
+    } 
+
+    return await this.locationsRepository.find();
+  }
+
+  async locationInfo(code: string){
+    return await this.locationsRepository.findOne({ 
+      where: {
+        code
+      } 
+    })
+  }
+
   async saveWeatherData(weatherData: any[]) {
     const weatherToSave = [];
   
@@ -53,6 +69,10 @@ export class WeatherService {
       await this.weatherRepository.save(weatherToSave);  // 한 번에 저장
     }
   }
+
+
+
+
 
   @Cron(CronExpression.EVERY_10_MINUTES, {
     timeZone: "Asia/Seoul"

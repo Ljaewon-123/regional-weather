@@ -16,9 +16,9 @@ export class WeatherController {
     private readonly locationRepo: Repository<Locations>
   ){}
 
-  @Get('region')
-  async regionInfo(){
-    // await this.locationRepo.find
+  @Get('locations')
+  async locationsInfo(){
+    return await this.weatherService.locationsInfo({ code: '5115061500' })
   }
 
   @Get('test2')
@@ -105,6 +105,8 @@ export class WeatherController {
     const regionCode = await regionWrap.evaluate(async wrap => {
       const wait = (ms:number) => new Promise((res) => setTimeout(res, ms))
       const codeWrapper = []
+      const sidoWrapper = []
+      const guWrapper = []
 
       let sidoLinks = wrap.querySelectorAll('a.addr-chk-btn[data-level="1"]');
       console.log(sidoLinks.length)
@@ -113,6 +115,12 @@ export class WeatherController {
       for(let i = 0 ; i < lenSido ; i++){
         const link = sidoLinks[i] as HTMLElement
         console.log(link.innerText, 'it is si * do!!!!')
+        // console.log(link.getAttribute('data-name'), link.getAttribute('data-code'))
+        const attributes = {
+          code: link.getAttribute('data-code'),
+          name: link.getAttribute('data-name'),
+        };
+        sidoWrapper.push(attributes)
         link.click()
         await wait(500)
 
@@ -121,7 +129,11 @@ export class WeatherController {
         for (let guidx = 0; guidx < guElements.length; guidx++) {
           const guHtmlElement = guElements[guidx] as HTMLElement;
           console.log(guHtmlElement.innerText, 'level is 2!!!')
-          // if (guHtmlElement.getAttribute('data-goto')) continue;
+          const attributes = {
+            code: guHtmlElement.getAttribute('data-code'),
+            name: guHtmlElement.getAttribute('data-name'),
+          };
+          guWrapper.push(attributes)
           guHtmlElement.click(); 
           await wait(500);
 
@@ -129,7 +141,7 @@ export class WeatherController {
           const dongElements = wrap.querySelectorAll('a.addr-chk-btn[data-level="3"]');
           for(const doneElement of dongElements){
             const dongHtmlElement = doneElement as HTMLElement
-            console.log(dongHtmlElement.getAttribute('data-name'))
+            // console.log(dongHtmlElement.getAttribute('data-name'))
             const attributes = {
               code: dongHtmlElement.getAttribute('data-code'),
               name: dongHtmlElement.getAttribute('data-name'),
@@ -160,13 +172,15 @@ export class WeatherController {
       //   await wait(2000)
       // })
 
-      return codeWrapper
+      return { codeWrapper, sidoWrapper, guWrapper }
     }) 
     console.log('code')
 
     // fs.writeFileSync('weather.json', JSON.stringify(regionCode), 'utf8');
-    if (regionCode && regionCode.length > 0) {
-      fs.writeFileSync('weather.json', JSON.stringify(regionCode), 'utf8');
+    if (regionCode) {
+      fs.writeFileSync('region.json', JSON.stringify(regionCode.codeWrapper), 'utf8');
+      fs.writeFileSync('sido.json', JSON.stringify(regionCode.sidoWrapper), 'utf8');
+      fs.writeFileSync('guData.json', JSON.stringify(regionCode.guWrapper), 'utf8');
       console.log('File written successfully!');
     }
     else{
