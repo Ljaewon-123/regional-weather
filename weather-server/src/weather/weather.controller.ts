@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
 import puppeteer, { Page } from 'puppeteer';
 import * as fs from 'fs';
 import { readFile } from 'fs/promises';
@@ -25,22 +25,32 @@ export class WeatherController {
   ){}
 
   @Get('locations')
+  @HttpCode(HttpStatus.OK)
   async locationsInfo(@Query() filterDto: FilterDto){
     return await this.weatherService.locationsInfo(filterDto)
   }
 
   @Get('location')
+  @HttpCode(HttpStatus.OK)
   async locationInfo(@Query() dto: CodeDto){
     return await this.weatherService.locationInfo(dto.code)
   }
 
   @Get('sido')
+  @HttpCode(HttpStatus.OK)
   async sido(@Query() dto: CodeDto){
     return await this.weatherService.getSido(dto.code)
   }
 
   @Get('gu')
+  @HttpCode(HttpStatus.OK)
   async gu(@Query() dto: CodeDto){
+    return await this.weatherService.getGu(dto.code)
+  }
+
+  @Post('gu')
+  @HttpCode(HttpStatus.OK)
+  async guhi3(@Query() dto: CodeDto){
     return await this.weatherService.getGu(dto.code)
   }
 
