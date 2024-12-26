@@ -18,7 +18,9 @@ export class ScheduleWeatherService {
   // CronExpression.EVERY_10_MINUTES
 
 
-  @Cron(CronExpression.EVERY_3_HOURS)
+  @Cron(CronExpression.EVERY_3_HOURS, {
+    timeZone: "Asia/Seoul"
+  })
   async saveDayWeather(){
     const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
     // const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
@@ -108,12 +110,11 @@ export class ScheduleWeatherService {
       const guWrapper = []
 
       let sidoLinks = wrap.querySelectorAll('a.addr-chk-btn[data-level="1"]');
-      console.log(sidoLinks.length)
       const lenSido = sidoLinks.length
 
       for(let i = 0 ; i < lenSido ; i++){
         const link = sidoLinks[i] as HTMLElement
-        console.log(link.innerText, 'it is si * do!!!!')
+        // console.log(link.innerText, 'it is si * do!!!!')
         // console.log(link.getAttribute('data-name'), link.getAttribute('data-code'))
         const attributes = {
           code: link.getAttribute('data-code'),
@@ -127,7 +128,7 @@ export class ScheduleWeatherService {
         let guElements = wrap.querySelectorAll('a.addr-chk-btn[data-level="2"]');
         for (let guidx = 0; guidx < guElements.length; guidx++) {
           const guHtmlElement = guElements[guidx] as HTMLElement;
-          console.log(guHtmlElement.innerText, 'level is 2!!!')
+          // console.log(guHtmlElement.innerText, 'level is 2!!!')
           const attributes = {
             code: guHtmlElement.getAttribute('data-code'),
             name: guHtmlElement.getAttribute('data-name'),
@@ -173,7 +174,6 @@ export class ScheduleWeatherService {
 
       return { codeWrapper, sidoWrapper, guWrapper }
     }) 
-    console.log('code')
 
     // fs.writeFileSync('weather.json', JSON.stringify(regionCode), 'utf8');
     if (regionCode) {
@@ -184,6 +184,7 @@ export class ScheduleWeatherService {
     }
     else{
       console.error('JSON load error?')
+      throw Error('Json write error')
     }
 
     await browser.close();
@@ -219,7 +220,7 @@ export class ScheduleWeatherService {
       console.log('Locations synced successfully.');
     }
     catch (error) {
-      console.error('Error syncing locations:', error);
+      console.error('Error update json:', error);
       throw Error(error);
     }
   }
