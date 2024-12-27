@@ -7,13 +7,16 @@ import { Locations } from './entity/location.entity';
 import { GuData } from './entity/gu-data.entity';
 import { Sido } from './entity/sido.entity';
 import { WeatherService } from './weather.service';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 
 @Injectable()
 export class ScheduleWeatherService {
   private readonly logger = new Logger(ScheduleWeatherService.name);
   private isDev = process.env.NODE_ENV == 'dev'
   constructor(
-    private weatherService: WeatherService
+    private weatherService: WeatherService,
+    @InjectQueue('schedule-queue') private scheduleQueue: Queue
   ){}
   // CronExpression.EVERY_10_MINUTES
 

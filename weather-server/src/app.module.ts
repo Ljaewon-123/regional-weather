@@ -23,9 +23,6 @@ import { BullConfigService } from './connection/bull-config.service';
       imports: [ConfigModule],
       useClass: BullConfigService
     }),
-    BullModule.registerQueue({
-      name: 'schedule-queue',
-    }),
     ScheduleModule.forRoot(),
     WeatherModule,
   ],
