@@ -6,6 +6,8 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConnectionService } from './connection/conected-db.service';
+import { BullModule } from '@nestjs/bullmq';
+import { BullConfigService } from './connection/bull-config.service';
 
 @Module({
   imports: [
@@ -17,10 +19,16 @@ import { TypeOrmConnectionService } from './connection/conected-db.service';
       imports: [ConfigModule],
       useClass: TypeOrmConnectionService
     }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useClass: BullConfigService
+    }),
+    BullModule.registerQueue({
+      name: 'schedule-queue',
+    }),
     ScheduleModule.forRoot(),
     WeatherModule,
   ],
-  controllers: [],
   providers: [
     {
       provide: APP_INTERCEPTOR,
