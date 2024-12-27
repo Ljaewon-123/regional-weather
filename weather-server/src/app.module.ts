@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConnectionService } from './connection/conected-db.service';
 import { BullModule } from '@nestjs/bullmq';
 import { BullConfigService } from './connection/bull-config.service';
+import { ScheduleConsumer } from './weather/processor';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { BullConfigService } from './connection/bull-config.service';
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
     },
+    ScheduleConsumer
   ],
 })
 export class AppModule {}

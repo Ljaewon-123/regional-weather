@@ -20,6 +20,18 @@ export class ScheduleWeatherService {
   ){}
   // CronExpression.EVERY_10_MINUTES
 
+  async testSomething(){
+    this.logger.log('say hi')
+    const job = await this.scheduleQueue.add('transcode', {
+      foo: 'bar',
+    },
+    { 
+      removeOnComplete: true, // 완료시 삭제 
+      // jobId: 'sayhi' 
+    }
+    );
+    return job
+  }
 
   @Cron(CronExpression.EVERY_3_HOURS, {
     timeZone: "Asia/Seoul"
