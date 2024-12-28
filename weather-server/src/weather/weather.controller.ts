@@ -10,11 +10,13 @@ import { GuData } from './entity/gu-data.entity';
 import { Sido } from './entity/sido.entity';
 import { CodeDto } from './dto/code.dto';
 import { FilterDto } from './dto/filter.dto';
+import { ScheduleWeatherService } from './schedule-weather.service';
 
 @Controller('weather')
 export class WeatherController {
   private isDev = process.env.NODE_ENV == 'dev'
   constructor(
+    private readonly schService: ScheduleWeatherService,
     private readonly weatherService: WeatherService,
     @InjectRepository(Locations)
     private readonly locationRepo: Repository<Locations>,
@@ -229,7 +231,12 @@ export class WeatherController {
 
   @Get('test3')
   async test3(){
-    return await this.sidoRepo.find()
+    return await this.schService.updateWeatherQueue()
+  }
+
+  @Get('test4')
+  async test4(){
+    return await this.schService.updateJsonLocalData()
   }
 
 }
