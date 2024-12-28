@@ -19,15 +19,19 @@ export class ScheduleWeatherService {
     @InjectQueue('schedule-queue') private scheduleQueue: Queue
   ){}
   // CronExpression.EVERY_10_MINUTES
+  // if (await this.redisClient.get('stop')) {     // 간단한 redlock 구현
+  //   await this.useCheckQueue.pause(); // consumer 처리 정지
+  // } else {
+  //   await this.useCheckQueue.resume(); // consumer 처리 다시 시작
+  // }
 
   async testSomething(){
-    this.logger.log('say hi')
     const job = await this.scheduleQueue.add('transcode', {
       foo: 'bar',
     },
     { 
       removeOnComplete: true, // 완료시 삭제 
-      // jobId: 'sayhi' 
+      jobId: 'sayhi' 
     }
     );
     return job
