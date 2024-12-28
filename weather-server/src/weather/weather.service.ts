@@ -127,7 +127,7 @@ export class WeatherService {
   }
 
   /**
-   * @deprecated 지역구분을할때 string으로된 코드들을 앞자리를 비교해서 같은 상위지역인지 구분하기 위한 매소드
+   * @description  지역구분을할때 string으로된 코드들을 앞자리를 비교해서 같은 상위지역인지 구분하기 위한 매소드
    * @param baseCode 
    * @param targetCode 
    * @param sliceLength 

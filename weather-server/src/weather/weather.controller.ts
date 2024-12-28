@@ -231,7 +231,12 @@ export class WeatherController {
 
   @Get('test3')
   async test3(){
-    return await this.schService.testSomething()
+    return await this.schService.updateWeatherQueue()
+  }
+
+  @Get('test4')
+  async test4(){
+    return await this.schService.updateJsonLocalData()
   }
 
 }

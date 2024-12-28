@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import puppeteer from 'puppeteer';
 import * as fs from 'fs';
@@ -11,13 +11,18 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 
 @Injectable()
-export class ScheduleWeatherService {
+export class ScheduleWeatherService implements OnApplicationBootstrap {
   private readonly logger = new Logger(ScheduleWeatherService.name);
   private isDev = process.env.NODE_ENV == 'dev'
   constructor(
     private weatherService: WeatherService,
     @InjectQueue('schedule-queue') private scheduleQueue: Queue
   ){}
+
+  async onApplicationBootstrap() {
+    console.log(ScheduleWeatherService.name + "started");
+    await this.updateJsonLocalData()
+  }
   // CronExpression.EVERY_10_MINUTES
   // if (await this.redisClient.get('stop')) {     // 간단한 redlock 구현
   //   await this.useCheckQueue.pause(); // consumer 처리 정지
@@ -25,13 +30,31 @@ export class ScheduleWeatherService {
   //   await this.useCheckQueue.resume(); // consumer 처리 다시 시작
   // }
 
-  async testSomething(){
-    const job = await this.scheduleQueue.add('transcode', {
-      foot: 'boo'
+  @Cron(CronExpression.EVERY_3_HOURS, {
+    timeZone: "Asia/Seoul"
+  })
+  async updateWeatherQueue(){
+    const job = await this.scheduleQueue.add('saveWeather', {
+      message: 'weather'
     },
     { 
       removeOnComplete: true, // 완료시 삭제 
-      jobId: 'jobid' 
+      jobId: 'update' 
+    }
+    );
+    return job
+  }
+
+  @Cron("0 0 0 1 1 *", {
+    timeZone: "Asia/Seoul"
+  })
+  async locationQueue(){
+    const job = await this.scheduleQueue.add('locationQueue', {
+      message: 'location collector'
+    },
+    { 
+      removeOnComplete: true, // 완료시 삭제 
+      jobId: 'location' 
     }
     );
     return job
@@ -46,7 +69,7 @@ export class ScheduleWeatherService {
     const data = await readFile('./region.json', 'utf-8');
     const parseWeather = JSON.parse(data)
     const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
-    const browser = await puppeteer.launch({ headless: false as const });
+    const browser = await puppeteer.launch({ headless: "shell" as const });
     const page = await browser.newPage();
 
     const weatherObjectArray = [] as any[];
@@ -88,16 +111,16 @@ export class ScheduleWeatherService {
     }
 
     // some db save code
-    // console.log(weatherObjectArray[0].weather[2])
+    console.log("save?")
 
     await this.weatherService.saveWeatherData(weatherObjectArray)
 
     return weatherObjectArray
   }
 
-  @Cron("0 0 0 1 1 *", {
-    timeZone: "Asia/Seoul"
-  })
+  // @Cron("0 0 0 1 1 *", {
+  //   timeZone: "Asia/Seoul"
+  // })
   async locationsCollector() {
     const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
     const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
