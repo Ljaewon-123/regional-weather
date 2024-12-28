@@ -8,6 +8,7 @@ import { GuData } from './entity/gu-data.entity';
 import { Sido } from './entity/sido.entity';
 import { ScheduleWeatherService } from './schedule-weather.service';
 import { BullModule } from '@nestjs/bullmq';
+import { ScheduleConsumer } from './processor.service';
 
 @Module({
   imports:[
@@ -17,6 +18,6 @@ import { BullModule } from '@nestjs/bullmq';
     }),
   ],
   controllers: [WeatherController],
-  providers: [WeatherService, ScheduleWeatherService]
+  providers: [WeatherService, ScheduleWeatherService, ScheduleConsumer]
 })
 export class WeatherModule {}

@@ -8,7 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConnectionService } from './connection/conected-db.service';
 import { BullModule } from '@nestjs/bullmq';
 import { BullConfigService } from './connection/bull-config.service';
-import { ScheduleConsumer } from './weather/processor';
+import { ScheduleConsumer } from './weather/processor.service';
 
 @Module({
   imports: [
@@ -32,7 +32,7 @@ import { ScheduleConsumer } from './weather/processor';
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
     },
-    ScheduleConsumer
+    // ScheduleConsumer // 여기서도 기능은 된다. # 서비스 주입을 위해 weather module로 이동
   ],
 })
 export class AppModule {}
