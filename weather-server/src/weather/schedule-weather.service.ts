@@ -39,7 +39,12 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
     },
     { 
       removeOnComplete: true, // 완료시 삭제 
-      jobId: 'update' 
+      jobId: 'update' ,
+      attempts: 3,
+      backoff: {
+        type: 'exponential',
+        delay: 1000,
+      },
     }
     );
     return job
@@ -54,7 +59,12 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
     },
     { 
       removeOnComplete: true, // 완료시 삭제 
-      jobId: 'location' 
+      jobId: 'location' ,
+      attempts: 3,
+      backoff: {
+        type: 'exponential',
+        delay: 1000,
+      },
     }
     );
     return job
