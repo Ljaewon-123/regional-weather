@@ -22,8 +22,15 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
   async onApplicationBootstrap() {
     this.logger.log(process.env.INSTANCE_ID)
     console.log(ScheduleWeatherService.name + " started");
-    await this.updateJsonLocalData()
+    // 하나의 프로세스만 실행 
+    if (this.isDev) {
+      await this.updateJsonLocalData();
+    } 
+    else if (process.env.INSTANCE_ID == '0') {
+      await this.updateJsonLocalData();
+    }
   }
+
   // CronExpression.EVERY_10_MINUTES
   // if (await this.redisClient.get('stop')) {     // 간단한 redlock 구현
   //   await this.useCheckQueue.pause(); // consumer 처리 정지
