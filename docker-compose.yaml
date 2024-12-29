@@ -9,7 +9,7 @@ services:
       - redis-data:/data
 
   server_green:
-    build: ./  # context 
+    build: ./weather-server
     ports:
       - '3001:3000'
     environment: 
@@ -20,7 +20,7 @@ services:
       - redis
 
   server_blue:
-    build: ./
+    build: ./weather-server
     ports:
       - '3002:3000'
     environment: 
