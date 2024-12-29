@@ -13,13 +13,16 @@ export class ScheduleConsumer extends WorkerHost {
   }
   async process(job: Job<any, any, string>): Promise<any> {
     console.log(job.data.message)
+    console.log(process.env.INSTANCE_ID)
     switch(job.name){
       case "saveWeather": {
-        return this.scheduleService.saveWeather()
+        return await this.scheduleService.saveWeather()
       }
       case "locationQueue": {
-        return this.scheduleService.locationsCollector()
+        return await this.scheduleService.locationsCollector()
       }
     }
+    // await new Promise(res => setTimeout(res, 5000))
+    // console.log('end')
   }
 }
