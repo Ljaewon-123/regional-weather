@@ -20,7 +20,8 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
   ){}
 
   async onApplicationBootstrap() {
-    console.log(ScheduleWeatherService.name + "started");
+    this.logger.log(process.env.INSTANCE_ID)
+    console.log(ScheduleWeatherService.name + " started");
     await this.updateJsonLocalData()
   }
   // CronExpression.EVERY_10_MINUTES
@@ -29,6 +30,25 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
   // } else {
   //   await this.useCheckQueue.resume(); // consumer 처리 다시 시작
   // }
+
+  @Cron(CronExpression.EVERY_10_SECONDS)
+  async clusterTest(){
+    this.logger.log(process.env.INSTANCE_ID)
+    await this.scheduleQueue.add('cluster', {
+      message: 'cluster-tester'
+    },
+    { 
+      removeOnComplete: true, // 완료시 삭제 
+      jobId: 'testid' ,
+      attempts: 3,
+      backoff: {
+        type: 'exponential',
+        delay: 1000,
+      },
+      removeOnFail: true 
+    }
+    );
+  }
 
   @Cron(CronExpression.EVERY_3_HOURS, {
     timeZone: "Asia/Seoul"
@@ -45,6 +65,7 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
         type: 'exponential',
         delay: 1000,
       },
+      removeOnFail: true // 모든 backoff시도후에 제거 
     }
     );
     return job
@@ -65,6 +86,7 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
         type: 'exponential',
         delay: 1000,
       },
+      removeOnFail: true // 모든 backoff시도후에 제거 
     }
     );
     return job
