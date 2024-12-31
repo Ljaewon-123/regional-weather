@@ -9,6 +9,7 @@ import { TypeOrmConnectionService } from './connection/conected-db.service';
 import { BullModule } from '@nestjs/bullmq';
 import { BullConfigService } from './connection/bull-config.service';
 import { ScheduleConsumer } from './weather/processor.service';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ScheduleConsumer } from './weather/processor.service';
     }),
     ScheduleModule.forRoot(),
     WeatherModule,
+    HealthModule,
   ],
   providers: [
     {
