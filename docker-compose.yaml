@@ -33,7 +33,7 @@ services:
   nginx:
     image: nginx:latest
     volumes:
-      - .weather-server/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./weather-server/nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - "3000:2000"
     depends_on:
