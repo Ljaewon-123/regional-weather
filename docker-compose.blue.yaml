@@ -21,6 +21,8 @@ services:
 
   nginx:
     image: nginx:alpine
+    environment:
+      - ACTIVE_SERVER=server_blue:3002
     volumes:
       - ./weather-server/nginx/nginx_blue.conf:/etc/nginx/nginx.conf
     ports:
