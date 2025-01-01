@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 현재 활성 서버 확인
-CURRENT_SERVER=$(docker-compose -f docker-compose.green.yml exec nginx bash -c 'echo $ACTIVE_SERVER' 2>/dev/null || echo "server_blue:3002")
+CURRENT_SERVER=$(docker-compose -f docker-compose.green.yaml exec nginx bash -c 'echo $ACTIVE_SERVER' 2>/dev/null || echo "server_blue:3002")
 
 # 활성 서버가 설정되지 않은 경우 기본값으로 시작
 if [[ -z "$CURRENT_SERVER" ]]; then
@@ -14,12 +14,12 @@ if [[ "$CURRENT_SERVER" == "server_green:3001" ]]; then
   INACTIVE_SERVICE="server_blue"
   INACTIVE_SERVER="server_blue:3002"
   ACTIVE_SERVICE="server_green"
-  COMPOSE_FILE="docker-compose.blue.yml"
+  COMPOSE_FILE="docker-compose.blue.yaml"
 else
   INACTIVE_SERVICE="server_green"
   INACTIVE_SERVER="server_green:3001"
   ACTIVE_SERVICE="server_blue"
-  COMPOSE_FILE="docker-compose.green.yml"
+  COMPOSE_FILE="docker-compose.green.yaml"
 fi
 
 echo "Current active server: $CURRENT_SERVER"
