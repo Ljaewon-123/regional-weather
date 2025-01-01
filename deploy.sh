@@ -41,7 +41,7 @@ echo "$INACTIVE_SERVER passed health check."
 # 3. Nginx 설정 파일 동적 생성
 echo "Generating NGINX config with ACTIVE_SERVER=$INACTIVE_SERVER..."
 export ACTIVE_SERVER=$INACTIVE_SERVER
-envsubst < ./weather-server/nginx/nginx.conf.template > ./weather-server/nginx/nginx.conf
+envsubst < ./weather-server/nginx/templates/default.conf.template > ./weather-server/nginx/nginx.conf
 
 # 4. Nginx에서 서버 전환
 echo "Switching Nginx active server to $INACTIVE_SERVER..."
