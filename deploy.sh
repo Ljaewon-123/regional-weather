@@ -38,16 +38,16 @@ fi
 
 echo "$INACTIVE_SERVER passed health check."
 
-# 3. Nginx에서 서버 전환
+# 3. Nginx 설정 파일 동적 생성
+echo "Generating NGINX config with ACTIVE_SERVER=$INACTIVE_SERVER..."
+export ACTIVE_SERVER=$INACTIVE_SERVER
+envsubst < ./weather-server/nginx/nginx.conf.template > ./weather-server/nginx/nginx.conf
+
+# 4. Nginx에서 서버 전환
 echo "Switching Nginx active server to $INACTIVE_SERVER..."
+docker-compose exec nginx nginx -s reload
 
-# Nginx 설정 파일 직접 수정
-NGINX_CONF="./weather-server/nginx/nginx.conf"
-sed -i "s/server ${ACTIVE_SERVER};/server ${INACTIVE_SERVER};/" $NGINX_CONF
-
-docker-compose exec nginx bash -c "nginx -s reload"
-
-# 4. 이전 서버 클린업
+# 5. 이전 서버 클린업
 echo "Stopping and cleaning up $ACTIVE_SERVICE..."
 docker-compose stop $ACTIVE_SERVICE
 docker-compose up -d --build $ACTIVE_SERVICE
