@@ -33,7 +33,7 @@ services:
   nginx:
     image: nginx:alpine
     volumes:
-      - ./weather-server/nginx/nginx.conf.template:/etc/nginx/nginx.conf.template
+      - ./weather-server/nginx/templates:/etc/nginx/templates
     ports:
       - "3000:2000"
     environment:
