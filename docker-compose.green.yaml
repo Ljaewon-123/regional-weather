@@ -19,26 +19,14 @@ services:
     depends_on:
       - redis
 
-  server_blue:
-    build: ./weather-server
-    ports:
-      - '3002:3000'
-    environment: 
-      - NODE_ENV=prod
-    volumes:
-      - /home/ec2-user/regional-weather:/app/weather-server 
-    depends_on:
-      - redis
-
   nginx:
     image: nginx:alpine
     volumes:
-      - ./weather-server/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./weather-server/nginx/nginx_green.conf:/etc/nginx/nginx.conf
     ports:
       - "3000:2000"
     depends_on:
       - server_green
-      - server_blue
 
 volumes:
   redis-data:

@@ -17,3 +17,7 @@ http {
         }
     }
 }
+
+# 원래는 잘되는 설정인데 뭐가 문제였던거지
+# 2025/01/01 10:43:05 [emerg] 1#1: invalid number of arguments in "proxy_set_header" directive in /etc/nginx/nginx.conf:13
+# regional-weather-nginx-1         | nginx: [emerg] invalid number of arguments in "proxy_set_header" directive in /etc/nginx/nginx.conf:13
