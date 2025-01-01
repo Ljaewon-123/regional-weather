@@ -40,7 +40,7 @@ services:
       - ACTIVE_SERVER=server_green:3001  # 초기 활성 서버
     depends_on:
       - server_green
-      - server_blue
+      # - server_blue
 
 volumes:
   redis-data:
