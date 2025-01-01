@@ -43,7 +43,7 @@ echo "Switching Nginx active server to $INACTIVE_SERVER..."
 
 # Nginx 설정 파일 직접 수정
 NGINX_CONF="./weather-server/nginx/nginx.conf"
-sed -i "s/server \S*/server ${INACTIVE_SERVER};/" $NGINX_CONF
+sed -i "s/server ${ACTIVE_SERVER};/server ${INACTIVE_SERVER};/" $NGINX_CONF
 
 docker-compose exec nginx bash -c "nginx -s reload"
 
