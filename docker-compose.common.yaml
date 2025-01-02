@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx_container
+    environment:
+      - ACTIVE_SERVER=server_green:3001
+    volumes:
+      - ./weather-server/nginx/nginx_green.conf:/etc/nginx/nginx.conf
+    ports:
+      - "3000:2000"
+    depends_on:
+      - server_green
+    networks:
+      - app_network
+
+networks:
+  app_network: 
