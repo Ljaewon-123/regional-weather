@@ -10,8 +10,6 @@ services:
       - ./weather-server/nginx/nginx_green.conf:/etc/nginx/nginx.conf
     ports:
       - "3000:2000"
-    depends_on:
-      - server_green
     networks:
       - app_network
 
