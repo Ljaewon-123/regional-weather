@@ -1,1 +1,1 @@
-server_green:3001
+server_blue:3002

@@ -12,12 +12,16 @@ if [ "$ACTIVE_SERVER" == "server_green:3001" ]; then
   NEW_ACTIVE_SERVER="server_blue:3002"
   NEW_CONFIG_FILE="./weather-server/nginx/nginx_blue.conf"
   SERVER_TO_START="server_blue"
+  START_NAME="blue"
+  STOP_NAME="green"
   SERVER_TO_STOP="server_green"
   HEALTH_CHECK_URL="http://localhost:3002/health"
 else
   NEW_ACTIVE_SERVER="server_green:3001"
   NEW_CONFIG_FILE="./weather-server/nginx/nginx_green.conf"
   SERVER_TO_START="server_green"
+  START_NAME="green"
+  STOP_NAME="blue"
   SERVER_TO_STOP="server_blue"
   HEALTH_CHECK_URL="http://localhost:3001/health"
 fi
@@ -26,7 +30,7 @@ echo "현재 활성 서버: $ACTIVE_SERVER"
 echo "새 활성 서버: $NEW_ACTIVE_SERVER"
 
 # 새 버전 서버 컨테이너 실행
-docker-compose -f docker-compose.${SERVER_TO_START}.yaml up -d ${SERVER_TO_START}
+docker-compose -f docker-compose.${START_NAME}.yaml up -d ${SERVER_TO_START}
 
 # 컨테이너 실행 후 잠시 대기 (예: 10초)
 echo "${SERVER_TO_START} 서버를 실행 중입니다. 잠시 기다려 주세요..."
@@ -53,9 +57,9 @@ if [ "$HEALTH_CHECK" -eq 200 ]; then
   # 일정 시간 대기 후 이전 서버 중지 (예: 10초)
   echo "${SERVER_TO_STOP} 서버를 중지합니다. 잠시 기다려 주세요..."
   sleep 10
-  docker-compose -f docker-compose.${SERVER_TO_STOP}.yaml stop ${SERVER_TO_STOP}
+  docker-compose -f docker-compose.${STOP_NAME}.yaml stop ${SERVER_TO_STOP}
 
-  echo "Blue-그린 전환이 완료되었습니다."
+  echo "Blue-Green 전환이 완료되었습니다."
 else
   echo "${SERVER_TO_START} 서버가 정상적으로 실행되지 않았습니다. Health 체크 실패."
 fi
