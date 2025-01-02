@@ -1,52 +1,61 @@
 #!/bin/bash
 
-# 현재 활성 서버 확인
-CURRENT_SERVER=$(docker-compose -f docker-compose.green.yaml exec nginx bash -c 'echo $ACTIVE_SERVER' 2>/dev/null || echo "server_blue:3002")
-
-# 활성 서버가 설정되지 않은 경우 기본값으로 시작
-if [[ -z "$CURRENT_SERVER" ]]; then
-  echo "No active server found. Defaulting to server_green as active."
-  CURRENT_SERVER="server_green:3001"
-fi
-
-# 활성 서버에 따라 비활성 서버 및 서비스 결정
-if [[ "$CURRENT_SERVER" == "server_green:3001" ]]; then
-  INACTIVE_SERVICE="server_blue"
-  INACTIVE_SERVER="server_blue:3002"
-  ACTIVE_SERVICE="server_green"
-  COMPOSE_FILE="docker-compose.blue.yaml"
+# 현재 활성 서버를 확인합니다.
+if [ -f active_server.txt ]; then
+  ACTIVE_SERVER=$(cat active_server.txt)
 else
-  INACTIVE_SERVICE="server_green"
-  INACTIVE_SERVER="server_green:3001"
-  ACTIVE_SERVICE="server_blue"
-  COMPOSE_FILE="docker-compose.green.yaml"
-fi
-
-echo "Current active server: $CURRENT_SERVER"
-echo "Inactive server: $INACTIVE_SERVER"
-
-# 1. 비활성 서버에 새 버전 배포
-echo "Building and deploying new version to $INACTIVE_SERVICE..."
-docker-compose -f $COMPOSE_FILE up -d --build $INACTIVE_SERVICE
-
-# 2. 비활성 서버 상태 확인
-echo "Testing $INACTIVE_SERVER..."
-HEALTH_CHECK=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:${INACTIVE_SERVER##*:}/health)
-
-if [[ "$HEALTH_CHECK" != "200" ]]; then
-  echo "Health check failed for $INACTIVE_SERVER. Aborting deployment."
+  echo "Error: active_server.txt 파일을 찾을 수 없습니다."
   exit 1
 fi
 
-echo "$INACTIVE_SERVER passed health check."
+if [ "$ACTIVE_SERVER" == "server_green:3001" ]; then
+  NEW_ACTIVE_SERVER="server_blue:3002"
+  NEW_CONFIG_FILE="./weather-server/nginx/nginx_blue.conf"
+  SERVER_TO_START="server_blue"
+  SERVER_TO_STOP="server_green"
+  HEALTH_CHECK_URL="http://localhost:3002/health"
+else
+  NEW_ACTIVE_SERVER="server_green:3001"
+  NEW_CONFIG_FILE="./weather-server/nginx/nginx_green.conf"
+  SERVER_TO_START="server_green"
+  SERVER_TO_STOP="server_blue"
+  HEALTH_CHECK_URL="http://localhost:3001/health"
+fi
 
-# 3. Nginx에서 서버 전환
-echo "Switching Nginx active server to $INACTIVE_SERVER..."
-docker-compose -f $COMPOSE_FILE exec nginx nginx -s reload
+echo "현재 활성 서버: $ACTIVE_SERVER"
+echo "새 활성 서버: $NEW_ACTIVE_SERVER"
 
-# 4. 이전 서버 클린업
-echo "Stopping and cleaning up $ACTIVE_SERVICE..."
-docker-compose -f $COMPOSE_FILE stop $ACTIVE_SERVICE
-docker-compose -f $COMPOSE_FILE up -d --build $ACTIVE_SERVICE
+# 새 버전 서버 컨테이너 실행
+docker-compose -f docker-compose.${SERVER_TO_START}.yaml up -d ${SERVER_TO_START}
 
-echo "Deployment completed successfully!"
+# 컨테이너 실행 후 잠시 대기 (예: 10초)
+echo "${SERVER_TO_START} 서버를 실행 중입니다. 잠시 기다려 주세요..."
+sleep 10
+
+# Health 체크
+echo "${SERVER_TO_START} 서버의 상태를 확인합니다..."
+HEALTH_CHECK=$(curl -s -o /dev/null -w "%{http_code}" ${HEALTH_CHECK_URL})
+
+if [ "$HEALTH_CHECK" -eq 200 ]; then
+  echo "${SERVER_TO_START} 서버가 정상적으로 실행되었습니다."
+
+  # nginx 설정 파일 덮어쓰기
+  cp ${NEW_CONFIG_FILE} ./weather-server/nginx/nginx.conf
+
+  # nginx 리로드
+  docker exec nginx_container nginx -s reload
+
+  echo "nginx 설정이 업데이트되었고 리로드되었습니다."
+
+  # 새로운 활성 서버 정보 업데이트
+  echo $NEW_ACTIVE_SERVER > active_server.txt
+
+  # 일정 시간 대기 후 이전 서버 중지 (예: 10초)
+  echo "${SERVER_TO_STOP} 서버를 중지합니다. 잠시 기다려 주세요..."
+  sleep 10
+  docker-compose -f docker-compose.${SERVER_TO_STOP}.yaml stop ${SERVER_TO_STOP}
+
+  echo "Blue-그린 전환이 완료되었습니다."
+else
+  echo "${SERVER_TO_START} 서버가 정상적으로 실행되지 않았습니다. Health 체크 실패."
+fi
