@@ -56,7 +56,7 @@ if [ "$HEALTH_CHECK" -eq 200 ]; then
 
   # 일정 시간 대기 후 이전 서버 중지 (예: 10초)
   echo "${SERVER_TO_STOP} 서버를 중지합니다. 잠시 기다려 주세요..."
-  sleep 10
+  sleep 30
   docker-compose -f docker-compose.${STOP_NAME}.yaml stop ${SERVER_TO_STOP}
 
   echo "Blue-Green 전환이 완료되었습니다."
