@@ -10,7 +10,7 @@ export class LoggingInterceptor implements NestInterceptor {
 
     const request = context.switchToHttp().getRequest();
     const response = context.switchToHttp().getResponse();
-    const { method, ip } = request;
+    const { url, ip } = request;
     // const { method, url, ip, query, body } = request;
     // console.log('req:', request)
     // console.log('res:', response)
@@ -23,7 +23,7 @@ export class LoggingInterceptor implements NestInterceptor {
         tap(() => {
           console.log(`After... ${Date.now() - now}ms`)
           console.log('***********************')
-          console.log(`Method: ${method} [IP: ${ip}]`)
+          console.log(`Method: ${url} [IP: ${ip}]`)
           console.log('***********************')
         }),
         catchError(err => {

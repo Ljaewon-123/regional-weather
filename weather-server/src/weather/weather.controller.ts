@@ -11,6 +11,7 @@ import { Sido } from './entity/sido.entity';
 import { CodeDto } from './dto/code.dto';
 import { FilterDto } from './dto/filter.dto';
 import { ScheduleWeatherService } from './schedule-weather.service';
+import { LimitDto } from './dto/limit.dto';
 
 @Controller('weather')
 export class WeatherController {
@@ -63,8 +64,8 @@ export class WeatherController {
   }
 
   @Get('all-weather')
-  async allWeather(){
-    return await this.weatherService.allWeahter()
+  async allWeather(@Query() limitDto: LimitDto){
+    return await this.weatherService.allWeahter(limitDto.limit)
   }
 
 }

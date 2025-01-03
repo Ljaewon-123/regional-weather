@@ -56,8 +56,11 @@ export class WeatherService {
     })
   }
 
-  async allWeahter(){
-    return await this.weatherRepository.find()
+  async allWeahter(limit = 100){
+    return await this.weatherRepository.find({
+      order:{ createdAt: 'DESC' },
+      take: 100,
+    })
   }
 
   async saveWeatherData(weatherData: any[]) {
