@@ -62,4 +62,9 @@ export class WeatherController {
     return await this.schService.updateWeatherQueue()
   }
 
+  @Get('all-weather')
+  async allWeather(){
+    return await this.weatherService.allWeahter()
+  }
+
 }

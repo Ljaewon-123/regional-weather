@@ -56,6 +56,10 @@ export class WeatherService {
     })
   }
 
+  async allWeahter(){
+    return await this.weatherRepository.find()
+  }
+
   async saveWeatherData(weatherData: any[]) {
     const weatherToSave = [];
   
