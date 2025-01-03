@@ -20,8 +20,8 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
   ){}
 
   async onApplicationBootstrap() {
-    this.logger.log(process.env.INSTANCE_ID)
-    console.log(ScheduleWeatherService.name + " started");
+    // this.logger.log(process.env.INSTANCE_ID)
+    // console.log(ScheduleWeatherService.name + " started");
     // 하나의 프로세스만 실행 
     if (this.isDev) {
       await this.updateJsonLocalData();

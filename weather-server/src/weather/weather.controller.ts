@@ -68,4 +68,8 @@ export class WeatherController {
     return await this.weatherService.allWeahter(limitDto.limit)
   }
 
+  @Get('new-hi')
+  newHi(){
+    return 'plz hi!'
+  }
 }
