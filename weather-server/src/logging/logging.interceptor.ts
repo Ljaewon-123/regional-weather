@@ -10,6 +10,7 @@ export class LoggingInterceptor implements NestInterceptor {
 
     const request = context.switchToHttp().getRequest();
     const response = context.switchToHttp().getResponse();
+    const { method, ip } = request;
     // const { method, url, ip, query, body } = request;
     // console.log('req:', request)
     // console.log('res:', response)
@@ -19,7 +20,12 @@ export class LoggingInterceptor implements NestInterceptor {
       .handle()
       .pipe(
         // timeout(2000),
-        tap(() => console.log(`After... ${Date.now() - now}ms`)),
+        tap(() => {
+          console.log(`After... ${Date.now() - now}ms`)
+          console.log('***********************')
+          console.log(`Method: ${method} [IP: ${ip}]`)
+          console.log('***********************')
+        }),
         catchError(err => {
           console.log('interceptor catchError!!!!')
           if (err instanceof TimeoutError) {
