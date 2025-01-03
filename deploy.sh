@@ -10,7 +10,7 @@ fi
 
 if [ "$ACTIVE_SERVER" == "server_green:3001" ]; then
   NEW_ACTIVE_SERVER="server_blue:3002"
-  NEW_CONFIG_FILE="./weather-server/nginx/nginx_blue.conf"
+  NEW_CONFIG_FILE="../nginx/nginx_blue.conf"
   SERVER_TO_START="server_blue"
   START_NAME="blue"
   STOP_NAME="green"
@@ -18,7 +18,7 @@ if [ "$ACTIVE_SERVER" == "server_green:3001" ]; then
   HEALTH_CHECK_URL="http://localhost:3002/health"
 else
   NEW_ACTIVE_SERVER="server_green:3001"
-  NEW_CONFIG_FILE="./weather-server/nginx/nginx_green.conf"
+  NEW_CONFIG_FILE="../nginx/nginx_green.conf"
   SERVER_TO_START="server_green"
   START_NAME="green"
   STOP_NAME="blue"
@@ -44,7 +44,7 @@ if [ "$HEALTH_CHECK" -eq 200 ]; then
   echo "${SERVER_TO_START} 서버가 정상적으로 실행되었습니다."
 
   # nginx 설정 파일 덮어쓰기
-  cp ${NEW_CONFIG_FILE} ./weather-server/nginx/nginx.conf
+  cp ${NEW_CONFIG_FILE} ../nginx/nginx.conf
 
   # nginx 리로드
   docker exec nginx_container nginx -s reload
