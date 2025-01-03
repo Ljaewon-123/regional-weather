@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cp weather-server/nginx/nginx_green.conf weather-server/nginx/nginx.conf
+cp ../nginx/nginx_green.conf ../nginx/nginx.conf
 
 # Green 버전 서버 빌드 및 실행
 docker-compose -f docker-compose.green.yaml build
