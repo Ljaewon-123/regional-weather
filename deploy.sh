@@ -30,7 +30,7 @@ echo "현재 활성 서버: $ACTIVE_SERVER"
 echo "새 활성 서버: $NEW_ACTIVE_SERVER"
 
 # 새 버전 서버 컨테이너 실행
-docker-compose -f docker-compose.${START_NAME}.yaml up -d ${SERVER_TO_START}
+docker-compose -f docker-compose.${START_NAME}.yaml up -d ${SERVER_TO_START} --build
 
 # 컨테이너 실행 후 잠시 대기 (예: 10초)
 echo "${SERVER_TO_START} 서버를 실행 중입니다. 잠시 기다려 주세요..."
