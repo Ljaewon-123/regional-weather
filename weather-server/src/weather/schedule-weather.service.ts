@@ -157,10 +157,13 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
       weatherObjectArray.push({ ...object, weather });
     }
 
+    await browser.close();
+
     // some db save code
     console.log("save?")
 
     await this.weatherService.saveWeatherData(weatherObjectArray)
+
 
     return weatherObjectArray
   }
