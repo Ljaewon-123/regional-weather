@@ -68,10 +68,10 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
     { 
       removeOnComplete: true, // 완료시 삭제 
       jobId: 'update' ,
-      attempts: 3,
+      attempts: 5,
       backoff: {
         type: 'exponential',
-        delay: 1000,
+        delay: 60000,
       },
       removeOnFail: true // 모든 backoff시도후에 제거 
     }
