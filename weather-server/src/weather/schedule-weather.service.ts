@@ -109,7 +109,7 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
     { headless: false, slowMo: 50, args: ['--no-sandbox'], } : 
     { 
       headless: 'shell' as const,
-      executablePath: '/usr/bin/google-chrome',
+      executablePath: '/usr/bin/google-chrome-stable',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     }
     // const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
@@ -174,7 +174,7 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
     { headless: false, slowMo: 50 } : 
     { 
       headless: 'shell' as const,
-      executablePath: '/usr/bin/google-chrome',
+      executablePath: '/usr/bin/google-chrome-stable',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
       protocolTimeout: 210000,
     }
