@@ -108,7 +108,7 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
     const launchOption = this.isDev ? 
     { headless: false, slowMo: 50, args: ['--no-sandbox'], } : 
     { 
-      headless: 'shell' as const,
+      headless: true,
       executablePath: '/usr/bin/google-chrome-stable',
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
     }
@@ -176,7 +176,7 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
     const launchOption = this.isDev ? 
     { headless: false, slowMo: 50 } : 
     { 
-      headless: 'shell' as const,
+      headless: true,
       executablePath: '/usr/bin/google-chrome-stable',
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
       protocolTimeout: 210000,
