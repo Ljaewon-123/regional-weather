@@ -133,7 +133,7 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
       const weatherObjectArray = [] as any[];
 
       for (const object of parseWeather) {
-        await page.goto(`${weatherUrl}#dong/${object.code}`, { waitUntil: "networkidle2" }); //  waitUntil: 'networkidle0 ,1 , 2?',
+        await page.goto(`${weatherUrl}#dong/${object.code}`, { timeout: 300000 }); //  waitUntil: 'networkidle0 ,1 , 2?',
         await page.waitForSelector('.dfs-slider .slide-wrap');
 
         const weather = await page.evaluate(() => {
