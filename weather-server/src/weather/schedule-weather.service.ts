@@ -122,60 +122,66 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
         '--disable-site-isolation-trials',
       ],
     }
-    // const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
-    const data = await readFile(this.rootPath + 'region.json', 'utf-8');
-    const parseWeather = JSON.parse(data)
-    const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
-    const browser = await puppeteer.launch(launchOption);
-    const page = await browser.newPage();
+    try{
+      // const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
+      const data = await readFile(this.rootPath + 'region.json', 'utf-8');
+      const parseWeather = JSON.parse(data)
+      const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
+      const browser = await puppeteer.launch(launchOption);
+      const page = await browser.newPage();
 
-    const weatherObjectArray = [] as any[];
+      const weatherObjectArray = [] as any[];
 
-    for (const object of parseWeather) {
-      await page.goto(`${weatherUrl}#dong/${object.code}`);
-      await page.waitForSelector('.dfs-slider .slide-wrap');
+      for (const object of parseWeather) {
+        await page.goto(`${weatherUrl}#dong/${object.code}`, { waitUntil: "networkidle2" }); //  waitUntil: 'networkidle0 ,1 , 2?',
+        await page.waitForSelector('.dfs-slider .slide-wrap');
 
-      const weather = await page.evaluate(() => {
-        const result = [];
-        const ulElements = document.querySelector('.dfs-slider .slide-wrap .daily .item-wrap > ul');
+        const weather = await page.evaluate(() => {
+          const result = [];
+          const ulElements = document.querySelector('.dfs-slider .slide-wrap .daily .item-wrap > ul');
+        
+          const date = ulElements.getAttribute('data-date');
+            const time = ulElements.getAttribute('data-time');
+            
+            const dailyWeather = {
+              date,
+              time,
+              weatherDetails: {}
+            };
+        
+            const listItems = ulElements.querySelectorAll('li');
+            listItems.forEach(li => {
+              const keyElement = li.querySelector('.hid');
+              const valueElement = li.querySelector('span:not(.hid)');
+              if (keyElement && valueElement) {
+                const key = keyElement.textContent.trim().replace(':', '');
+                const value = valueElement.textContent.trim() || '-';
+                dailyWeather.weatherDetails[key] = value;
+              }
+            });
+        
+            result.push(dailyWeather);
+        
+          return result;
+        });
       
-        const date = ulElements.getAttribute('data-date');
-          const time = ulElements.getAttribute('data-time');
-          
-          const dailyWeather = {
-            date,
-            time,
-            weatherDetails: {}
-          };
-      
-          const listItems = ulElements.querySelectorAll('li');
-          listItems.forEach(li => {
-            const keyElement = li.querySelector('.hid');
-            const valueElement = li.querySelector('span:not(.hid)');
-            if (keyElement && valueElement) {
-              const key = keyElement.textContent.trim().replace(':', '');
-              const value = valueElement.textContent.trim() || '-';
-              dailyWeather.weatherDetails[key] = value;
-            }
-          });
-      
-          result.push(dailyWeather);
-      
-        return result;
-      });
-    
-      weatherObjectArray.push({ ...object, weather });
+        weatherObjectArray.push({ ...object, weather });
+      }
+
+      await browser.close();
+
+      // some db save code
+      console.log("Success save weahter")
+
+      await this.weatherService.saveWeatherData(weatherObjectArray)
+
+
+      return weatherObjectArray
     }
-
-    await browser.close();
-
-    // some db save code
-    console.log("Success save weahter")
-
-    await this.weatherService.saveWeatherData(weatherObjectArray)
-
-
-    return weatherObjectArray
+    catch(e){
+      console.error(e, 'catch')
+      throw Error('puppeteer error')
+    }
   }
 
   // @Cron("0 0 0 1 1 *", {
