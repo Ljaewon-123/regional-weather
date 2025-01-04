@@ -2,7 +2,9 @@ FROM node:20.14.0 as build
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y libnss3
+RUN apt-get update && apt-get install -y \
+    libnss3 \
+    chromium-browser
 
 RUN npm install pm2 -g
 

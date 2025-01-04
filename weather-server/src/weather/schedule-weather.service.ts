@@ -125,12 +125,18 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
   //   timeZone: "Asia/Seoul"
   // })
   async saveWeather(){
-    const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
+    
+    const launchOption = this.isDev ? 
+    { headless: false, slowMo: 50 } : 
+    { 
+      headless: 'shell' as const,
+      executablePath: '/usr/bin/chromium-browser'
+    }
     // const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
     const data = await readFile(this.rootPath + 'region.json', 'utf-8');
     const parseWeather = JSON.parse(data)
     const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
-    const browser = await puppeteer.launch({ headless: "shell" as const });
+    const browser = await puppeteer.launch(launchOption);
     const page = await browser.newPage();
 
     const weatherObjectArray = [] as any[];
@@ -184,8 +190,14 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
   // })
   async locationsCollector() {
     const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
-    const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
-    const browser = await puppeteer.launch({ headless: 'shell' as const, protocolTimeout: 210000 });
+    const launchOption = this.isDev ? 
+    { headless: false, slowMo: 50 } : 
+    { 
+      headless: 'shell' as const,
+      protocolTimeout: 210000,
+      executablePath: '/usr/bin/chromium-browser'
+    }
+    const browser = await puppeteer.launch(launchOption);
     const page = await browser.newPage();
 
     await page.goto(weatherUrl);
