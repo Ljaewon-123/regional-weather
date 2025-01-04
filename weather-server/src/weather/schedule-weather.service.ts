@@ -106,11 +106,11 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
   async saveWeather(){
     
     const launchOption = this.isDev ? 
-    { headless: false, slowMo: 50, args: ['--no-sandbox'], } : 
+    { headless: false, slowMo: 50, args: ['--no-sandbox', '--disable-gpu'], } : 
     { 
       headless: true,
-      executablePath: '/usr/bin/google-chrome-stable',
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+      executablePath: '/usr/bin/google-chrome',
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
     }
     // const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
     const data = await readFile(this.rootPath + 'region.json', 'utf-8');
@@ -124,7 +124,7 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
     for (const object of parseWeather) {
       await page.goto(`${weatherUrl}#dong/${object.code}`);
       await page.waitForSelector('.dfs-slider .slide-wrap');
-      
+
       const weather = await page.evaluate(() => {
         const result = [];
         const ulElements = document.querySelector('.dfs-slider .slide-wrap .daily .item-wrap > ul');
@@ -177,7 +177,7 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
     { headless: false, slowMo: 50 } : 
     { 
       headless: true,
-      executablePath: '/usr/bin/google-chrome-stable',
+      executablePath: '/usr/bin/google-chrome',
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
       protocolTimeout: 210000,
     }
