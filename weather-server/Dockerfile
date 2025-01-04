@@ -23,6 +23,9 @@ RUN npm run build
 
 EXPOSE 3000
 
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true 
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome
+
 # CMD ["node", "dist/main"]
 # CMD ["pm2-runtime", "process.yml", "--only", "APP"]
 # process.yml ? => ecosystem.config.js
