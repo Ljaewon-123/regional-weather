@@ -12,6 +12,7 @@ import { CodeDto } from './dto/code.dto';
 import { FilterDto } from './dto/filter.dto';
 import { ScheduleWeatherService } from './schedule-weather.service';
 import { LimitDto } from './dto/limit.dto';
+import { Weather } from './entity/weather.entity';
 
 @Controller('weather')
 export class WeatherController {
@@ -29,31 +30,31 @@ export class WeatherController {
 
   @Get('locations')
   @HttpCode(HttpStatus.OK)
-  async locationsInfo(@Query() filterDto: FilterDto){
+  async locationsInfo(@Query() filterDto: FilterDto): Promise<Locations[]>{
     return await this.weatherService.locationsInfo(filterDto)
   }
 
   @Get('location')
   @HttpCode(HttpStatus.OK)
-  async locationInfo(@Query() dto: CodeDto){
+  async locationInfo(@Query() dto: CodeDto): Promise<Locations>{
     return await this.weatherService.locationInfo(dto.code)
   }
 
   @Get('sido')
   @HttpCode(HttpStatus.OK)
-  async sido(@Query() dto: CodeDto){
+  async sido(@Query() dto: CodeDto): Promise<Sido>{
     return await this.weatherService.getSido(dto.code)
   }
 
   @Get('gu')
   @HttpCode(HttpStatus.OK)
-  async gu(@Query() dto: CodeDto){
+  async gu(@Query() dto: CodeDto): Promise<GuData> {
     return await this.weatherService.getGu(dto.code)
   }
 
   @Post('gu')
   @HttpCode(HttpStatus.OK)
-  async guhi3(@Query() dto: CodeDto){
+  async guhi3(@Query() dto: CodeDto): Promise<GuData>{
     return await this.weatherService.getGu(dto.code)
   }
 
@@ -64,7 +65,7 @@ export class WeatherController {
   }
 
   @Get('all-weather')
-  async allWeather(@Query() limitDto: LimitDto){
+  async allWeather(@Query() limitDto: LimitDto): Promise<Weather[]> {
     return await this.weatherService.allWeahter(limitDto.limit)
   }
 
@@ -72,4 +73,5 @@ export class WeatherController {
   newHi(){
     return 'plz hi!'
   }
+
 }
