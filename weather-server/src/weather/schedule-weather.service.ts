@@ -110,7 +110,7 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
     { 
       headless: 'shell' as const,
       executablePath: '/usr/bin/google-chrome-stable',
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
     }
     // const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
     const data = await readFile(this.rootPath + 'region.json', 'utf-8');
@@ -160,7 +160,7 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
     await browser.close();
 
     // some db save code
-    console.log("save?")
+    console.log("Success save weahter")
 
     await this.weatherService.saveWeatherData(weatherObjectArray)
 
@@ -178,7 +178,7 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
     { 
       headless: 'shell' as const,
       executablePath: '/usr/bin/google-chrome-stable',
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
       protocolTimeout: 210000,
     }
     const browser = await puppeteer.launch(launchOption);
