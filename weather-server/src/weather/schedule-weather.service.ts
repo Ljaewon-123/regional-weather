@@ -14,6 +14,7 @@ import { Queue } from 'bullmq';
 export class ScheduleWeatherService implements OnApplicationBootstrap {
   private readonly logger = new Logger(ScheduleWeatherService.name);
   private isDev = process.env.NODE_ENV == 'dev'
+  private rootPath = __dirname +'/../../'
   constructor(
     private weatherService: WeatherService,
     @InjectQueue('schedule-queue') private scheduleQueue: Queue
@@ -38,23 +39,44 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
   //   await this.useCheckQueue.resume(); // consumer 처리 다시 시작
   // }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
-  async clusterTest(){
-    this.logger.log(process.env.INSTANCE_ID)
-    await this.scheduleQueue.add('cluster', {
-      message: 'cluster-tester'
+  // @Cron(CronExpression.EVERY_10_SECONDS)
+  // async clusterTest(){
+  //   this.logger.log(process.env.INSTANCE_ID)
+  //   await this.scheduleQueue.add('cluster', {
+  //     message: 'cluster-tester'
+  //   },
+  //   { 
+  //     removeOnComplete: true, // 완료시 삭제 
+  //     jobId: 'testid' ,
+  //     attempts: 3,
+  //     backoff: {
+  //       type: 'exponential',
+  //       delay: 1000,
+  //     },
+  //     removeOnFail: true 
+  //   }
+  //   );
+  // }
+
+  @Cron(CronExpression.EVERY_10_MINUTES, {
+    timeZone: "Asia/Seoul"
+  })
+  async test1(){
+    const job = await this.scheduleQueue.add('saveWeather', {
+      message: 'weather'
     },
     { 
       removeOnComplete: true, // 완료시 삭제 
-      jobId: 'testid' ,
+      jobId: 'update' ,
       attempts: 3,
       backoff: {
         type: 'exponential',
         delay: 1000,
       },
-      removeOnFail: true 
+      removeOnFail: true // 모든 backoff시도후에 제거 
     }
     );
+    return job
   }
 
   @Cron(CronExpression.EVERY_3_HOURS, {
@@ -105,7 +127,7 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
   async saveWeather(){
     const launchOption = this.isDev ? { headless: false, slowMo: 50 } : { headless: 'shell' as const }
     // const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
-    const data = await readFile('./region.json', 'utf-8');
+    const data = await readFile(this.rootPath + 'region.json', 'utf-8');
     const parseWeather = JSON.parse(data)
     const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
     const browser = await puppeteer.launch({ headless: "shell" as const });
