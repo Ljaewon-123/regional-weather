@@ -70,8 +70,8 @@ export class WeatherController {
   }
 
   @Get('new-hi')
-  newHi(){
-    return 'plz hi!'
+  async newHi(){
+    return await this.schService.saveWeather()
   }
 
 }

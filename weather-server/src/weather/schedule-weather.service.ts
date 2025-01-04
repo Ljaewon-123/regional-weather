@@ -58,27 +58,6 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
   //   );
   // }
 
-  @Cron(CronExpression.EVERY_10_MINUTES, {
-    timeZone: "Asia/Seoul"
-  })
-  async test1(){
-    const job = await this.scheduleQueue.add('saveWeather', {
-      message: 'weather'
-    },
-    { 
-      removeOnComplete: true, // 완료시 삭제 
-      jobId: 'update' ,
-      attempts: 3,
-      backoff: {
-        type: 'exponential',
-        delay: 1000,
-      },
-      removeOnFail: true // 모든 backoff시도후에 제거 
-    }
-    );
-    return job
-  }
-
   @Cron(CronExpression.EVERY_3_HOURS, {
     timeZone: "Asia/Seoul"
   })
@@ -127,11 +106,11 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
   async saveWeather(){
     
     const launchOption = this.isDev ? 
-    { headless: false, slowMo: 50 } : 
+    { headless: false, slowMo: 50, args: ['--no-sandbox'], } : 
     { 
       headless: 'shell' as const,
       executablePath: '/usr/bin/google-chrome',
-      args: ['--no-sandbox'],
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     }
     // const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
     const data = await readFile(this.rootPath + 'region.json', 'utf-8');
@@ -196,7 +175,7 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
     { 
       headless: 'shell' as const,
       executablePath: '/usr/bin/google-chrome',
-      args: ['--no-sandbox'],
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
       protocolTimeout: 210000,
     }
     const browser = await puppeteer.launch(launchOption);
