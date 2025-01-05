@@ -69,9 +69,14 @@ export class WeatherController {
     return await this.weatherService.allWeahter(limitDto.limit)
   }
 
-  @Get('new-hi')
-  async newHi(){
+  @Get('test-weathers')
+  async newWeathers(){
     return await this.schService.saveWeather()
+  }
+
+  @Get('test-weather')
+  async newWeather(@Query() query: any){
+    return await this.schService.weatherTest(query.head)
   }
 
 }

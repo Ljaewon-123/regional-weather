@@ -106,7 +106,7 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
   async saveWeather(){
     
     const launchOption = this.isDev ? 
-    { headless: false, slowMo: 50, args: ['--no-sandbox', '--disable-gpu'], } : 
+    { headless: "shell" as const, args: ['--disable-gpu', '--no-sandbox',] } : 
     { 
       headless: true,
       executablePath: '/usr/bin/google-chrome',
@@ -133,7 +133,7 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
       const weatherObjectArray = [] as any[];
 
       for (const object of parseWeather) {
-        await page.goto(`${weatherUrl}#dong/${object.code}`, { timeout: 300000 }); //  waitUntil: 'networkidle0 ,1 , 2?',
+        await page.goto(`${weatherUrl}#dong/${object.code}`); //  waitUntil: 'networkidle0 ,1 , 2?',
         await page.waitForSelector('.dfs-slider .slide-wrap');
 
         const weather = await page.evaluate(() => {
@@ -339,4 +339,95 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
       throw Error(error);
     }
   }
+
+
+
+  async weatherTest(head = true){
+    const launchOption = this.isDev ? 
+    { headless: "shell" as const, args: ['--disable-gpu', '--no-sandbox',] } : 
+    { 
+      headless: true,
+      executablePath: '/usr/bin/google-chrome',
+      args: [
+        '--disable-gpu',
+        '--disable-dev-shm-usage',
+        '--disable-setuid-sandbox',
+        '--no-first-run',
+        '--no-sandbox',
+        '--no-zygote',
+        '--deterministic-fetch',
+        '--disable-features=IsolateOrigins',
+        '--disable-site-isolation-trials',
+      ],
+    }
+    try{
+      const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
+      const data = await readFile(this.rootPath + 'region.json', 'utf-8');
+      // const parseWeather = JSON.parse(data)
+      const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
+      const browser = await puppeteer.launch(launchOption);
+      const page = await browser.newPage();
+
+      // Alert 창 처리를 위한 이벤트 핸들러 
+      page.on('dialog', async dialog => {
+        console.log(dialog.message()); await dialog.dismiss();
+      }) // 또는 await dialog.accept();
+
+      // await page.waitForFunction('document.styleSheets.length > 0'); // 스타일 시트가 로드될 때까지 기다림
+      // page.on('requestfailed', request => { console.log(`Request failed: ${request.url()}`); });
+
+      const weatherObjectArray = [] as any[];
+
+      for (const object of testArray) {
+        await page.goto(`${weatherUrl}#dong/${object.code}`); //  waitUntil: 'networkidle0 ,1 , 2?',
+        await page.waitForSelector('.dfs-slider .slide-wrap');
+
+        const weather = await page.evaluate(() => {
+          const result = [];
+          const ulElements = document.querySelector('.dfs-slider .slide-wrap .daily .item-wrap > ul');
+        
+          const date = ulElements.getAttribute('data-date');
+            const time = ulElements.getAttribute('data-time');
+            
+            const dailyWeather = {
+              date,
+              time,
+              weatherDetails: {}
+            };
+        
+            const listItems = ulElements.querySelectorAll('li');
+            listItems.forEach(li => {
+              const keyElement = li.querySelector('.hid');
+              const valueElement = li.querySelector('span:not(.hid)');
+              if (keyElement && valueElement) {
+                const key = keyElement.textContent.trim().replace(':', '');
+                const value = valueElement.textContent.trim() || '-';
+                dailyWeather.weatherDetails[key] = value;
+              }
+            });
+        
+            result.push(dailyWeather);
+        
+          return result;
+        });
+      
+        weatherObjectArray.push({ ...object, weather });
+      }
+
+      await browser.close();
+
+      // some db save code
+      console.log("Success save weahter")
+
+      await this.weatherService.saveWeatherData(weatherObjectArray)
+
+
+      return weatherObjectArray
+    }
+    catch(e){
+      console.error(e, 'catch')
+      throw Error('puppeteer error')
+    }
+  }
+
 }
