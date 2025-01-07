@@ -124,7 +124,7 @@ export class ScheduleWeatherService implements OnApplicationBootstrap {
     }
     try{
       // const testArray = [{"code":"5115061500","name":"강남동","lat":"37.74421","lon":"128.90561"}, {"code":"5115034000","name":"강동면","lat":"37.7254","lon":"128.95651"}]
-      const data = await readFile(this.rootPath + 'region.json', 'utf-8');
+      const data = await readFile(this.rootPath + 'daejeon.json', 'utf-8');
       const parseWeather = JSON.parse(data)
       const weatherUrl = "https://www.weather.go.kr/w/weather/forecast/short-term.do"
       const browser = await puppeteer.launch(launchOption);
