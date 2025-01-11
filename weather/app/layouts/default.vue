@@ -1,25 +1,19 @@
 <template>
-  <div>
-    <header class="flex justify-between items-center mt-5">
+  <div class="bg-white dark:bg-gray-800 dark:text-white">
+    <header class="flex justify-between items-center">
       <div>1</div>
       <div>1</div>
       <div>1</div>
       <div>1</div>
       <div>1</div>
-      
-      <!-- <ClientOnly> -->
-        <ColorModeSelector/>
-      <!-- </ClientOnly> -->
+      <div class="mr-24">
+        <!-- ClientOnly 이거를 안쓰고 Hydration해결하는 방법도 있는데 빌트인을 안쓸 이유가 따로있나??? -->
+        <ClientOnly>
+          <ThemeSelector />
+        </ClientOnly>
+      </div>
     </header>
     <slot></slot>
   </div>
 </template>
 
-<style>
-body {
-  font-family: 'Roboto';
-}
-body{
-  @apply bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300
-}
-</style>
