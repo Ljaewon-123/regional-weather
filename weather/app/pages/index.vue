@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4">
+  <div class="p-4 flex">
     <div class="max-w-sm rounded overflow-hidden shadow-lg mb-4 bg-white dark:bg-gray-900">
       <img
         class="w-full"
@@ -24,6 +24,7 @@
         <span class="badge force-light">#stayslight</span>
       </div>
     </div>
+    <NCard />
   </div>
 </template>
 
