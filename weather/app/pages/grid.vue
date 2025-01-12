@@ -26,7 +26,7 @@
 import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
 import GridItem from '~/components/GridItem.vue';
-import { render } from 'vue';
+import { render } from 'vue'; // Unlike the [h] function, the [render] function is not included in the auto-import feature.
 //import { GridStack, type GridStackNode, Utils } from 'gridstack';
 //import type { GridStackOptions, GridItemHTMLElement } from 'gridstack'
 //import type { GridStackWidget } from 'gridstack'
