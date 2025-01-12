@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div @click="clickMode = !clickMode" class="p-4 pb-2 cursor-pointer flex justify-center" style="width: 100px;">
+  <div @click="clickMode = !clickMode" class="cursor-pointer flex justify-center" style="width: 100px;">
     <span>{{ currentIcon }}</span>
 
     <div v-if="clickMode" class="absolute right-16 z-50 rounded-lg ring-1 ring-slate-900/10 shadow-lg overflow-hidden  w-36 py-1 text-sm text-slate-700 font-semibold dark:bg-gray-900 dark:ring-0 dark:highlight-white/5 dark:text-slate-300 mt-8">
