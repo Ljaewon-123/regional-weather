@@ -1,7 +1,7 @@
 <template>
   <header class="flex justify-between items-center shadow-lg px-8 p-4">
     <div>{{ 'Current Weather Icon Need' }} 🌦 Regional Weather</div>
-    <div class="flex items-center">
+    <div class="flex items-center gap-x-32">
       <NuxtLink to="/" >Main</NuxtLink>
       <NuxtLink to="grid" >Grid</NuxtLink>
     </div>
