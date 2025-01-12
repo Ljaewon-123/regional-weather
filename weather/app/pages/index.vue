@@ -24,7 +24,11 @@
         <span class="badge force-light">#stayslight</span>
       </div>
     </div>
-    <NCard />
+    <NCard >
+      <NCardTitle>
+        hi title
+      </NCardTitle>
+    </NCard>
   </div>
 </template>
 
