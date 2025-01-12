@@ -24,11 +24,19 @@
         <span class="badge force-light">#stayslight</span>
       </div>
     </div>
-    <NCard >
-      <NCardTitle>
-        hi title
-      </NCardTitle>
-    </NCard>
+    <div  class="flex flex-wrap">
+      <NCard v-for="_ in 10">
+        <NCardTitle>
+          hi title
+        </NCardTitle>
+      </NCard>
+    </div>
+    <!-- 유용 -->
+    <div class="flex flex-row">
+      <div class="basis-1/4">01</div>
+      <div class="basis-1/4">02</div>
+      <div class="basis-1/2">03</div>
+    </div>
   </div>
 </template>
 
