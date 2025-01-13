@@ -7,4 +7,8 @@ export default defineNuxtConfig({
   colorMode: {
     classSuffix: ''
   },
+  css:[
+    '~/assets/styles/style.css',
+    '~/assets/styles/demo.css'
+  ],
 })
