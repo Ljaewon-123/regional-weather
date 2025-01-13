@@ -16,8 +16,6 @@ services:
       - '3002:3000'
     environment: 
       - NODE_ENV=prod
-    volumes:
-      - /home/ec2-user/regional-weather:/app/weather-server 
     depends_on:
       - redis
     networks:
