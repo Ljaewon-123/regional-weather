@@ -1,6 +1,6 @@
 <template>
   <div >
-    <a href="./index.html">Back to All Demos</a>
+    <!-- <a href="./index.html">Back to All Demos</a> -->
     <h1>Vue3: Gridstack Controls Vue Rendering Grid Items</h1>
     <p>
       <strong>Use Vue3 render functions with GridStack.renderCB</strong><br />
@@ -30,17 +30,18 @@ import { render } from 'vue'; // Unlike the [h] function, the [render] function 
 //import { GridStack, type GridStackNode, Utils } from 'gridstack';
 //import type { GridStackOptions, GridItemHTMLElement } from 'gridstack'
 //import type { GridStackWidget } from 'gridstack'
+interface WidgetItems { id: number, x: number, y: number, w?: number, h?: number }
 
 const info = ref('');
 let grid: GridStack | null = null;
-const items: any[] = [
+const widgetItems = ref<WidgetItems[]>([
   { id: 1, x: 2, y: 1, h: 2 },
   { id: 2, x: 2, y: 4, w: 3 },
   { id: 3, x: 4, y: 2 },
   { id: 4, x: 3, y: 1, h: 2 },
   { id: 5, x: 0, y: 6, w: 2, h: 2 },
-];
-let count = ref(items.length);
+]);
+const count = ref(widgetItems.value.length);
 const shadowDom:any = {};
 
 onMounted(() => {
@@ -51,7 +52,7 @@ onMounted(() => {
   });
 
   // Listen for remove events to clean up Vue renders
-  grid.on('removed', function (event, items) {
+  grid.on('removed', function (event: any, items: any[]) {
     items.forEach((item:any) => {
       if (shadowDom[item.id]) {
         render(null, shadowDom[item.id]);
@@ -60,7 +61,7 @@ onMounted(() => {
     });
   });
 
-  GridStack.renderCB = function (el, widget) {
+  GridStack.renderCB = function (el: Element, widget: { id: any; }) {
     // el: HTMLElement div.grid-stack-item-content
     // widget: GridStackWidget
 
@@ -81,7 +82,7 @@ onMounted(() => {
     render(widgetNode, el); // Render Vue component into the GridStack-created element
   };
 
-  grid.load(items);
+  grid.load(widgetItems.value);
 });
 
 onBeforeUnmount(() => {
@@ -93,13 +94,14 @@ onBeforeUnmount(() => {
 
 function addNewWidget() {
   if(!grid) throw Error('null grid object')
-  const node = items[count.value] || {
+  const node = widgetItems.value[count.value] || {
+    id: null,
     x: Math.round(12 * Math.random()),
     y: Math.round(5 * Math.random()),
     w: Math.round(1 + 3 * Math.random()),
     h: Math.round(1 + 3 * Math.random()),
   };
-  node.id = String(count.value++);
+  node.id = count.value++
   grid.addWidget(node);
   info.value = `Widget ${node.id} added`;
 }
