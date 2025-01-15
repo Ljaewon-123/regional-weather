@@ -1,7 +1,7 @@
 <template>
   <Select v-model="select" @update:modelValue="switchLang">
     <SelectTrigger class="w-[130px] text-capitalize">
-      <SelectValue placeholder="Select a fruit" />
+      <SelectValue placeholder="Select a Language" />
     </SelectTrigger>
     <SelectContent>
       <SelectGroup>
@@ -15,7 +15,6 @@
         </SelectItem>
       </SelectGroup>
     </SelectContent>
-    <p>{{ $t('welcome') }}</p>
   </Select>
 </template>
 
@@ -31,14 +30,12 @@ import {
 
 const { setLocale } = useI18n()
 type Lang = "en" | "ko"
+const i18nLanguage = useCookie<Lang>('i18n_redirected')
 const languages: { title: string, value: Lang }[] = [
   { title: 'english', value: 'en'},
   { title: 'korean', value: 'ko'}
 ] 
-const select = ref<Lang>('en')
+const select = ref<Lang>(i18nLanguage.value)
 
 const switchLang = (lang: string) => setLocale(lang as Lang)
-// onMounted(() => {
-//   alert(JSON.stringify(useCookieLocale()))
-// })
 </script>
