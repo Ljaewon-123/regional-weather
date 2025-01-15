@@ -36,12 +36,22 @@
       <div class="basis-1/4">01</div>
       <div class="basis-1/4">02</div>
       <div class="basis-1/2">03</div>
+      <div>
+        <p>programmatically local pages</p>
+        <Button variant="destructive" @click="onClick">Locale router</Button>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-
+const localeRoute = useLocaleRoute()
+function onClick() {
+  const route = localeRoute({ name: 'grid', query: { foo: '1' } })
+  if (route) {
+    return navigateTo(route.fullPath)
+  }
+}
 </script>
 
 <style scoped lang="postcss">

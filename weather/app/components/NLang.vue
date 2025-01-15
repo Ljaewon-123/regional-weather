@@ -38,5 +38,7 @@ const languages: { title: string, value: Lang }[] = [
 const select = ref<Lang>('en')
 
 const switchLang = (lang: string) => setLocale(lang as Lang)
-
+// onMounted(() => {
+//   alert(JSON.stringify(useCookieLocale()))
+// })
 </script>

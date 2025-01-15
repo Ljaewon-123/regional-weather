@@ -2,9 +2,9 @@
   <header class="flex justify-between items-center shadow-lg px-8 p-4">
     <div>{{ 'Current Weather Icon Need' }} 🌦 Regional Weather</div>
     <div class="flex items-center gap-x-32">
-      <NuxtLink to="/" >Main</NuxtLink>
-      <NuxtLink to="grid" >Grid</NuxtLink>
-      <NuxtLink to="test" >Test</NuxtLink>
+      <NuxtLink :to="localePath('/')" >Main</NuxtLink>
+      <NuxtLink :to="localePath('grid')" >Grid</NuxtLink>
+      <NuxtLink :to="localePath('test')" >Test</NuxtLink>
     </div>
     <NLang/>
     <div>
@@ -17,3 +17,7 @@
 </template>
 
 <!-- /* ☁⛅⛈🌤🌥🌦🌧🌨🌩🌪🌫 */ -->
+
+<script setup lang="ts">
+const localePath = useLocalePath()
+</script>
