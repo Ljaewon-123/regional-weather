@@ -1,5 +1,5 @@
 <template>
-  <header class="flex justify-between items-center shadow-lg px-8 p-4">
+  <header class="flex justify-between items-center px-8 p-2 sticky z-40 top-0 bg-background/80 backdrop-blur-lg border-b border-border">
     <div>{{ 'Current Weather Icon Need' }} 🌦 Regional Weather</div>
     <div class="flex items-center gap-x-32">
       <NuxtLink :to="localePath('/')" >Main</NuxtLink>
