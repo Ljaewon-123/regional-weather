@@ -6,6 +6,7 @@
       <NuxtLink to="grid" >Grid</NuxtLink>
       <NuxtLink to="test" >Test</NuxtLink>
     </div>
+    <NLang/>
     <div>
       <!-- client component 이거를 안쓰고 Hydration해결하는 방법도 있는데 빌트인을 안쓸 이유가 따로있나??? -->
       <!-- <ClientOnly> -->
