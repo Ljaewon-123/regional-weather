@@ -2,7 +2,7 @@
 <!-- 매번 전자를 사용했으니 이번엔 후자로 한번 사용해봄 -->
 <template>
   <Select v-model="select">
-    <SelectTrigger class="text-capitalize" :class="`w-[${props.width}px]`">
+    <SelectTrigger class="text-capitalize">
       <SelectValue :placeholder="props.placeholder" />
     </SelectTrigger>
     <SelectContent>
@@ -25,15 +25,11 @@
 
 <script setup lang="ts">
 // um... generic script?
-const select = defineModel({ default: undefined })
+const select = defineModel<string>()
 const props = defineProps({
   placeholder: {
     type: String,
     default: "Select a Item"
-  },
-  width: {
-    type: Number,
-    default: 80
   }
 })
 const defaultItems = [
