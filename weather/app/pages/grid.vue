@@ -51,7 +51,7 @@ onMounted(() => {
   });
 
   // Listen for remove events to clean up Vue renders
-  grid.on('removed', function (event, items) {
+  grid.on('removed', function (event: any, items: any[]) {
     items.forEach((item:any) => {
       if (shadowDom[item.id]) {
         render(null, shadowDom[item.id]);
@@ -60,7 +60,7 @@ onMounted(() => {
     });
   });
 
-  GridStack.renderCB = function (el, widget) {
+  GridStack.renderCB = function (el: Element, widget: { id: any; }) {
     // el: HTMLElement div.grid-stack-item-content
     // widget: GridStackWidget
 
