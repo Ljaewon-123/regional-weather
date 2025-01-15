@@ -1,25 +1,18 @@
 <template>
-  <Select>
-    <SelectTrigger class="w-[180px]">
+  <Select v-model="select">
+    <SelectTrigger class="w-[130px] text-capitalize">
       <SelectValue placeholder="Select a fruit" />
     </SelectTrigger>
     <SelectContent>
       <SelectGroup>
-        <SelectLabel>Fruits</SelectLabel>
-        <SelectItem value="apple">
-          Apple
-        </SelectItem>
-        <SelectItem value="banana">
-          Banana
-        </SelectItem>
-        <SelectItem value="blueberry">
-          Blueberry
-        </SelectItem>
-        <SelectItem value="grapes">
-          Grapes
-        </SelectItem>
-        <SelectItem value="pineapple">
-          Pineapple
+        <SelectLabel>Languages</SelectLabel>
+        <SelectItem 
+          v-for="lang in languages" 
+          :key="lang.value" 
+          :value="lang.value" 
+          class="text-capitalize"
+        >
+          {{ lang.title }}
         </SelectItem>
       </SelectGroup>
     </SelectContent>
@@ -37,4 +30,10 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
+type Lang = "en" | "ko"
+const languages: { title: string, value: Lang }[] = [
+  { title: 'english', value: 'en'},
+  { title: 'korean', value: 'ko'}
+] 
+const select = ref<Lang>('en')
 </script>
