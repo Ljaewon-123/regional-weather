@@ -1,10 +1,7 @@
 <template>
-  <div class="p-4">
+  <div class="p-4 flex flex-col gap-3"> 
     <div class="flex items-center gap-3">
       <p>Location</p>
-      <div>
-        {{ data }}
-      </div>
       <Select >
         <SelectTrigger class="w-[180px] text-capitalize">
           <SelectValue placeholder="Select a Location" />
@@ -22,11 +19,10 @@
         </SelectContent>
       </Select>
     </div>
-    {{ error }}
-    <br>
-    {{ error?.data }}
-    <Button @click="testShowThrow">Throw show</Button>
-    <Button @click="testCreateThrow">Throw create</Button>
+    <div>
+      <Button @click="testShowThrow">Throw show</Button>
+      <Button @click="testCreateThrow">Throw create</Button>
+    </div>
   </div>
 </template>
 
