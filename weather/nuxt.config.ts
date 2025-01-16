@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     'shadcn-nuxt',
     '@nuxtjs/i18n',
+    '@vueuse/nuxt',
   ],
   runtimeConfig:{
     apiBase: process.env.BASE_URL
