@@ -9,6 +9,9 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@nuxtjs/i18n',
   ],
+  runtimeConfig:{
+    apiBase: process.env.BASE_URL
+  },
   colorMode: {
     classSuffix: ''
   },

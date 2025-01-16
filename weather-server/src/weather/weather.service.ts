@@ -1,8 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
-import puppeteer from 'puppeteer';
 import { Locations } from './entity/location.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Weather } from './entity/weather.entity';
 import { Sido } from './entity/sido.entity';
@@ -24,11 +22,8 @@ export class WeatherService {
   ){}
 
   async locationsInfo(filter?: { [key: string]: any }) {
-    if (filter) {
-      return await this.locationsRepository.find({ where: filter });
-    } 
-
-    return await this.locationsRepository.find();
+    if (filter?.code) filter.code = ILike(`${filter.code}%`);
+    return await this.locationsRepository.find({ where: filter || {} });
   }
 
   async locationInfo(code: string){
