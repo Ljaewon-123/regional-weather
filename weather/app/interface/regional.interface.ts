@@ -1,4 +1,4 @@
-interface Location {
+export interface Regional {
   id: number
   code: string
   name: string

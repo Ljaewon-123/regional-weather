@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event)
   try{
-    return await $fetch<Location[]>(config.apiBase + '/weather/locations', { method: 'get', })
+    return await $fetch<Regional[]>(config.apiBase + '/weather/locations', { method: 'get', })
   }
   catch(e){
     console.error(e)

@@ -3,19 +3,19 @@
     <div class="flex items-center gap-3">
       <p>Location</p>
       <div>
-        <UseTemplate>
+        <!-- <UseTemplate>
           <Command>
             <CommandInput placeholder="Filter status..." />
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup>
                 <CommandItem
-                  v-for="status of statuses"
-                  :key="status.value"
-                  :value="status.value"
-                  @select="onStatusSelect(status)"
+                  v-for="location of allUseLocations"
+                  :key="location.id"
+                  :value="location.name"
+                  @select="onStatusSelect(location)"
                 >
-                  {{ status.label }}
+                  {{ allUseLocations }}
                 </CommandItem>
               </CommandGroup>
             </CommandList>
@@ -44,7 +44,7 @@
               <StatusList />
             </div>
           </DrawerContent>
-        </Drawer>
+        </Drawer> -->
       </div>
     </div>
     <div>
@@ -55,8 +55,10 @@
 </template>
 
 <script setup lang="ts">
+import type { Regional } from '~/interface/regional.interface'
 
-const { data, error } = await useFetch('/api/locations')
+
+const { data: allUseLocations, error } = await useFetch('/api/locations')
 
 const testShowThrow = () => {
   throw showError({
@@ -86,42 +88,13 @@ function onClick() {
 /**
 * example
 */
-
-interface Status {
-  value: string
-  label: string
-}
-
-const statuses: Status[] = [
-  {
-    value: 'backlog',
-    label: 'Backlog',
-  },
-  {
-    value: 'todo',
-    label: 'Todo',
-  },
-  {
-    value: 'in progress',
-    label: 'In Progress',
-  },
-  {
-    value: 'done',
-    label: 'Done',
-  },
-  {
-    value: 'canceled',
-    label: 'Canceled',
-  },
-]
-
 const [UseTemplate, StatusList] = createReusableTemplate()
 const isDesktop = useMediaQuery('(min-width: 768px)')
 
 const isOpen = ref(false)
-const selectedStatus = ref<Status | null>(null)
+const selectedStatus = ref<Regional | null>(null)
 
-function onStatusSelect(status: Status) {
+function onStatusSelect(status: Regional) {
   selectedStatus.value = status
   isOpen.value = false
 }
