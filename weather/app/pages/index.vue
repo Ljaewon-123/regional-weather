@@ -3,7 +3,7 @@
     <div class="flex items-center gap-3">
       <p>Location</p>
       <div>
-        <!-- <UseTemplate>
+        <UseTemplate>
           <Command>
             <CommandInput placeholder="Filter status..." />
             <CommandList>
@@ -15,7 +15,7 @@
                   :value="location.name"
                   @select="onStatusSelect(location)"
                 >
-                  {{ allUseLocations }}
+                  {{ location.name }}
                 </CommandItem>
               </CommandGroup>
             </CommandList>
@@ -25,7 +25,7 @@
         <Popover v-if="isDesktop" v-model:open="isOpen">
           <PopoverTrigger as-child>
             <Button variant="outline" class="w-[150px] justify-start">
-              {{ selectedStatus ? selectedStatus.label : "+ Set status" }}
+              {{ selectedStatus ? selectedStatus.name : "+ Set location" }}
             </Button>
           </PopoverTrigger>
           <PopoverContent class="w-[200px] p-0" align="start">
@@ -36,7 +36,7 @@
         <Drawer v-else :open="isOpen" @update:open="(newOpenValue) => isOpen = newOpenValue">
           <DrawerTrigger as-child>
             <Button variant="outline" class="w-[150px] justify-start">
-              {{ selectedStatus ? selectedStatus.label : "+ Set status" }}
+              {{ selectedStatus ? selectedStatus.name : "+ Set location" }}
             </Button>
           </DrawerTrigger>
           <DrawerContent>
@@ -44,7 +44,7 @@
               <StatusList />
             </div>
           </DrawerContent>
-        </Drawer> -->
+        </Drawer>
       </div>
     </div>
     <div>
@@ -58,7 +58,7 @@
 import type { Regional } from '~/interface/regional.interface'
 
 
-const { data: allUseLocations, error } = await useFetch('/api/locations')
+const { data: allUseLocations, error } = await useFetch<Regional[]>('/api/locations')
 
 const testShowThrow = () => {
   throw showError({
@@ -94,8 +94,8 @@ const isDesktop = useMediaQuery('(min-width: 768px)')
 const isOpen = ref(false)
 const selectedStatus = ref<Regional | null>(null)
 
-function onStatusSelect(status: Regional) {
-  selectedStatus.value = status
+function onStatusSelect(regional: Regional) {
+  selectedStatus.value = regional
   isOpen.value = false
 }
 </script>
