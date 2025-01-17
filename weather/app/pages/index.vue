@@ -8,9 +8,13 @@
             <CommandInput placeholder="Filter status..." />
             <CommandList>
               <CommandEmpty>No results found.</CommandEmpty>
-              <CommandGroup>
+              <CommandGroup 
+                v-for="guData of allUseLocations"
+                :key="guData.id"
+                :heading="guData.name"
+              >
                 <CommandItem
-                  v-for="location of allUseLocations"
+                  v-for="location of guData.locations"
                   :key="location.id"
                   :value="location.name"
                   @select="onStatusSelect(location)"
@@ -25,7 +29,7 @@
         <Popover v-if="isDesktop" v-model:open="isOpen">
           <PopoverTrigger as-child>
             <Button variant="outline" class="w-[150px] justify-start">
-              {{ selectedStatus ? selectedStatus.name : "+ Set location" }}
+              {{ selectedLocation ? selectedLocation.name : "+ Set location" }}
             </Button>
           </PopoverTrigger>
           <PopoverContent class="w-[200px] p-0" align="start">
@@ -36,7 +40,7 @@
         <Drawer v-else :open="isOpen" @update:open="(newOpenValue) => isOpen = newOpenValue">
           <DrawerTrigger as-child>
             <Button variant="outline" class="w-[150px] justify-start">
-              {{ selectedStatus ? selectedStatus.name : "+ Set location" }}
+              {{ selectedLocation ? selectedLocation.name : "+ Set location" }}
             </Button>
           </DrawerTrigger>
           <DrawerContent>
@@ -55,10 +59,10 @@
 </template>
 
 <script setup lang="ts">
-import type { Regional } from '~/interface/regional.interface'
+import type { Gus, Regional } from '~/interface/regional.interface'
 
 
-const { data: allUseLocations, error } = await useFetch<Regional[]>('/api/locations')
+const { data: allUseLocations, error } = await useFetch<Gus[]>('/api/locations')
 
 const testShowThrow = () => {
   throw showError({
@@ -92,10 +96,10 @@ const [UseTemplate, StatusList] = createReusableTemplate()
 const isDesktop = useMediaQuery('(min-width: 768px)')
 
 const isOpen = ref(false)
-const selectedStatus = ref<Regional | null>(null)
+const selectedLocation = ref<Regional | null>(null)
 
 function onStatusSelect(regional: Regional) {
-  selectedStatus.value = regional
+  selectedLocation.value = regional
   isOpen.value = false
 }
 </script>
