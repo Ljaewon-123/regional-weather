@@ -40,21 +40,6 @@ function onClick() {
   }
 }
 
-
-
-/**
-* example
-*/
-const [UseTemplate, StatusList] = createReusableTemplate()
-const isDesktop = useMediaQuery('(min-width: 768px)')
-
-const isOpen = ref(false)
-const selectedLocation = ref<Regional | null>(null)
-
-function onStatusSelect(regional: Regional) {
-  selectedLocation.value = regional
-  isOpen.value = false
-}
 </script>
 
 <style scoped lang="postcss">
