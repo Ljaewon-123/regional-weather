@@ -2,54 +2,7 @@
   <div class="p-4 flex flex-col gap-3"> 
     <div class="flex items-center gap-3">
       <p>Location</p>
-      <div>
-        <UseTemplate>
-          <Command>
-            <CommandInput placeholder="Filter status..." />
-            <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
-              <CommandGroup 
-                v-for="guData of allUseLocations"
-                :key="guData.id"
-                :heading="guData.name"
-              >
-                <CommandItem
-                  v-for="location of guData.locations"
-                  :key="location.id"
-                  :value="location.name"
-                  @select="onStatusSelect(location)"
-                >
-                  {{ location.name }}
-                </CommandItem>
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </UseTemplate>
-
-        <Popover v-if="isDesktop" v-model:open="isOpen">
-          <PopoverTrigger as-child>
-            <Button variant="outline" class="w-[150px] justify-start">
-              {{ selectedLocation ? selectedLocation.name : "+ Set location" }}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent class="w-[200px] p-0" align="start">
-            <StatusList />
-          </PopoverContent>
-        </Popover>
-
-        <Drawer v-else :open="isOpen" @update:open="(newOpenValue) => isOpen = newOpenValue">
-          <DrawerTrigger as-child>
-            <Button variant="outline" class="w-[150px] justify-start">
-              {{ selectedLocation ? selectedLocation.name : "+ Set location" }}
-            </Button>
-          </DrawerTrigger>
-          <DrawerContent>
-            <div class="mt-4 border-t">
-              <StatusList />
-            </div>
-          </DrawerContent>
-        </Drawer>
-      </div>
+      <NLocations :all-user-locations="allUseLocations" />
     </div>
     <div>
       <Button @click="testShowThrow">Throw show</Button>
