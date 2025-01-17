@@ -5,14 +5,14 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
-  itemId: {
-    type: [String, Number],
-    required: true,
-  },
-});
+const props = defineProps<{
+  itemId: string | number
+}>()
 
-const emit = defineEmits(['remove']);
+const emit = defineEmits<{
+  remove: [void]
+}>()
+
 const { itemId } = toRefs(props);
 
 onBeforeUnmount(() => {
