@@ -2,7 +2,7 @@ export default defineEventHandler(async (event) => {
   const DAEJEONCODE = "30"
   const config = useRuntimeConfig(event)
   try{
-    return await $fetch<Regional[]>(config.apiBase + '/weather/locations', { 
+    return await $fetch<Gus[]>(config.apiBase + '/weather/gus', { 
       method: 'get', 
       query: {
         code: DAEJEONCODE
