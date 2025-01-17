@@ -50,6 +50,14 @@ export class WeatherService {
       } 
     })
   }
+  
+  async getGus(code: string){
+    return await this.guDataRepo.find({ 
+      where: {
+        code: ILike(`${code}%`)
+      } 
+    })
+  }
 
   async allWeahter(limit = 100){
     return await this.weatherRepository.find({

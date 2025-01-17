@@ -52,10 +52,10 @@ export class WeatherController {
     return await this.weatherService.getGu(dto.code)
   }
 
-  @Post('gu')
+  @Get('gus')
   @HttpCode(HttpStatus.OK)
-  async guhi3(@Query() dto: CodeDto): Promise<GuData>{
-    return await this.weatherService.getGu(dto.code)
+  async gus(@Query() dto: CodeDto): Promise<GuData[]>{
+    return await this.weatherService.getGus(dto.code)
   }
 
   // 흠...날씨데이터는 front진행이 되어야 하기쉬울듯
