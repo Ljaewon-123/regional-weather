@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query } from '@nestjs/common';
 import puppeteer, { Page } from 'puppeteer';
 import * as fs from 'fs';
 import { readFile } from 'fs/promises';
@@ -76,18 +76,18 @@ export class WeatherController {
   }
 
   // 그럼 일단 하나의 동(location)에서 온도를 가공 
-  @Get('average')
-  async average(@Query() dateRangeDto: DateRangeDtoWithLocationIds){
+  @Post('average')
+  async averagepost(@Body() dateRangeDto: DateRangeDtoWithLocationIds){
     return await this.weatherService.weatherAverage(dateRangeDto)
   }
 
-  @Get('median')
-  async median(@Query() dateRangeDto: DateRangeDtoWithLocationIds){
+  @Post('median')
+  async median(@Body() dateRangeDto: DateRangeDtoWithLocationIds){
     return await this.weatherService.getMedianWeatherData(dateRangeDto)
   }
 
-  @Get('max')
-  async max(@Query() dateRangeDto: DateRangeDtoWithLocationIds){
+  @Post('max')
+  async max(@Body() dateRangeDto: DateRangeDtoWithLocationIds){
     return await this.weatherService.getMaxWeatherData(dateRangeDto)
   }
 
