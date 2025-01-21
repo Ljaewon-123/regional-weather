@@ -35,6 +35,7 @@ export class WeatherService {
         .getRawOne()
   }
 
+  // 중위값 
   async getMedianWeatherData(dateRangeDto: DateRangeDtoWithLocationIds) {
     const {locationIds, startDate, endDate} = dateRangeDto
 
@@ -47,6 +48,7 @@ export class WeatherService {
         .getRawOne();
   }
 
+  // 최대값 
   async getMaxWeatherData(dateRangeDto: DateRangeDtoWithLocationIds) {
     const {locationIds, startDate, endDate} = dateRangeDto
 

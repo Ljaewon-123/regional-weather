@@ -76,9 +76,19 @@ export class WeatherController {
   }
 
   // 그럼 일단 하나의 동(location)에서 온도를 가공 
-  @Get()
-  async weather(@Query() dateRangeDto: DateRangeDtoWithLocationIds){
+  @Get('average')
+  async average(@Query() dateRangeDto: DateRangeDtoWithLocationIds){
     return await this.weatherService.weatherAverage(dateRangeDto)
+  }
+
+  @Get('median')
+  async median(@Query() dateRangeDto: DateRangeDtoWithLocationIds){
+    return await this.weatherService.getMedianWeatherData(dateRangeDto)
+  }
+
+  @Get('max')
+  async max(@Query() dateRangeDto: DateRangeDtoWithLocationIds){
+    return await this.weatherService.getMaxWeatherData(dateRangeDto)
   }
 
 }
