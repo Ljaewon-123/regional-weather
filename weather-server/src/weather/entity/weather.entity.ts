@@ -6,7 +6,7 @@ export class Weather {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Locations, { eager: true })
+  @ManyToOne(() => Locations)
   @JoinColumn({ name: 'locationId' })
   location: Locations;
 

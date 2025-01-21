@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Weather } from './entity/weather.entity';
 import { Sido } from './entity/sido.entity';
 import { GuData } from './entity/gu-data.entity';
+import { DateRangeDto, DateRangeDtoWithCode } from './dto/date-range.dto';
 
 @Injectable()
 export class WeatherService {
@@ -20,6 +21,22 @@ export class WeatherService {
     @InjectRepository(GuData)
     private guDataRepo: Repository<GuData>,
   ){}
+
+  // 기간내에 각 평균 or 중위값 구하는 쿼리 
+  async weatherAverage(dateRangeDto: DateRangeDtoWithCode){
+    
+    // this.weatherRepository.createQueryBuilder("weather")
+    // .select("AVG(weather.temperature)", "avgTemperature")
+    // .addSelect("AVG(weather.perceivedTemperature)", "avgPerceivedTemperature")
+    // .addSelect("AVG(weather.humidity)", "avgHumidity")
+    // .addSelect("AVG(weather.precipitation)", "avgPrecipitation")
+    // .addSelect("AVG(weather.precipitationProbability)", "avgPrecipitationProbability")
+    // .addSelect("AVG(weather.wind)", "avgWind")
+    // .addSelect("AVG(weather.snowfallIntensity)", "avgSnowfallIntensity")
+    // .where("weather.locationId = :locationId", { locationId })
+    // .andWhere("weather.date BETWEEN :startDate AND :endDate", { dateRangeDto.startDate, dateRangeDto.endDate })
+    // .getRawOne();
+  }
 
   async locationsInfo(filter?: { [key: string]: any }) {
     if (filter?.code) filter.code = ILike(`${filter.code}%`);
