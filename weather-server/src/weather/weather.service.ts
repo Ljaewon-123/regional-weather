@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Weather } from './entity/weather.entity';
 import { Sido } from './entity/sido.entity';
 import { GuData } from './entity/gu-data.entity';
+import { DateRangeDto, DateRangeDtoWithLocationIds } from './dto/date-range.dto';
 
 @Injectable()
 export class WeatherService {
@@ -20,6 +21,46 @@ export class WeatherService {
     @InjectRepository(GuData)
     private guDataRepo: Repository<GuData>,
   ){}
+
+  // 기간내에 각 평균 or 중위값 구하는 쿼리 
+  async weatherAverage(dateRangeDto: DateRangeDtoWithLocationIds){
+    const {locationIds, startDate, endDate} = dateRangeDto
+
+    return await this.weatherRepository.createQueryBuilder("weather")
+        .select("AVG(weather.perceived_temperature)", "avgPerceivedTemperature")
+        .addSelect("AVG(weather.precipitation)", "avgPrecipitation")
+        .addSelect("AVG(weather.humidity)", "avgHumidity")
+        .where("weather.location_id IN (:...locationIds)", { locationIds })
+        .andWhere("weather.created_at BETWEEN :startDate AND :endDate", { startDate, endDate })
+        .getRawOne();
+  }
+
+  // 중위값 
+  async getMedianWeatherData(dateRangeDto: DateRangeDtoWithLocationIds) {
+    const {locationIds, startDate, endDate} = dateRangeDto
+
+    return await this.weatherRepository.createQueryBuilder("weather")
+        .select("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.perceive_temperature) AS medianPerceivedTemperature")
+        .addSelect("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.precipitation) AS medianPrecipitation")
+        .addSelect("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.humidity) AS medianHumidity")
+        .where("weather.location_id IN (:...locationIds)", { locationIds })
+        .andWhere("weather.create_at BETWEEN :startDate AND :endDate", { startDate, endDate })
+        .getRawOne();
+  }
+
+  // 최대값 
+  async getMaxWeatherData(dateRangeDto: DateRangeDtoWithLocationIds) {
+    const {locationIds, startDate, endDate} = dateRangeDto
+
+    return await this.weatherRepository.createQueryBuilder("weather")
+        .select("MAX(weather.perceived_temperature)", "maxPerceivedTemperature")
+        .addSelect("MAX(weather.precipitation)", "maxPrecipitation")
+        .addSelect("MAX(weather.humidity)", "maxHumidity")
+        .where("weather.location_id IN (:...locationIds)", { locationIds })
+        .andWhere("weather.create_at BETWEEN :startDate AND :endDate", { startDate, endDate })
+        .getRawOne()
+  }
+
 
   async locationsInfo(filter?: { [key: string]: any }) {
     if (filter?.code) filter.code = ILike(`${filter.code}%`);
@@ -62,7 +103,7 @@ export class WeatherService {
   async allWeahter(limit = 100){
     return await this.weatherRepository.find({
       order:{ createdAt: 'DESC' },
-      take: 100,
+      take: limit,
     })
   }
 

@@ -7,7 +7,7 @@ export class Weather {
   id: number;
 
   @ManyToOne(() => Locations, { eager: true })
-  @JoinColumn({ name: 'locationId' })
+  @JoinColumn({ name: 'location_id' })
   location: Locations;
 
   @Column()  // 날짜

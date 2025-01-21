@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Query } from '@nestjs/common';
 import puppeteer, { Page } from 'puppeteer';
 import * as fs from 'fs';
 import { readFile } from 'fs/promises';
@@ -13,6 +13,7 @@ import { FilterDto } from './dto/filter.dto';
 import { ScheduleWeatherService } from './schedule-weather.service';
 import { LimitDto } from './dto/limit.dto';
 import { Weather } from './entity/weather.entity';
+import { DateRangeDto, DateRangeDtoWithLocationIds } from './dto/date-range.dto';
 
 @Controller('weather')
 export class WeatherController {
@@ -74,9 +75,51 @@ export class WeatherController {
     return await this.schService.saveWeather()
   }
 
-  @Get('test-weather')
-  async newWeather(@Query() query: any){
-    return await this.schService.weatherTest(query.head)
+  // 그럼 일단 하나의 동(location)에서 온도를 가공 
+  @Post('average')
+  async averagepost(@Body() dateRangeDto: DateRangeDtoWithLocationIds){
+    return await this.weatherService.weatherAverage(dateRangeDto)
+  }
+
+  @Post('median')
+  async median(@Body() dateRangeDto: DateRangeDtoWithLocationIds){
+    return await this.weatherService.getMedianWeatherData(dateRangeDto)
+  }
+
+  @Post('max')
+  async max(@Body() dateRangeDto: DateRangeDtoWithLocationIds){
+    return await this.weatherService.getMaxWeatherData(dateRangeDto)
   }
 
 }
+
+
+/**
+ * 
+ * 
+시도는 대전만 하니까 일단 뺄까 
+구 , 동 별 기간, 각 날씨 데이터의 평균, 중위값 정도면 될려나
+서로 다른 구, 시 중 가장 높은 강수량 온도 정도
+집계해야 할 데이터
+기간별 평균 및 중위값:
+
+평균 온도
+
+평균 체감온도
+
+평균 습도
+
+평균 강수량
+
+평균 강수확률
+
+평균 바람 속도
+
+평균 적설강도
+
+가장 높은 값:
+
+최대 온도
+
+최대 강수량
+ */
