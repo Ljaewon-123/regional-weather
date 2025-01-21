@@ -13,6 +13,7 @@ import { FilterDto } from './dto/filter.dto';
 import { ScheduleWeatherService } from './schedule-weather.service';
 import { LimitDto } from './dto/limit.dto';
 import { Weather } from './entity/weather.entity';
+import { DateRangeDto, DateRangeDtoWithLocationIds } from './dto/date-range.dto';
 
 @Controller('weather')
 export class WeatherController {
@@ -69,8 +70,16 @@ export class WeatherController {
     return await this.weatherService.allWeahter(limitDto.limit)
   }
 
-  @Get('')
-  async 
+  @Get('test-weathers')
+  async newWeathers(){
+    return await this.schService.saveWeather()
+  }
+
+  // 그럼 일단 하나의 동(location)에서 온도를 가공 
+  @Get()
+  async weather(@Query() dateRangeDto: DateRangeDtoWithLocationIds){
+    return await this.weatherService.weatherAverage(dateRangeDto)
+  }
 
 }
 
@@ -78,7 +87,8 @@ export class WeatherController {
 /**
  * 
  * 
-각 시, 구 , 동 별 기간, 각 날씨 데이터의 평균, 중위값 정도면 될려나
+시도는 대전만 하니까 일단 뺄까 
+구 , 동 별 기간, 각 날씨 데이터의 평균, 중위값 정도면 될려나
 서로 다른 구, 시 중 가장 높은 강수량 온도 정도
 집계해야 할 데이터
 기간별 평균 및 중위값:

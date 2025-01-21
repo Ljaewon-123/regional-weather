@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Weather } from './entity/weather.entity';
 import { Sido } from './entity/sido.entity';
 import { GuData } from './entity/gu-data.entity';
-import { DateRangeDto, DateRangeDtoWithCode } from './dto/date-range.dto';
+import { DateRangeDto, DateRangeDtoWithLocationIds } from './dto/date-range.dto';
 
 @Injectable()
 export class WeatherService {
@@ -23,20 +23,42 @@ export class WeatherService {
   ){}
 
   // 기간내에 각 평균 or 중위값 구하는 쿼리 
-  async weatherAverage(dateRangeDto: DateRangeDtoWithCode){
-    
-    // this.weatherRepository.createQueryBuilder("weather")
-    // .select("AVG(weather.temperature)", "avgTemperature")
-    // .addSelect("AVG(weather.perceivedTemperature)", "avgPerceivedTemperature")
-    // .addSelect("AVG(weather.humidity)", "avgHumidity")
-    // .addSelect("AVG(weather.precipitation)", "avgPrecipitation")
-    // .addSelect("AVG(weather.precipitationProbability)", "avgPrecipitationProbability")
-    // .addSelect("AVG(weather.wind)", "avgWind")
-    // .addSelect("AVG(weather.snowfallIntensity)", "avgSnowfallIntensity")
-    // .where("weather.locationId = :locationId", { locationId })
-    // .andWhere("weather.date BETWEEN :startDate AND :endDate", { dateRangeDto.startDate, dateRangeDto.endDate })
-    // .getRawOne();
+  async weatherAverage(dateRangeDto: DateRangeDtoWithLocationIds){
+    const {locationIds, startDate, endDate} = dateRangeDto
+
+    return await this.weatherRepository.createQueryBuilder("weather")
+        .select("AVG(weather.perceivedTemperature)", "avgPerceivedTemperature")
+        .addSelect("AVG(weather.precipitation)", "avgPrecipitation")
+        .addSelect("AVG(weather.humidity)", "avgHumidity")
+        .where("weather.locationId IN (:...locationIds)", { locationIds })
+        .andWhere("weather.date BETWEEN :startDate AND :endDate", { startDate, endDate })
+        .getRawOne()
   }
+
+  async getMedianWeatherData(dateRangeDto: DateRangeDtoWithLocationIds) {
+    const {locationIds, startDate, endDate} = dateRangeDto
+
+    return await this.weatherRepository.createQueryBuilder("weather")
+        .select("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.perceivedTemperature) AS medianPerceivedTemperature")
+        .addSelect("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.precipitation) AS medianPrecipitation")
+        .addSelect("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.humidity) AS medianHumidity")
+        .where("weather.locationId IN (:...locationIds)", { locationIds })
+        .andWhere("weather.date BETWEEN :startDate AND :endDate", { startDate, endDate })
+        .getRawOne();
+  }
+
+  async getMaxWeatherData(dateRangeDto: DateRangeDtoWithLocationIds) {
+    const {locationIds, startDate, endDate} = dateRangeDto
+
+    return await this.weatherRepository.createQueryBuilder("weather")
+        .select("MAX(weather.perceivedTemperature)", "maxPerceivedTemperature")
+        .addSelect("MAX(weather.precipitation)", "maxPrecipitation")
+        .addSelect("MAX(weather.humidity)", "maxHumidity")
+        .where("weather.locationId IN (:...locationIds)", { locationIds })
+        .andWhere("weather.date BETWEEN :startDate AND :endDate", { startDate, endDate })
+        .getRawOne()
+  }
+
 
   async locationsInfo(filter?: { [key: string]: any }) {
     if (filter?.code) filter.code = ILike(`${filter.code}%`);
@@ -79,7 +101,7 @@ export class WeatherService {
   async allWeahter(limit = 100){
     return await this.weatherRepository.find({
       order:{ createdAt: 'DESC' },
-      take: 100,
+      take: limit,
     })
   }
 
