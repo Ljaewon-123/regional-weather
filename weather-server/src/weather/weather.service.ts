@@ -27,12 +27,12 @@ export class WeatherService {
     const {locationIds, startDate, endDate} = dateRangeDto
 
     return await this.weatherRepository.createQueryBuilder("weather")
-        .select("AVG(weather.perceivedTemperature)", "avgPerceivedTemperature")
+        .select("AVG(weather.perceived_temperature)", "avgPerceivedTemperature")
         .addSelect("AVG(weather.precipitation)", "avgPrecipitation")
         .addSelect("AVG(weather.humidity)", "avgHumidity")
-        .where("weather.locationId IN (:...locationIds)", { locationIds })
-        .andWhere("weather.date BETWEEN :startDate AND :endDate", { startDate, endDate })
-        .getRawOne()
+        .where("weather.location_id IN (:...locationIds)", { locationIds })
+        .andWhere("weather.created_at BETWEEN :startDate AND :endDate", { startDate, endDate })
+        .getRawOne();
   }
 
   // 중위값 
@@ -40,11 +40,11 @@ export class WeatherService {
     const {locationIds, startDate, endDate} = dateRangeDto
 
     return await this.weatherRepository.createQueryBuilder("weather")
-        .select("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.perceivedTemperature) AS medianPerceivedTemperature")
+        .select("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.perceive_temperature) AS medianPerceivedTemperature")
         .addSelect("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.precipitation) AS medianPrecipitation")
         .addSelect("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.humidity) AS medianHumidity")
-        .where("weather.locationId IN (:...locationIds)", { locationIds })
-        .andWhere("weather.date BETWEEN :startDate AND :endDate", { startDate, endDate })
+        .where("weather.location_id IN (:...locationIds)", { locationIds })
+        .andWhere("weather.create_at BETWEEN :startDate AND :endDate", { startDate, endDate })
         .getRawOne();
   }
 
@@ -53,11 +53,11 @@ export class WeatherService {
     const {locationIds, startDate, endDate} = dateRangeDto
 
     return await this.weatherRepository.createQueryBuilder("weather")
-        .select("MAX(weather.perceivedTemperature)", "maxPerceivedTemperature")
+        .select("MAX(weather.perceived_temperature)", "maxPerceivedTemperature")
         .addSelect("MAX(weather.precipitation)", "maxPrecipitation")
         .addSelect("MAX(weather.humidity)", "maxHumidity")
-        .where("weather.locationId IN (:...locationIds)", { locationIds })
-        .andWhere("weather.date BETWEEN :startDate AND :endDate", { startDate, endDate })
+        .where("weather.location_id IN (:...locationIds)", { locationIds })
+        .andWhere("weather.create_at BETWEEN :startDate AND :endDate", { startDate, endDate })
         .getRawOne()
   }
 
