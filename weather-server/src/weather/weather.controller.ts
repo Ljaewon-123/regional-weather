@@ -76,18 +76,18 @@ export class WeatherController {
     return await this.schService.saveWeather()
   }
 
+  @Get('test-cal')
+  async test(@Query() dateRangeDto: DateRangeDtoWithLocationId){
+    const transformedDto = plainToInstance(DateRangeDtoWithLocationId, dateRangeDto);
+    console.log(transformedDto)
+    return await this.weatherService.test(transformedDto)
+  }
+
   // 그럼 일단 하나의 동(location)에서 온도를 가공 
   @Get('average')
   async averagepost(@Query() dateRangeDto: DateRangeDtoWithLocationId){
     const transformedDto = plainToInstance(DateRangeDtoWithLocationId, dateRangeDto);
     return await this.weatherService.weatherAverage(transformedDto)
-  }
-
-  @Get('test2')
-  async test(@Query() dateRangeDto: DateRangeDtoWithLocationId){
-    const transformedDto = plainToInstance(DateRangeDtoWithLocationId, dateRangeDto);
-    console.log(transformedDto)
-    return await this.weatherService.test(transformedDto)
   }
 
   @Get('median')
