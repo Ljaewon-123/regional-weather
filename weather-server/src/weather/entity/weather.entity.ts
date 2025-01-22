@@ -20,19 +20,19 @@ export class Weather {
   weatherCondition: string;
 
   @Column({ nullable: true })  // 체감온도 
-  perceivedTemperature: string;
+  perceivedTemperature: number;
 
   @Column({ nullable: true })  // 강수량
-  precipitation: string;
+  precipitation: number;
 
   @Column({ length: 10 })  // 강수확률
-  precipitationProbability: string;
+  precipitationProbability: number;
 
   @Column({ length: 50 })  // 바람
   wind: string;
 
   @Column({ length: 10 })  // 습도
-  humidity: string;
+  humidity: number;
 
   @Column({ nullable: true })  // 한파영향향
   coldWaveEffect: string;
