@@ -103,7 +103,7 @@ export class WeatherService {
   async allWeahter(limit = 100){
     return await this.weatherRepository.find({
       order:{ createdAt: 'DESC' },
-      take: limit,
+      take: 100,
     })
   }
 
