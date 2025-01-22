@@ -1,5 +1,5 @@
 import { IsString, Matches } from 'class-validator';
-import { LocationIdsDto } from './location-id.dto';
+import { LocationIdDto } from './location-id.dto';
 
 export class DateRangeDto {
   @IsString()
@@ -11,7 +11,7 @@ export class DateRangeDto {
   endDate: string;
 }
 
-export class DateRangeDtoWithLocationIds extends LocationIdsDto {
+export class DateRangeDtoWithLocationId extends LocationIdDto {
   @IsString()
   @Matches(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/, { message: 'startDate must be in the format yyyy-MM-dd HH' })
   startDate: string;

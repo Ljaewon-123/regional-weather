@@ -13,7 +13,8 @@ import { FilterDto } from './dto/filter.dto';
 import { ScheduleWeatherService } from './schedule-weather.service';
 import { LimitDto } from './dto/limit.dto';
 import { Weather } from './entity/weather.entity';
-import { DateRangeDto, DateRangeDtoWithLocationIds } from './dto/date-range.dto';
+import { DateRangeDto, DateRangeDtoWithLocationId } from './dto/date-range.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('weather')
 export class WeatherController {
@@ -76,19 +77,22 @@ export class WeatherController {
   }
 
   // 그럼 일단 하나의 동(location)에서 온도를 가공 
-  @Post('average')
-  async averagepost(@Body() dateRangeDto: DateRangeDtoWithLocationIds){
-    return await this.weatherService.weatherAverage(dateRangeDto)
+  @Get('average')
+  async averagepost(@Query() dateRangeDto: DateRangeDtoWithLocationId){
+    const transformedDto = plainToInstance(DateRangeDtoWithLocationId, dateRangeDto);
+    return await this.weatherService.weatherAverage(transformedDto)
   }
 
-  @Post('median')
-  async median(@Body() dateRangeDto: DateRangeDtoWithLocationIds){
-    return await this.weatherService.getMedianWeatherData(dateRangeDto)
+  @Get('median')
+  async median(@Query() dateRangeDto: DateRangeDtoWithLocationId){
+    const transformedDto = plainToInstance(DateRangeDtoWithLocationId, dateRangeDto);
+    return await this.weatherService.getMedianWeatherData(transformedDto)
   }
 
-  @Post('max')
-  async max(@Body() dateRangeDto: DateRangeDtoWithLocationIds){
-    return await this.weatherService.getMaxWeatherData(dateRangeDto)
+  @Get('max')
+  async max(@Query() dateRangeDto: DateRangeDtoWithLocationId){
+    const transformedDto = plainToInstance(DateRangeDtoWithLocationId, dateRangeDto);
+    return await this.weatherService.getMaxWeatherData(transformedDto)
   }
 
 }
