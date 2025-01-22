@@ -20,11 +20,14 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "pm2:test": "cross-env NODE_ENV=dev pm2 start ecosystem.config.js --only weather-server",
     "pm2:reload": "cross-env NODE_ENV=dev pm2 reload ecosystem.config.js --only weather-server",
-    "typeorm": "typeorm-ts-node-esm -d dist/connection/conected-db.service.js",
-    "typeorm:run":"typeorm -- migration:run",
-    "typeorm:revert":"typeorm -- migration:revert",
-    "typeorm:generate":"typeorm -- migration:generate",
-    "typeorm:create": "typeorm migration:create ./src/migrations/PostRefactoring"
+    "typeorm:dev": "cross-env NODE_ENV=dev typeorm-ts-node-commonjs",
+    "typeorm:prod": "cross-env NODE_ENV=prod typeorm-ts-node-commonjs",
+    "typeorm:migration:dev": " cross-env NODE_ENV=dev npm run typeorm:dev migration:run -- -d dist/connection/data-source.js",
+    "typeorm:migration:prod": "npm run typeorm:prod migration:run -- -d dist/connection/data-source.js",
+    "typeorm:revert:dev": "npm run typeorm:dev migration:revert -- -d dist/connection/data-source.js",
+    "typeorm:revert:prod": "npm run typeorm:prod migration:revert -- -d dist/connection/data-source.js",
+    "typeorm:create": "typeorm migration:create ./src/migrations/PostRefactoring",
+    "typeorm:test": "npm run typeorm:dev migration:create ./src/database/migrations/TeamRefactoring"
   },
   "dependencies": {
     "@common.js/p-limit": "^6.1.0",

@@ -196,10 +196,16 @@ export class WeatherService {
   stringToNumber(str: string): number {
     if (str === '-') return 0;
   
+    // str이 숫자로만 이루어져 있는 경우 바로 숫자로 변환
+    if (/^\d+$/.test(str)) {
+        return Number(str);
+    }
+  
     // 맨 마지막 문자를 제외한 부분을 변환
     const num = Number(str.slice(0, -1));
   
     return isNaN(num) ? 0 : num;
   }
+
 
 }

@@ -25,13 +25,13 @@ export class Weather {
   @Column({ nullable: true })  // 강수량
   precipitation: number;
 
-  @Column({ length: 10 })  // 강수확률
+  @Column()  // 강수확률
   precipitationProbability: number;
 
   @Column({ length: 50 })  // 바람
   wind: string;
 
-  @Column({ length: 10 })  // 습도
+  @Column()  // 습도
   humidity: number;
 
   @Column({ nullable: true })  // 한파영향향

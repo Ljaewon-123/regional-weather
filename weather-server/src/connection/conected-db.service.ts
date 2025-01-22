@@ -18,7 +18,6 @@ export class TypeOrmConnectionService implements TypeOrmOptionsFactory {
       entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       synchronize: this.configService.get<boolean>("DB_SYNCHRONIZE"),
       namingStrategy: new SnakeNamingStrategy(),
-      migrations: [__dirname + '/src/migrations/*.{ts,js}'],
       // extra: {
       //   // SSL 연결을 강제 설정
       //   ssl: { rejectUnauthorized: false },
