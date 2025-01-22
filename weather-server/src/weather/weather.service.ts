@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Weather } from './entity/weather.entity';
 import { Sido } from './entity/sido.entity';
 import { GuData } from './entity/gu-data.entity';
-import { DateRangeDto, DateRangeDtoWithLocationIds } from './dto/date-range.dto';
+import { DateRangeDto, DateRangeDtoWithLocationId } from './dto/date-range.dto';
 
 @Injectable()
 export class WeatherService {
@@ -23,40 +23,40 @@ export class WeatherService {
   ){}
 
   // 기간내에 각 평균 or 중위값 구하는 쿼리 
-  async weatherAverage(dateRangeDto: DateRangeDtoWithLocationIds){
-    const {locationIds, startDate, endDate} = dateRangeDto
+  async weatherAverage(dateRangeDto: DateRangeDtoWithLocationId){
+    const { locationId, startDate, endDate } = dateRangeDto
 
     return await this.weatherRepository.createQueryBuilder("weather")
         .select("AVG(weather.perceived_temperature)", "avgPerceivedTemperature")
         .addSelect("AVG(weather.precipitation)", "avgPrecipitation")
         .addSelect("AVG(weather.humidity)", "avgHumidity")
-        .where("weather.location_id IN (:...locationIds)", { locationIds })
+        .where("weather.location_id = :locationId", { locationId })
         .andWhere("weather.created_at BETWEEN :startDate AND :endDate", { startDate, endDate })
         .getRawOne();
   }
 
   // 중위값 
-  async getMedianWeatherData(dateRangeDto: DateRangeDtoWithLocationIds) {
-    const {locationIds, startDate, endDate} = dateRangeDto
+  async getMedianWeatherData(dateRangeDto: DateRangeDtoWithLocationId) {
+    const { locationId, startDate, endDate } = dateRangeDto
 
     return await this.weatherRepository.createQueryBuilder("weather")
         .select("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.perceive_temperature) AS medianPerceivedTemperature")
         .addSelect("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.precipitation) AS medianPrecipitation")
         .addSelect("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.humidity) AS medianHumidity")
-        .where("weather.location_id IN (:...locationIds)", { locationIds })
+        .where("weather.location_id = :locationId", { locationId })
         .andWhere("weather.create_at BETWEEN :startDate AND :endDate", { startDate, endDate })
         .getRawOne();
   }
 
   // 최대값 
-  async getMaxWeatherData(dateRangeDto: DateRangeDtoWithLocationIds) {
-    const {locationIds, startDate, endDate} = dateRangeDto
+  async getMaxWeatherData(dateRangeDto: DateRangeDtoWithLocationId) {
+    const { locationId, startDate, endDate } = dateRangeDto
 
     return await this.weatherRepository.createQueryBuilder("weather")
         .select("MAX(weather.perceived_temperature)", "maxPerceivedTemperature")
         .addSelect("MAX(weather.precipitation)", "maxPrecipitation")
         .addSelect("MAX(weather.humidity)", "maxHumidity")
-        .where("weather.location_id IN (:...locationIds)", { locationIds })
+        .where("weather.location_id = :locationId", { locationId })
         .andWhere("weather.create_at BETWEEN :startDate AND :endDate", { startDate, endDate })
         .getRawOne()
   }
@@ -124,11 +124,11 @@ export class WeatherService {
           date: weatherOne.date,
           time: weatherOne.time,
           weatherCondition: weatherOne.weatherDetails.날씨,
-          perceivedTemperature: weatherOne.weatherDetails.체감온도 || null,
-          precipitation: weatherOne.weatherDetails.강수량 || null,
-          precipitationProbability: weatherOne.weatherDetails.강수확률,
+          perceivedTemperature: this.stringToNumber(weatherOne.weatherDetails.체감온도),
+          precipitation: this.stringToNumber(weatherOne.weatherDetails.강수량),
+          precipitationProbability: this.stringToNumber(weatherOne.weatherDetails.강수확률),
           wind: weatherOne.weatherDetails.바람,
-          humidity: weatherOne.weatherDetails.습도,
+          humidity: this.stringToNumber(weatherOne.weatherDetails.습도),
           coldWaveEffect: weatherOne.weatherDetails.한파영향 || null,
           snowfallIntensity: weatherOne.weatherDetails.적설강도 || null,
         });
@@ -186,6 +186,20 @@ export class WeatherService {
    */
   matchCode(baseCode: string, targetCode: string, sliceLength: number): boolean {
     return baseCode.slice(0, sliceLength) == targetCode.slice(0, sliceLength);
+  }
+
+  /**
+   * @description 특정 기후에 % or 아이콘 혹은 - 으로 크롤링 되던거를 number로 바꿈
+   * @param str 
+   * @returns 
+   */
+  stringToNumber(str: string): number {
+    if (str === '-') return 0;
+  
+    // 맨 마지막 문자를 제외한 부분을 변환
+    const num = Number(str.slice(0, -1));
+  
+    return isNaN(num) ? 0 : num;
   }
 
 }
