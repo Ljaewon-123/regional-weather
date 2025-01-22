@@ -83,6 +83,13 @@ export class WeatherController {
     return await this.weatherService.weatherAverage(transformedDto)
   }
 
+  @Get('test2')
+  async test(@Query() dateRangeDto: DateRangeDtoWithLocationId){
+    const transformedDto = plainToInstance(DateRangeDtoWithLocationId, dateRangeDto);
+    console.log(transformedDto)
+    return await this.weatherService.test(transformedDto)
+  }
+
   @Get('median')
   async median(@Query() dateRangeDto: DateRangeDtoWithLocationId){
     const transformedDto = plainToInstance(DateRangeDtoWithLocationId, dateRangeDto);

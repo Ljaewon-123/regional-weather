@@ -22,6 +22,21 @@ export class WeatherService {
     private guDataRepo: Repository<GuData>,
   ){}
 
+  async test(dateRangeDto: DateRangeDtoWithLocationId){
+    const { locationId, startDate, endDate } = dateRangeDto
+
+    const weather = await this.weatherRepository
+      .createQueryBuilder('weather')
+      .select('AVG(weather.perceived_temperature)', 'avgPerceivedTemperature')
+      .addSelect("AVG(weather.precipitation)", "avgPrecipitation")
+      .addSelect("AVG(weather.humidity)", "avgHumidity")
+      .where('weather.location.id = :locationId', { locationId: 1669 })
+      .getRawOne();
+
+    console.log(weather)
+    return weather
+  }
+
   // 기간내에 각 평균 or 중위값 구하는 쿼리 
   async weatherAverage(dateRangeDto: DateRangeDtoWithLocationId){
     const { locationId, startDate, endDate } = dateRangeDto
@@ -44,7 +59,7 @@ export class WeatherService {
         .addSelect("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.precipitation) AS medianPrecipitation")
         .addSelect("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.humidity) AS medianHumidity")
         .where("weather.location_id = :locationId", { locationId })
-        .andWhere("weather.create_at BETWEEN :startDate AND :endDate", { startDate, endDate })
+        .andWhere("weather.created_at BETWEEN :startDate AND :endDate", { startDate, endDate })
         .getRawOne();
   }
 
@@ -57,7 +72,7 @@ export class WeatherService {
         .addSelect("MAX(weather.precipitation)", "maxPrecipitation")
         .addSelect("MAX(weather.humidity)", "maxHumidity")
         .where("weather.location_id = :locationId", { locationId })
-        .andWhere("weather.create_at BETWEEN :startDate AND :endDate", { startDate, endDate })
+        .andWhere("weather.created_at BETWEEN :startDate AND :endDate", { startDate, endDate })
         .getRawOne()
   }
 
