@@ -159,8 +159,8 @@ export class WeatherService {
           date: weatherOne.date,
           time: weatherOne.time,
           weatherCondition: weatherOne.weatherDetails.날씨,
-          perceivedTemperature: this.stringToNumber(weatherOne.weatherDetails.체감온도),
-          precipitation: this.stringToNumber(weatherOne.weatherDetails.강수량),
+          perceivedTemperature: this.stringToNumber(weatherOne.weatherDetails.체감온도 || null),
+          precipitation: this.stringToNumber(weatherOne.weatherDetails.강수량 || null),
           precipitationProbability: this.stringToNumber(weatherOne.weatherDetails.강수확률),
           wind: weatherOne.weatherDetails.바람,
           humidity: this.stringToNumber(weatherOne.weatherDetails.습도),
@@ -228,12 +228,13 @@ export class WeatherService {
    * @param str 
    * @returns 
    */
-  stringToNumber(str: string): number {
+  stringToNumber(str?: string): number {
+    if(!str) return 0
     if (str === '-') return 0;
   
     // str이 숫자로만 이루어져 있는 경우 바로 숫자로 변환
     if (/^\d+$/.test(str)) {
-        return Number(str);
+      return Number(str);
     }
   
     // 맨 마지막 문자를 제외한 부분을 변환
