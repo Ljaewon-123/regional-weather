@@ -25,12 +25,8 @@ export class WeatherService {
   async test(dateRangeDto: DateRangeDtoWithLocationId){
     const { locationId, startDate, endDate } = dateRangeDto
 
-    // const startDateString = '2025-01-21T13:00:00.000Z';
-    // const endDateString = '2025-01-22T17:00:00.000Z';
-
-    const offset = 9 * 60; // UTC+9 시간 오프셋 (분 단위로)
-    const startKst = new Date(new Date(startDate).getTime() + offset * 60 * 1000);
-    const endKst = new Date(new Date(endDate).getTime() + offset * 60 * 1000);
+    const startDateString = '2025-01-23T13:00:00.000Z';
+    const endDateString = '2025-01-23T17:00:00.000Z';
 
     const weather = await this.weatherRepository
       .createQueryBuilder('weather')
@@ -39,8 +35,8 @@ export class WeatherService {
       .addSelect("AVG(weather.humidity)", "avgHumidity")
       .where('weather.location.id = :locationId', { locationId: locationId })
       .andWhere('weather.created_at BETWEEN :startDate AND :endDate', {
-        startDate: startKst,
-        endDate: endKst,
+        startDate: startDateString,
+        endDate: endDateString,
       })
       .getRawOne();
 
@@ -52,18 +48,14 @@ export class WeatherService {
   async weatherAverage(dateRangeDto: DateRangeDtoWithLocationId){
     const { locationId, startDate, endDate } = dateRangeDto
 
-    const offset = 9 * 60; // UTC+9 시간 오프셋 (분 단위로)
-    const startKst = new Date(new Date(startDate).getTime() + offset * 60 * 1000);
-    const endKst = new Date(new Date(endDate).getTime() + offset * 60 * 1000);
-
     return await this.weatherRepository.createQueryBuilder("weather")
         .select("AVG(weather.perceived_temperature)", "avgPerceivedTemperature")
         .addSelect("AVG(weather.precipitation)", "avgPrecipitation")
         .addSelect("AVG(weather.humidity)", "avgHumidity")
         .where("weather.location_id = :locationId", { locationId })
         .andWhere('weather.created_at BETWEEN :startDate AND :endDate', {
-          startDate: startKst,
-          endDate: endKst,
+          startDate: this.devKstTime(startDate),
+          endDate: this.devKstTime(endDate),
         })
         .getRawOne();
   }
@@ -72,18 +64,14 @@ export class WeatherService {
   async getMedianWeatherData(dateRangeDto: DateRangeDtoWithLocationId) {
     const { locationId, startDate, endDate } = dateRangeDto
 
-    const offset = 9 * 60; // UTC+9 시간 오프셋 (분 단위로)
-    const startKst = new Date(new Date(startDate).getTime() + offset * 60 * 1000);
-    const endKst = new Date(new Date(endDate).getTime() + offset * 60 * 1000);
-
     return await this.weatherRepository.createQueryBuilder("weather")
         .select("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.perceived_temperature) AS medianPerceivedTemperature")
         .addSelect("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.precipitation) AS medianPrecipitation")
         .addSelect("PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY weather.humidity) AS medianHumidity")
         .where("weather.location_id = :locationId", { locationId })
         .andWhere('weather.created_at BETWEEN :startDate AND :endDate', {
-          startDate: startKst,
-          endDate: endKst,
+          startDate: this.devKstTime(startDate),
+          endDate: this.devKstTime(endDate),
         })
         .getRawOne();
   }
@@ -92,9 +80,9 @@ export class WeatherService {
   async getMaxWeatherData(dateRangeDto: DateRangeDtoWithLocationId) {
     const { locationId, startDate, endDate } = dateRangeDto
 
-    const offset = 9 * 60; // UTC+9 시간 오프셋 (분 단위로)
-    const startKst = new Date(new Date(startDate).getTime() + offset * 60 * 1000);
-    const endKst = new Date(new Date(endDate).getTime() + offset * 60 * 1000);
+    // const offset = 9 * 60; // UTC+9 시간 오프셋 (분 단위로)
+    // const startKst = new Date(new Date(startDate).getTime() + offset * 60 * 1000);
+    // const endKst = new Date(new Date(endDate).getTime() + offset * 60 * 1000);
 
     return await this.weatherRepository.createQueryBuilder("weather")
         .select("MAX(weather.perceived_temperature)", "maxPerceivedTemperature")
@@ -102,8 +90,8 @@ export class WeatherService {
         .addSelect("MAX(weather.humidity)", "maxHumidity")
         .where("weather.location_id = :locationId", { locationId })
         .andWhere('weather.created_at BETWEEN :startDate AND :endDate', {
-          startDate: startKst,
-          endDate: endKst,
+          startDate: this.devKstTime(startDate),
+          endDate: this.devKstTime(endDate),
         })
         .getRawOne()
   }
@@ -254,5 +242,11 @@ export class WeatherService {
     return isNaN(num) ? 0 : num;
   }
 
+  // 로컬용
+  devKstTime(strDate: string){
+    const OFFSET_KST_M = 9 * 60; // UTC+9 시간 오프셋 (분 단위로)
+    const kstDate = new Date(new Date(strDate).getTime() + OFFSET_KST_M * 60 * 1000);
+    return this.isDev ? kstDate : new Date(strDate)
+  }
 
 }
