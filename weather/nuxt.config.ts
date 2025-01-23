@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
     '@nuxtjs/i18n',
     '@vueuse/nuxt',
+    '@nuxt/icon',
   ],
   runtimeConfig:{
     apiBase: process.env.BASE_URL

@@ -7,7 +7,20 @@
       <NuxtLink :to="localePath('test')" >Test</NuxtLink>
     </div>
     <NLang/>
-    <div>
+    <div class="flex items-center gap-4">
+      <Popover>
+        <PopoverTrigger as-child>
+          <Button size="icon" variant="outline">
+            <Icon name="mdi:brush-variant"  />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent class="w-80">
+          <div>
+            <div class="w-5 h-5 rounded-full bg-red-600"></div>
+          </div>
+        </PopoverContent>
+      </Popover>
+
       <!-- client component 이거를 안쓰고 Hydration해결하는 방법도 있는데 빌트인을 안쓸 이유가 따로있나??? -->
       <!-- <ClientOnly> -->
       <ThemeSelector />
