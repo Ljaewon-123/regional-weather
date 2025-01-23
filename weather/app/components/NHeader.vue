@@ -20,10 +20,13 @@
               <h1 class="text-md text-foreground font-semibold">Customize</h1>
               <p class="text-xs text-muted-foreground">Pick up the your color</p>
             </div>
+            <h3 class="font-normal">Colors</h3>
             <div class="grid grid-cols-3 gap-2 py-1.5" >
-              <Button v-for="color in colors" variant="outline" class="inline-flex items-center gap-2 whitespace-nowrap px-3 shadow-sm hover:bg-accent hover:text-accent-foreground py-2 h-8 justify-start px-3">
+              <Button @click="selectedColor = color.actionId" v-for="color in colors" :key="color.actionId" 
+              :class="{ 'border-2 border-primary': selectedColor === color.actionId,  }"
+              variant="outline" class="inline-flex items-center gap-2 whitespace-nowrap px-3 shadow-sm hover:bg-accent hover:text-accent-foreground py-2 h-8 justify-start px-3">
                 <span class="w-5 h-5 rounded-full" :class="color.class"></span> 
-                <span class="text-xs capitalize">
+                <span class="text-xs capitalize ml-2">
                   {{ color.title }}
                 </span>
               </Button>
@@ -44,17 +47,17 @@
 
 <script setup lang="ts">
 const localePath = useLocalePath()
-
+const selectedColor = ref()
 const colors = [
-  { title: "zinc" ,class: "bg-zinc-500" },
-  { title: "rose" ,class: "bg-rose-500" },
-  { title: "blue" ,class: "bg-blue-500" },
-  { title: "green" ,class: "bg-green-500" },
-  { title: "orange" ,class: "bg-orange-500" },
-  { title: "red" ,class: "bg-red-500" },
-  { title: "gray" ,class: "bg-gray-500" },
-  { title: "yellow" ,class: "bg-yellow-500" },
-  { title: "violet" ,class: "bg-violet-500" },
+  { title: "zinc", class: "bg-zinc-500", actionId: 1 },
+  { title: "rose", class: "bg-rose-500", actionId: 2 },
+  { title: "blue", class: "bg-blue-500", actionId: 3 },
+  { title: "green", class: "bg-green-500", actionId: 4 },
+  { title: "orange", class: "bg-orange-500", actionId: 5 },
+  { title: "red", class: "bg-red-500", actionId: 6 },
+  { title: "gray", class: "bg-gray-500", actionId: 7 },
+  { title: "yellow", class: "bg-yellow-500", actionId: 8 },
+  { title: "violet", class: "bg-violet-500", actionId: 9 },
 ]
 
 </script>
