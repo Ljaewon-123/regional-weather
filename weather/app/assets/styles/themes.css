@@ -612,7 +612,7 @@ html.dark {
 
   --ring: 221.2 83.2% 53.3%;
 
-  --radius: ;
+  --radius: 0.5rem;
 }
 
 .theme-blue.dark {

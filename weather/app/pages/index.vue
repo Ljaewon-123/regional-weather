@@ -7,7 +7,6 @@
     <div>
       <Button @click="testShowThrow">Throw show</Button>
       <Button @click="testCreateThrow">Throw create</Button>
-      {{ theme }}
     </div>
   </div>
 </template>
@@ -15,7 +14,6 @@
 <script setup lang="ts">
 import type { Gus, Regional } from '~/interface/regional.interface'
 
-const theme = useTheme()
 
 const { data: allUseLocations, error } = await useFetch<Gus[]>('/api/locations')
 
