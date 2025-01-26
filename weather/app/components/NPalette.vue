@@ -47,12 +47,12 @@ const colors: Color[] = [
   { title: "violet", class: "bg-violet-500", actionId: 9 },
 ]
 
-const theme = useTheme()
+const { theme, setTheme } = useTheme()
 
 const clickThemeColor = (colorObject: Color) => {
   selectedColor.value = colorObject.actionId
-  theme.value.name = colorObject.title
-  theme.value.class = `theme-${colorObject.title}`
+
+  setTheme(colorObject.title)
 }
 
 </script>

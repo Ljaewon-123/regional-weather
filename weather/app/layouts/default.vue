@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-const theme = useTheme()
+const { theme } = useTheme()
 useHead({
   htmlAttrs: computed(() => ({
     class: theme.value.class,
