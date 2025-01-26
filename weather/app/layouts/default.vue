@@ -6,9 +6,10 @@
 </template>
 
 <script setup lang="ts">
-  useHead({
-    htmlAttrs:{
-      class: ''
-    }
-  })
+const theme = useTheme()
+useHead({
+  htmlAttrs: computed(() => ({
+    class: theme.value.class,
+  }))
+})
 </script>
