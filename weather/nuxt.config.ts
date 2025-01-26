@@ -32,6 +32,7 @@ export default defineNuxtConfig({
     '~/assets/styles/style.css',
     '~/assets/styles/demo.css',
     '~/assets/styles/tailwind.css',
+    '~/assets/styles/themes.css',
   ],
   i18n: {
     vueI18n: './app/i18n/i18n.config.ts',
