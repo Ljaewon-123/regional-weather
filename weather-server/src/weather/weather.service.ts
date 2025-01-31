@@ -48,7 +48,11 @@ export class WeatherService {
     })
     .getRawOne();
 
-    console.debug(weather, test)
+    const location = await this.weatherRepository.createQueryBuilder("weather")
+    .where("weather.location_id = :locationId", { locationId })
+    .getRawOne();
+
+    console.debug(weather, test, location)
 
     console.log(this.devKstTime(startDate), startDateString)
 
