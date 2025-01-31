@@ -36,15 +36,15 @@ export class WeatherService {
     const weather = await this.weatherRepository
       .createQueryBuilder('weather')
       .where('weather.location.id = :locationId', { locationId: locationId })
-      .andWhere('weather.created_at BETWEEN :startDate AND :endDate', {
-        startDate: new Date(startDateString),
-        endDate: new Date(endDateString),
-      })
+      // .andWhere('weather.created_at BETWEEN :startDate AND :endDate', {
+      //   startDate: new Date(startDateString),
+      //   endDate: new Date(endDateString),
+      // })
       .getRawMany();
 
     console.debug(weather)
 
-    console.log(this.devKstTime(startDate), startDateUTC)
+    console.log(this.devKstTime(startDate), new Date(startDate))
 
     return weather
   }
