@@ -25,8 +25,8 @@ export class WeatherService {
   async getLocationWeather(dateRangeDto: DateRangeDtoWithLocationId){
     const { locationId, startDate, endDate } = dateRangeDto
 
-    // const startDateString = '2025-01-23T13:00:00.000Z';
-    // const endDateString = '2025-01-23T17:00:00.000Z';
+    const startDateString = '2025-01-23T13:00:00.000Z';
+    const endDateString = '2025-01-23T17:00:00.000Z';
 
     const startDateUTC = new Date(startDate).toISOString();
     const endDateUTC = new Date(endDate).toISOString();
@@ -37,8 +37,8 @@ export class WeatherService {
       .createQueryBuilder('weather')
       .where('weather.location.id = :locationId', { locationId: locationId })
       .andWhere('weather.created_at BETWEEN :startDate AND :endDate', {
-        startDate: startDateUTC,
-        endDate: endDateUTC,
+        startDate: new Date(startDateString),
+        endDate: new Date(endDateString),
       })
       .getRawMany();
 
