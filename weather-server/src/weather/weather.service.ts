@@ -42,7 +42,7 @@ export class WeatherService {
       })
       .getRawMany();
 
-    console.debug(weather, test, location)
+    console.debug(weather)
 
     console.log(this.devKstTime(startDate), startDateUTC)
 
