@@ -22,25 +22,19 @@ export class WeatherService {
     private guDataRepo: Repository<GuData>,
   ){}
 
-  async test(dateRangeDto: DateRangeDtoWithLocationId){
+  async getLocationWeather(dateRangeDto: DateRangeDtoWithLocationId){
     const { locationId, startDate, endDate } = dateRangeDto
-
-    const startDateString = '2025-01-23T13:00:00.000Z';
-    const endDateString = '2025-01-23T17:00:00.000Z';
 
     const weather = await this.weatherRepository
       .createQueryBuilder('weather')
-      .select('AVG(weather.perceived_temperature)', 'avgPerceivedTemperature')
-      .addSelect("AVG(weather.precipitation)", "avgPrecipitation")
-      .addSelect("AVG(weather.humidity)", "avgHumidity")
       .where('weather.location.id = :locationId', { locationId: locationId })
       .andWhere('weather.created_at BETWEEN :startDate AND :endDate', {
-        startDate: startDateString,
-        endDate: endDateString,
+        startDate: this.devKstTime(startDate),
+        endDate: this.devKstTime(endDate),
       })
-      .getRawOne();
+      .getRawMany();
 
-    console.log(weather)
+    // console.log(weather)
     return weather
   }
 

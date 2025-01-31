@@ -8,6 +8,8 @@
       <Button @click="testShowThrow">Throw show</Button>
       <Button @click="testCreateThrow">Throw create</Button>
     </div>
+    <NDateRange/>
+    <Button @click="">조회</Button>
   </div>
 </template>
 
