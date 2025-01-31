@@ -25,16 +25,20 @@ export class WeatherService {
   async getLocationWeather(dateRangeDto: DateRangeDtoWithLocationId){
     const { locationId, startDate, endDate } = dateRangeDto
 
+    const startDateString = '2025-01-23T13:00:00.000Z';
+    const endDateString = '2025-01-23T17:00:00.000Z';
+
     const weather = await this.weatherRepository
       .createQueryBuilder('weather')
       .where('weather.location.id = :locationId', { locationId: locationId })
       .andWhere('weather.created_at BETWEEN :startDate AND :endDate', {
-        startDate: this.devKstTime(startDate),
-        endDate: this.devKstTime(endDate),
+        startDate: startDateString,
+        endDate: endDateString,
       })
       .getRawMany();
 
-    console.log(new Date(startDate), this.devKstTime(startDate), this.isDev)
+    console.log(this.devKstTime(startDate), startDateString)
+
     return weather
   }
 
