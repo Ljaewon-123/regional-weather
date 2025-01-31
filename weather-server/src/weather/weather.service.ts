@@ -34,7 +34,7 @@ export class WeatherService {
       })
       .getRawMany();
 
-    // console.log(weather)
+    console.log(weather, startDate, this.devKstTime(startDate))
     return weather
   }
 
