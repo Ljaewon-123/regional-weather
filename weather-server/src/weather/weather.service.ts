@@ -25,36 +25,26 @@ export class WeatherService {
   async getLocationWeather(dateRangeDto: DateRangeDtoWithLocationId){
     const { locationId, startDate, endDate } = dateRangeDto
 
-    const startDateString = '2025-01-23T13:00:00.000Z';
-    const endDateString = '2025-01-23T17:00:00.000Z';
+    // const startDateString = '2025-01-23T13:00:00.000Z';
+    // const endDateString = '2025-01-23T17:00:00.000Z';
+
+    const startDateUTC = new Date(startDate).toISOString();
+    const endDateUTC = new Date(endDate).toISOString();
+
+    console.log(`🔹 UTC 기준 검색: ${startDateUTC} ~ ${endDateUTC}`);
 
     const weather = await this.weatherRepository
       .createQueryBuilder('weather')
       .where('weather.location.id = :locationId', { locationId: locationId })
       .andWhere('weather.created_at BETWEEN :startDate AND :endDate', {
-        startDate: startDateString,
-        endDate: endDateString,
+        startDate: startDateUTC,
+        endDate: endDateUTC,
       })
       .getRawMany();
 
-    const test = await this.weatherRepository.createQueryBuilder("weather")
-    .select("AVG(weather.perceived_temperature)", "avgPerceivedTemperature")
-    .addSelect("AVG(weather.precipitation)", "avgPrecipitation")
-    .addSelect("AVG(weather.humidity)", "avgHumidity")
-    .where("weather.location_id = :locationId", { locationId })
-    .andWhere('weather.created_at BETWEEN :startDate AND :endDate', {
-      startDate: startDateString,
-      endDate: endDateString,
-    })
-    .getRawOne();
-
-    const location = await this.weatherRepository.createQueryBuilder("weather")
-    .where("weather.location_id = :locationId", { locationId })
-    .getRawOne();
-
     console.debug(weather, test, location)
 
-    console.log(this.devKstTime(startDate), startDateString)
+    console.log(this.devKstTime(startDate), startDateUTC)
 
     return weather
   }
