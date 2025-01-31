@@ -25,26 +25,14 @@ export class WeatherService {
   async getLocationWeather(dateRangeDto: DateRangeDtoWithLocationId){
     const { locationId, startDate, endDate } = dateRangeDto
 
-    const startDateString = '2025-01-23T13:00:00.000Z';
-    const endDateString = '2025-01-23T17:00:00.000Z';
-
-    const startDateUTC = new Date(startDate).toISOString();
-    const endDateUTC = new Date(endDate).toISOString();
-
-    console.log(`🔹 UTC 기준 검색: ${startDateUTC} ~ ${endDateUTC}`);
-
     const weather = await this.weatherRepository
       .createQueryBuilder('weather')
       .where('weather.location.id = :locationId', { locationId: locationId })
-      // .andWhere('weather.created_at BETWEEN :startDate AND :endDate', {
-      //   startDate: new Date(startDateString),
-      //   endDate: new Date(endDateString),
-      // })
+      .andWhere('weather.created_at BETWEEN :startDate AND :endDate', {
+        startDate: this.devKstTime(startDate),
+        endDate: this.devKstTime(endDate),
+      })
       .getRawMany();
-
-    console.debug(weather)
-
-    console.log(this.devKstTime(startDate), new Date(startDate))
 
     return weather
   }
