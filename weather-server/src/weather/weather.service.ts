@@ -37,6 +37,19 @@ export class WeatherService {
       })
       .getRawMany();
 
+    const test = await this.weatherRepository.createQueryBuilder("weather")
+    .select("AVG(weather.perceived_temperature)", "avgPerceivedTemperature")
+    .addSelect("AVG(weather.precipitation)", "avgPrecipitation")
+    .addSelect("AVG(weather.humidity)", "avgHumidity")
+    .where("weather.location_id = :locationId", { locationId })
+    .andWhere('weather.created_at BETWEEN :startDate AND :endDate', {
+      startDate: startDateString,
+      endDate: endDateString,
+    })
+    .getRawOne();
+
+    console.debug(weather, test)
+
     console.log(this.devKstTime(startDate), startDateString)
 
     return weather
