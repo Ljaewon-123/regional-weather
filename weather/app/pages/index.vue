@@ -8,14 +8,30 @@
       <Button @click="testShowThrow">Throw show</Button>
       <Button @click="testCreateThrow">Throw create</Button>
     </div>
-    <NDateRange/>
-    <Button @click="">조회</Button>
+    <NDateRange v-model:start-date="startDate" v-model:end-date="endDate" />
+    <Button @click="execute">조회</Button>
+    {{ startDate }}
+    {{ endDate }}
+    data: {{ data }}
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Gus, Regional } from '~/interface/regional.interface'
 
+const startDate = ref()
+const endDate = ref()
+
+const { data, execute } = await useFetch(
+  '/api/weather',
+  {
+    query: {
+      startDate: startDate,
+      endDate: endDate,
+      locationId: 1683
+    }
+  }
+)
 
 const { data: allUseLocations, error } = await useFetch<Gus[]>('/api/locations')
 
