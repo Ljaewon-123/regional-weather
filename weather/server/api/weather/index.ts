@@ -8,11 +8,13 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event)
   const query = getQuery(event)
 
-  console.log(query, '@@@@@@')
+  console.log(query, '@@@@@@@')
 
   try {
+    // get이라서 parse가 필수인가?
     const startDate: QueryDate = JSON.parse(query.startDate as string)
     const endDate: QueryDate = JSON.parse(query.endDate as string)
+    const locationId: Regional = JSON.parse(query.locationId as string)
 
     const formatDate = ({ year, month, day }: QueryDate, isEndDate = false) =>
       `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')} ${isEndDate ? '23:59:59' : '00:00:00'}`
@@ -22,7 +24,7 @@ export default defineEventHandler(async (event) => {
       query: {
         startDate: formatDate(startDate),
         endDate: formatDate(endDate, true),
-        locationId: query.locationId
+        locationId: locationId.id
       }
     })
   } catch (e) {

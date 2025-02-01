@@ -2,7 +2,7 @@
   <div class="p-4 flex flex-col gap-3"> 
     <div class="flex items-center gap-3">
       <p>Location</p>
-      <NLocations :all-user-locations="allUseLocations" />
+      <NLocations v-model:location="currentLocation" :all-user-locations="allUseLocations" />
     </div>
     <div>
       <Button @click="testShowThrow">Throw show</Button>
@@ -21,6 +21,8 @@ import type { Gus, Regional } from '~/interface/regional.interface'
 
 const startDate = ref()
 const endDate = ref()
+// ref를 사용해도 상관없지만 useState를 한번 사용해봤음
+const currentLocation = useState<Regional | null>('regional', () => null)
 
 const { data, execute } = await useFetch(
   '/api/weather',
@@ -28,7 +30,7 @@ const { data, execute } = await useFetch(
     query: {
       startDate: startDate,
       endDate: endDate,
-      locationId: 1683
+      locationId: currentLocation
     }
   }
 )

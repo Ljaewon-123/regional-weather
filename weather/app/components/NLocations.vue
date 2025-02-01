@@ -62,7 +62,7 @@ const [UseTemplate, StatusList] = createReusableTemplate()
 const isDesktop = useMediaQuery('(min-width: 768px)')
 
 const isOpen = ref(false)
-const selectedLocation = ref<Regional | null>(null)
+const selectedLocation = defineModel<Regional | null>('location', { default: null })
 
 function onStatusSelect(regional: Regional) {
   selectedLocation.value = regional
