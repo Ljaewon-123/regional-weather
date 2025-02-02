@@ -6,7 +6,7 @@
       :categories="props.keys"
       :y-formatter="tick => {
         return typeof tick === 'number'
-          ? `${new Intl.NumberFormat('ko-KR').format(tick).toString()}`
+          ? `${new Intl.NumberFormat('en-US').format(tick).toString()}`
           : ''
       }"
     />
