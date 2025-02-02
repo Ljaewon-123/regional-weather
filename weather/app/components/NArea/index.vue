@@ -4,11 +4,7 @@
       :data="processData"
       index="weather_created_at"
       :categories="props.keys"
-      :y-formatter="tick => {
-        return typeof tick === 'number'
-          ? `${new Intl.NumberFormat('en-US').format(tick).toString()}`
-          : ''
-      }"
+      :y-formatter="tick => tick + '%'"
     />
   </div>
 </template>
