@@ -12,20 +12,26 @@
     <Button @click="execute">조회</Button>
     <!-- data: {{ data }} -->
 
-    
-
     <NCard>
       <NLine 
         :data="data ?? []"
         :keys="[
           'weather_perceived_temperature',
-          'weather_humidity',
-          'weather_weather_condition',
           'weather_precipitation',
           'weather_precipitation_probability',
         ]"
       />
     </NCard>
+
+    <NCard>
+      <NArea 
+        :data="data ?? []"
+        :keys="[
+          'weather_humidity',
+        ]"
+      />
+    </NCard>
+
 
   </div>
 </template>

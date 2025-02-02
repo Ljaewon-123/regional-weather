@@ -1,6 +1,6 @@
 <template>
   <div>
-    <LineChart
+    <AreaChart
       :data="processData"
       index="weather_created_at"
       :categories="props.keys"
@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { LineChart } from '@/components/ui/chart-line'
+import { AreaChart } from '@/components/ui/chart-area'
 import type { WeatherData } from '~/interface/weather.interface';
 
 interface Props {
