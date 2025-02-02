@@ -11,7 +11,7 @@
     <NDateRange v-model:start-date="startDate" v-model:end-date="endDate" />
     <Button @click="execute">조회</Button>
     <!-- data: {{ data }} -->
-<!-- 
+
     <NCard>
       <NLine 
         :data="data ?? []"
@@ -30,7 +30,7 @@
           'weather_humidity',
         ]"
       />
-    </NCard> -->
+    </NCard>
 
     <Button @click="maxExecute">Max</Button>
     {{ calculates }}
