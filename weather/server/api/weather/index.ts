@@ -10,6 +10,10 @@ export default defineEventHandler(async (event) => {
 
   console.log(query, '@@@@@@@')
 
+  if (!query.startDate || !query.endDate || !query.locationId) {
+    return [] // null or []
+  }
+
   try {
     // get이라서 parse가 필수인가?
     const startDate: QueryDate = JSON.parse(query.startDate as string)

@@ -10,21 +10,21 @@
     </div>
     <NDateRange v-model:start-date="startDate" v-model:end-date="endDate" />
     <Button @click="execute">조회</Button>
-    {{ startDate }}
-    {{ endDate }}
-    data: {{ data }}
+    <!-- data: {{ data }} -->
+    <NChart/>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Gus, Regional } from '~/interface/regional.interface'
+import type { WeatherData } from '~/interface/weather.interface'
 
 const startDate = ref()
 const endDate = ref()
 // ref를 사용해도 상관없지만 useState를 한번 사용해봤음
 const currentLocation = useState<Regional | null>('regional', () => null)
 
-const { data, execute } = await useFetch(
+const { data, execute } = await useFetch<WeatherData[]>(
   '/api/weather',
   {
     query: {
