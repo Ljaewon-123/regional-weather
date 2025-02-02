@@ -1,5 +1,5 @@
 <template>
-  <div class="n-card rounded overflow-hidden shadow-lg mb-4 background border p-1">
+  <div class="n-card rounded-lg overflow-hidden shadow-lg mb-4 background border p-1">
     <slot name="title">
       <div v-if="props.title" class="p-2">
         {{ props.title }}

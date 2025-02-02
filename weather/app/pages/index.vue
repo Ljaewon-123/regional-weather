@@ -11,7 +11,7 @@
     <NDateRange v-model:start-date="startDate" v-model:end-date="endDate" />
     <Button @click="execute">조회</Button>
     <!-- data: {{ data }} -->
-
+<!-- 
     <NCard>
       <NLine 
         :data="data ?? []"
@@ -30,8 +30,22 @@
           'weather_humidity',
         ]"
       />
-    </NCard>
+    </NCard> -->
 
+    <Button @click="maxExecute">Max</Button>
+    {{ calculates }}
+    <span class="w-3 h-3 rounded-full bg-primary"></span>
+    <NCard class="w-[300px]">
+      <ul class="p-4">
+        <li v-for="(cal, key) in calculates" :key="key" class="flex justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-3 h-3 rounded-full bg-primary"></div>
+            <span>{{ key }}</span>
+          </div>
+          <span>{{ cal }}</span>
+        </li>
+      </ul>
+    </NCard>
 
   </div>
 </template>
@@ -48,6 +62,16 @@ const currentLocation = useState<Regional | null>('regional', () => null)
 const { data, execute } = await useFetch<WeatherData[]>(
   '/api/weather',
   {
+    query: {
+      startDate: startDate,
+      endDate: endDate,
+      locationId: currentLocation
+    }
+  }
+)
+
+const { data: calculates, execute: maxExecute } = await useFetch(() => `/api/calculate/max`,
+{
     query: {
       startDate: startDate,
       endDate: endDate,
