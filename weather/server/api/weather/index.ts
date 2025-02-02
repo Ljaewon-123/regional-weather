@@ -1,3 +1,5 @@
+import { WeatherData } from "~/interface/weather.interface"
+
 interface QueryDate {
   year: number
   month: number
@@ -23,7 +25,7 @@ export default defineEventHandler(async (event) => {
     const formatDate = ({ year, month, day }: QueryDate, isEndDate = false) =>
       `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')} ${isEndDate ? '23:59:59' : '00:00:00'}`
 
-    return await $fetch(config.apiBase + '/weather', { 
+    const weathers = await $fetch<WeatherData[]>(config.apiBase + '/weather', { 
       method: 'get', 
       query: {
         startDate: formatDate(startDate),
@@ -31,6 +33,10 @@ export default defineEventHandler(async (event) => {
         locationId: locationId.id
       }
     })
+    return weathers.map(item => ({
+      ...item,
+      weather_created_at: formatDateIntl(item.weather_created_at)
+    }));
   } catch (e) {
     console.error(e)
     throw createError({
@@ -40,3 +46,14 @@ export default defineEventHandler(async (event) => {
     })
   }
 })
+
+function formatDateIntl(dateString: string) {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat('ko-KR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    hour12: false
+  }).format(date).replace(/(\.\s*)/g, '-').replace(' ', ' ').slice(0, 16);
+}

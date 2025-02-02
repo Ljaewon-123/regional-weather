@@ -11,7 +11,19 @@
     <NDateRange v-model:start-date="startDate" v-model:end-date="endDate" />
     <Button @click="execute">조회</Button>
     <!-- data: {{ data }} -->
-    <NChart/>
+    <!-- <NChart/> -->
+
+    <NLine 
+      :data="data ?? []"
+      :keys="[
+        'weather_perceived_temperature',
+        'weather_humidity',
+        'weather_weather_condition',
+        'weather_precipitation',
+        'weather_precipitation_probability',
+      ]"
+    />
+
   </div>
 </template>
 
