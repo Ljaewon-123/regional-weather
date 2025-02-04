@@ -33,7 +33,7 @@
     </NCard>
 
     <Button @click="maxExecute">Max</Button>
-    {{ calculates }}
+    
     <span class="w-3 h-3 rounded-full bg-primary"></span>
     <NCard class="w-[300px]">
       <ul class="p-4">
@@ -45,6 +45,10 @@
           <span>{{ cal }}</span>
         </li>
       </ul>
+    </NCard>
+
+    <NCard>
+      <NTable/>
     </NCard>
 
   </div>
@@ -72,12 +76,12 @@ const { data, execute } = await useFetch<WeatherData[]>(
 
 const { data: calculates, execute: maxExecute } = await useFetch(() => `/api/calculate/max`,
 {
-    query: {
-      startDate: startDate,
-      endDate: endDate,
-      locationId: currentLocation
-    }
+  query: {
+    startDate: startDate,
+    endDate: endDate,
+    locationId: currentLocation
   }
+}
 )
 
 const { data: allUseLocations, error } = await useFetch<Gus[]>('/api/locations')
