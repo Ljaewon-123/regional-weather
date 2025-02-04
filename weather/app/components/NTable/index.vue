@@ -8,7 +8,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { weatherConditionIconMap, type WeatherCondition } from '~/interface/weather.enum'
 import type { WeatherData } from '~/interface/weather.interface'
+
+// 스읍... script를 위에?>?? 생각보다 편하네...
 
 type TableHead = { title: string, class: string}
 | { title: string, class?: never }
@@ -53,7 +56,7 @@ const props = withDefaults(defineProps< Props >(), {
         <TableCell>{{ data.weather_date }}</TableCell>
         <TableCell>{{ data.weather_time }}</TableCell>
         <TableCell>{{ data.weather_wind }}</TableCell>
-        <TableCell>{{ data.weather_weather_condition }}</TableCell>
+        <TableCell>{{ weatherConditionIconMap[data.weather_weather_condition as WeatherCondition] }}</TableCell>
         <TableCell>{{ data.weather_perceived_temperature }}</TableCell>
         <TableCell >
           {{ data.weather_perceived_temperature }}
