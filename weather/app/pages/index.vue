@@ -12,46 +12,66 @@
     <Button @click="execute">조회</Button>
     <!-- data: {{ data }} -->
 
-    <NCard>
-      <NLine 
-        :data="data ?? []"
-        :keys="[
-          'weather_perceived_temperature',
-          'weather_precipitation',
-          'weather_precipitation_probability',
-        ]"
-      />
-    </NCard>
+    <NuxtErrorBoundary>
+      <NCard>
+        <NLine 
+          :data="data ?? []"
+          :keys="[
+            'weather_perceived_temperature',
+            'weather_precipitation',
+            'weather_precipitation_probability',
+          ]"
+        />
+      </NCard>
+      <template #error="{ error }">
+        <p>An error occurred: {{ error }}</p>
+      </template>
+    </NuxtErrorBoundary>
 
-    <NCard>
-      <NArea 
-        :data="data ?? []"
-        :keys="[
-          'weather_humidity',
-        ]"
-      />
-    </NCard>
+    <NuxtErrorBoundary>
+      <NCard>
+        <NArea 
+          :data="data ?? []"
+          :keys="[
+            'weather_humidity',
+          ]"
+        />
+      </NCard>
+      <template #error="{ error }">
+        <p>An error occurred: {{ error }}</p>
+      </template>
+    </NuxtErrorBoundary>
+    
+
+    
 
     <Button @click="maxExecute">Max</Button>
     
-    <span class="w-3 h-3 rounded-full bg-primary"></span>
-    <NCard class="w-[300px]">
-      <ul class="p-4">
-        <li v-for="(cal, key) in calculates" :key="key" class="flex justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-3 h-3 rounded-full bg-primary"></div>
-            <span>{{ key }}</span>
-          </div>
-          <span>{{ cal }}</span>
-        </li>
-      </ul>
-    </NCard>
+    <NuxtErrorBoundary>
+      <NCard class="w-[300px]">
+        <ul class="p-4">
+          <li v-for="(cal, key) in calculates" :key="key" class="flex justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-3 h-3 rounded-full bg-primary"></div>
+              <span>{{ key }}</span>
+            </div>
+            <span>{{ cal }}</span>
+          </li>
+        </ul>
+      </NCard>
+      <template #error="{ error }">
+        <p>An error occurred: {{ error }}</p>
+      </template>
+    </NuxtErrorBoundary>
 
-    {{ data }}
-
-    <NCard>
-      <NTable :table-data="data ?? []"/>
-    </NCard>
+    <NuxtErrorBoundary>
+      <NCard>
+        <NTable :table-data="data ?? []"/>
+      </NCard>
+      <template #error="{ error }">
+        <p>An error occurred: {{ error }}</p>
+      </template>
+    </NuxtErrorBoundary>
 
   </div>
 </template>
