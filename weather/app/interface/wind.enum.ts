@@ -10,7 +10,7 @@ export enum WeatherWind {
   METEOR = "메테오" 
 }
 
-export const weatherWindIocons: Record<WeatherWind, string> = {
+export const weatherWindIcons: Record<WeatherWind, string> = {
   [WeatherWind.NORTH]: "wi:direction-up",
   [WeatherWind.NORTH_EAST]: "wi:direction-up-right",
   [WeatherWind.NORTH_WEST]: "wi:direction-up-left",

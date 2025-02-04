@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/table'
 import { weatherConditionIconMap, type WeatherCondition } from '~/interface/weather.enum'
 import type { WeatherData } from '~/interface/weather.interface'
-import { WeatherWind, weatherWindIocons } from '~/interface/wind.enum'
+import { WeatherWind, weatherWindIcons } from '~/interface/wind.enum'
 
 // 스읍... script를 위에?>?? 생각보다 편하네...
 
@@ -41,7 +41,7 @@ const props = withDefaults(defineProps< Props >(), {
 
 <template>
   <Table>
-    <TableCaption>A list of your recent invoices.</TableCaption>
+    <TableCaption>Weather Data</TableCaption>
     <TableHeader>
       <TableRow class="text-capitalize">
         <TableHead v-for="head in headers" :key="head.title" :class="head?.class">
@@ -57,7 +57,7 @@ const props = withDefaults(defineProps< Props >(), {
         <TableCell>{{ data.weather_date }}</TableCell>
         <TableCell>{{ data.weather_time }}</TableCell>
         <TableCell>
-          <Icon size="25" :name="weatherWindIocons[data.weather_wind as WeatherWind]"  />
+          <Icon size="25" :name="weatherWindIcons[data.weather_wind as WeatherWind ?? '']"  />
         </TableCell>
         <TableCell>
           {{ weatherConditionIconMap[data.weather_weather_condition as WeatherCondition] }}
