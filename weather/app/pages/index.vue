@@ -47,8 +47,10 @@
       </ul>
     </NCard>
 
+    {{ data }}
+
     <NCard>
-      <NTable/>
+      <NTable :table-data="data ?? []"/>
     </NCard>
 
   </div>

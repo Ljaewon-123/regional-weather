@@ -1,5 +1,4 @@
 export interface WeatherData {
-  created_at: string;
   weather_id: number;
   weather_date: string;
   weather_time: string;

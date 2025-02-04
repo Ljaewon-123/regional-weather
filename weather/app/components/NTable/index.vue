@@ -8,77 +8,61 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import type { WeatherData } from '~/interface/weather.interface'
 
-const invoices = [
-  {
-    invoice: 'INV001',
-    paymentStatus: 'Paid',
-    totalAmount: '$250.00',
-    paymentMethod: 'Credit Card',
-  },
-  {
-    invoice: 'INV002',
-    paymentStatus: 'Pending',
-    totalAmount: '$150.00',
-    paymentMethod: 'PayPal',
-  },
-  {
-    invoice: 'INV003',
-    paymentStatus: 'Unpaid',
-    totalAmount: '$350.00',
-    paymentMethod: 'Bank Transfer',
-  },
-  {
-    invoice: 'INV004',
-    paymentStatus: 'Paid',
-    totalAmount: '$450.00',
-    paymentMethod: 'Credit Card',
-  },
-  {
-    invoice: 'INV005',
-    paymentStatus: 'Paid',
-    totalAmount: '$550.00',
-    paymentMethod: 'PayPal',
-  },
-  {
-    invoice: 'INV006',
-    paymentStatus: 'Pending',
-    totalAmount: '$200.00',
-    paymentMethod: 'Bank Transfer',
-  },
-  {
-    invoice: 'INV007',
-    paymentStatus: 'Unpaid',
-    totalAmount: '$300.00',
-    paymentMethod: 'Credit Card',
-  },
+type TableHead = { title: string, class: string}
+| { title: string, class?: never }
+
+interface Props {
+  tableData: WeatherData[]
+}
+
+const headers: TableHead[] = [
+  { title: 'id', class: 'w-[130px]' },
+  { title: 'date' },
+  { title: 'time' },
+  { title: 'wind' },
+  { title: 'condition' },
+  { title: 'humidity' },
+  { title: 'perceived temperature' },
+  { title: 'precipitation' },
+  { title: 'precipitation probability', class: 'text-right' },
 ]
+
+const props = withDefaults(defineProps< Props >(), {
+  tableData: () => []
+})
+
 </script>
 
 <template>
   <Table>
     <TableCaption>A list of your recent invoices.</TableCaption>
     <TableHeader>
-      <TableRow>
-        <TableHead class="w-[100px]">
-          Invoice
-        </TableHead>
-        <TableHead>Status</TableHead>
-        <TableHead>Method</TableHead>
-        <TableHead class="text-right">
-          Amount
+      <TableRow class="text-capitalize">
+        <TableHead v-for="head in headers" :key="head.title" :class="head?.class">
+          {{ head.title }}
         </TableHead>
       </TableRow>
     </TableHeader>
     <TableBody>
-      <TableRow v-for="invoice in invoices" :key="invoice.invoice">
+      <TableRow v-for="data in props.tableData" :key="data.weather_id">
         <TableCell class="font-medium">
-          {{ invoice.invoice }}
+          {{ data.weather_id }}
         </TableCell>
-        <TableCell>{{ invoice.paymentStatus }}</TableCell>
-        <TableCell>{{ invoice.paymentMethod }}</TableCell>
+        <TableCell>{{ data.weather_date }}</TableCell>
+        <TableCell>{{ data.weather_time }}</TableCell>
+        <TableCell>{{ data.weather_wind }}</TableCell>
+        <TableCell>{{ data.weather_weather_condition }}</TableCell>
+        <TableCell>{{ data.weather_perceived_temperature }}</TableCell>
+        <TableCell >
+          {{ data.weather_perceived_temperature }}
+        </TableCell>
+        <TableCell >
+          {{ data.weather_precipitation }}
+        </TableCell>
         <TableCell class="text-right">
-          {{ invoice.totalAmount }}
+          {{ data.weather_precipitation_probability }} %
         </TableCell>
       </TableRow>
     </TableBody>
