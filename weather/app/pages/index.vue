@@ -47,15 +47,7 @@
     
     <NuxtErrorBoundary>
       <NCard class="w-[300px]">
-        <ul class="p-4">
-          <li v-for="(cal, key) in calculates" :key="key" class="flex justify-between">
-            <div class="flex items-center gap-3">
-              <div class="w-3 h-3 rounded-full bg-primary"></div>
-              <span>{{ key }}</span>
-            </div>
-            <span>{{ cal }}</span>
-          </li>
-        </ul>
+        <Calculate :calculates="calculates"/>
       </NCard>
       <template #error="{ error }">
         <p>An error occurred: {{ error }}</p>
@@ -75,6 +67,7 @@
 </template>
 
 <script setup lang="ts">
+import type { CalculateWeather } from '~/interface/calculate.interface'
 import type { Gus, Regional } from '~/interface/regional.interface'
 import type { WeatherData } from '~/interface/weather.interface'
 
@@ -94,7 +87,7 @@ const { data, execute } = await useFetch<WeatherData[]>(
   }
 )
 
-const { data: calculates, execute: maxExecute } = await useFetch(() => `/api/calculate/max`,
+const { data: calculates, execute: maxExecute } = await useFetch<CalculateWeather>(() => `/api/calculate/max`,
 {
   query: {
     startDate: startDate,

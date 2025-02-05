@@ -1,19 +1,32 @@
 <template>
   <ul class="p-4">
-    <!-- <li v-for="(cal, key) in calculates" :key="key" class="flex justify-between">
+    <li v-for="(cal, key) in calculates" :key="key" class="flex justify-between">
       <div class="flex items-center gap-3">
         <div class="w-3 h-3 rounded-full bg-primary"></div>
         <span>{{ key }}</span>
       </div>
-      <span>{{ cal }}</span>
-    </li> -->
+      <div class="w-[40px]">
+        <span class="mr-1">{{ cal }}</span>
+        <span>{{ calculateValueSymbol[key] }}</span>
+      </div>
+    </li>
   </ul>
 </template>
 
 <script setup lang="ts">
-// interface Props {
-//   calculates
-// }
+import type { CalculateWeather } from '~/interface/calculate.interface';
+import { WeatherSymbol } from '~/interface/symbol.enum';
 
-// const props = defineProps<>()
+interface Props {
+  calculates: CalculateWeather | null
+}
+
+const props = defineProps<Props>()
+
+const calculateValueSymbol = {
+  PerceivedTemperature : WeatherSymbol['°C'],
+  Precipitation : WeatherSymbol.MM,
+  Humidity : WeatherSymbol['%']
+}
+
 </script>
