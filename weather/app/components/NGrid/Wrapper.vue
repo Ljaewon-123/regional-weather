@@ -1,9 +1,12 @@
 <template>
-  <NCard class="h-full">
-    <div class="flex justify-start ml-3 mt-3">
+  <NCard class="h-full p-4">
+    <div class="flex justify-start mb-2">
       <button @click="handleRemove">X</button>
     </div>
-    <p>Vue Grid Item {{ itemId }} wrap</p>
+    <div>
+      <slot/>
+      <slot name="hi"/>
+    </div>
   </NCard>
 </template>
 

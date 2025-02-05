@@ -11,6 +11,7 @@ import { GridStack } from 'gridstack';
 import GridItem from '~/components/GridItem.vue';
 import Wrapper from '~/components/NGrid/Wrapper.vue';
 import { render } from 'vue'; // Unlike the [h] function, the [render] function is not included in the auto-import feature.
+import NEmpty from '~/components/NEmpty.vue';
 // import { GridStack, type GridStackNode, Utils } from 'gridstack';
 // import type { GridStackOptions, GridItemHTMLElement } from 'gridstack'
 // import type { GridStackWidget } from 'gridstack'
@@ -54,14 +55,18 @@ onMounted(() => {
     // Create Vue component for the widget content
     const itemId = widget.id;
     const widgetNode = h(Wrapper, {
-      itemId: itemId as any,
-      onRemove: () => {
-        if(!grid) throw Error('null grid object')
-        // Catch the remove event from the Vue component
-        grid.removeWidget(gridItemEl as any); // div.grid-stack-item
-        info.value = `Widget ${itemId} removed`;
+        itemId: itemId as any,
+        onRemove: () => {
+          if(!grid) throw Error('null grid object')
+          // Catch the remove event from the Vue component
+          grid.removeWidget(gridItemEl as any); // div.grid-stack-item
+          info.value = `Widget ${itemId} removed`;
+        },
       },
-    });
+      {
+        hi: () => h('div', 'foo')
+      }
+    );
     shadowDom[itemId as any] = el;
     render(widgetNode, el); // Render Vue component into the GridStack-created element
   };
