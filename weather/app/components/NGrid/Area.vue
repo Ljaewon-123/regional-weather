@@ -1,22 +1,5 @@
 <template>
-  <div >
-    <!-- <a href="./index.html">Back to All Demos</a> -->
-    <h1>Vue3: Gridstack Controls Vue Rendering Grid Items</h1>
-    <p>
-      <strong>Use Vue3 render functions with GridStack.renderCB</strong><br />
-      GridStack handles widget creation and Vue handles rendering the content
-      using the modern (since V11) GridStack.renderCB.
-    </p>
-    <p>Helpful Resources:</p>
-    <ul>
-      <li>
-        <a
-          href="https://vuejs.org/guide/extras/render-function.html#render-functions-jsx"
-          target="_blank"
-          >Vue Render Functions</a
-        >
-      </li>
-    </ul>
+  <div>
     <button type="button" @click="addNewWidget">Add Widget</button> {{ info }}
     <div class="grid-stack"></div>
   </div>
@@ -26,6 +9,7 @@
 import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
 import GridItem from '~/components/GridItem.vue';
+import Wrapper from '~/components/NGrid/Wrapper.vue';
 import { render } from 'vue'; // Unlike the [h] function, the [render] function is not included in the auto-import feature.
 // import { GridStack, type GridStackNode, Utils } from 'gridstack';
 // import type { GridStackOptions, GridItemHTMLElement } from 'gridstack'
@@ -69,7 +53,7 @@ onMounted(() => {
 
     // Create Vue component for the widget content
     const itemId = widget.id;
-    const widgetNode = h(GridItem, {
+    const widgetNode = h(Wrapper, {
       itemId: itemId as any,
       onRemove: () => {
         if(!grid) throw Error('null grid object')
