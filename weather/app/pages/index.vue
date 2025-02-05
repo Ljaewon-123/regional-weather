@@ -43,8 +43,6 @@
     </NuxtErrorBoundary>
     
 
-    
-
     <Button @click="maxExecute">Max</Button>
     
     <NuxtErrorBoundary>
