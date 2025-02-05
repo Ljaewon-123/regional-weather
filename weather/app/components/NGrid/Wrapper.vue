@@ -5,7 +5,6 @@
     </div>
     <div>
       <slot/>
-      <slot name="hi"/>
     </div>
   </NCard>
 </template>

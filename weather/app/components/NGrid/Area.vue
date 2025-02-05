@@ -8,7 +8,6 @@
 <script setup lang="ts">
 import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
-import GridItem from '~/components/GridItem.vue';
 import Wrapper from '~/components/NGrid/Wrapper.vue';
 import { render } from 'vue'; // Unlike the [h] function, the [render] function is not included in the auto-import feature.
 import NEmpty from '~/components/NEmpty.vue';
@@ -64,7 +63,7 @@ onMounted(() => {
         },
       },
       {
-        hi: () => h('div', 'foo')
+        default: () => h(NEmpty)
       }
     );
     shadowDom[itemId as any] = el;
