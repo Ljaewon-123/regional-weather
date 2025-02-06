@@ -72,7 +72,7 @@ onMounted(() => {
         },
       },
       {
-        default: () => h(NEmpty)
+        default: props.innerComponent
       }
     );
     shadowDom[itemId as any] = el;
@@ -88,7 +88,7 @@ onMounted(() => {
    * Is mean you use h render only GridStack.renderCB 
    * renderCB outside can't dependencies h components
    */
-  grid.load(widgetItems.value as any);
+  // grid.load(widgetItems.value as any);
 });
 
 onBeforeUnmount(() => {
@@ -100,7 +100,6 @@ onBeforeUnmount(() => {
 
 // watchEffect(() => addNewWidget())
 watch(addWidgetTrigger, () => {
-  alert('hi?')
   addNewWidget()
 })
 

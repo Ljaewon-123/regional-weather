@@ -125,14 +125,14 @@ const comps = [
     }
   ),
   () => h(resolveComponent("NArea"), {
-    data: data ?? [],
+    data: data.value ?? [],
     keys: ["weather_humidity"],
   }),
   () => h(resolveComponent("Calculate"), {
-    calculates: calculates,
+    calculates: calculates.value,
   }),
   () => h(resolveComponent("NTable"), {
-    "table-data": data ?? [],
+    "table-data": data.value ?? [],
   }),
   () => h(resolveComponent('NEmpty'))
 ]
