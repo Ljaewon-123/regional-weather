@@ -85,8 +85,8 @@ onMounted(() => {
     [Vue warn]: Slot "default" invoked outside of the render function: 
     this will not track dependencies used in the slot. 
     Invoke the slot function inside the render function instead. 
-    Is mean you use h render only GridStack.renderCB 
-    renderCB outside can't dependencies h components
+   * Is mean you use h render only GridStack.renderCB 
+   * renderCB outside can't dependencies h components
    */
   grid.load(widgetItems.value as any);
 });
