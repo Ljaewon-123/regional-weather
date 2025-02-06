@@ -1,23 +1,6 @@
 <template>
-  <div >
-    <!-- <a href="./index.html">Back to All Demos</a> -->
-    <h1>Vue3: Gridstack Controls Vue Rendering Grid Items</h1>
-    <p>
-      <strong>Use Vue3 render functions with GridStack.renderCB</strong><br />
-      GridStack handles widget creation and Vue handles rendering the content
-      using the modern (since V11) GridStack.renderCB.
-    </p>
-    <p>Helpful Resources:</p>
-    <ul>
-      <li>
-        <a
-          href="https://vuejs.org/guide/extras/render-function.html#render-functions-jsx"
-          target="_blank"
-          >Vue Render Functions</a
-        >
-      </li>
-    </ul>
-    <button type="button" @click="addNewWidget">Add Widget</button> {{ info }}
+  <div>
+    <button type="button" @click="addNewWidget">Add Widget</button> 
     <div class="grid-stack"></div>
   </div>
 </template>
@@ -25,14 +8,14 @@
 <script setup lang="ts">
 import 'gridstack/dist/gridstack.min.css';
 import { GridStack } from 'gridstack';
-import GridItem from '~/components/GridItem.vue';
+import Wrapper from '~/components/NGrid/Wrapper.vue';
 import { render } from 'vue'; // Unlike the [h] function, the [render] function is not included in the auto-import feature.
+import NEmpty from '~/components/NEmpty.vue';
 // import { GridStack, type GridStackNode, Utils } from 'gridstack';
 // import type { GridStackOptions, GridItemHTMLElement } from 'gridstack'
 // import type { GridStackWidget } from 'gridstack'
 interface WidgetItems { id: number, x: number, y: number, w?: number, h?: number }
 
-const info = ref('');
 let grid: GridStack | null = null;
 const widgetItems = ref<WidgetItems[]>([
   { id: 1, x: 2, y: 1, h: 2 },
@@ -43,6 +26,16 @@ const widgetItems = ref<WidgetItems[]>([
 ]);
 const count = ref(widgetItems.value.length);
 const shadowDom:any = {};
+
+interface Props {
+  innerComponent: () => void
+  addWidgetTrigger: number // 상위보다 먼(헤더, 사이드바)에서 특정 내부 컴포넌트를 트리거할 방법??
+  // defineExpose이거는 바로 상위에서만 보장될때는 확실하게 유용함 
+}
+
+const props = defineProps<Props>()
+
+const { addWidgetTrigger } = toRefs(props);
 
 onMounted(() => {
   grid = GridStack.init({
@@ -61,6 +54,7 @@ onMounted(() => {
     });
   });
 
+  // grid.addWidget이 실행될때 한번 실행
   GridStack.renderCB = function (el: Element, widget: any) {
     // el: HTMLElement div.grid-stack-item-content
     // widget: GridStackWidget
@@ -69,21 +63,32 @@ onMounted(() => {
 
     // Create Vue component for the widget content
     const itemId = widget.id;
-    console.log(widget, 'widget!!!!!!!!!!')
-    const widgetNode = h(GridItem, {
-      itemId: itemId as any,
-      onRemove: () => {
-        if(!grid) throw Error('null grid object')
-        // Catch the remove event from the Vue component
-        grid.removeWidget(gridItemEl as any); // div.grid-stack-item
-        info.value = `Widget ${itemId} removed`;
+    const widgetNode = h(Wrapper, {
+        itemId: itemId as any,
+        onRemove: () => {
+          if(!grid) throw Error('null grid object')
+          // Catch the remove event from the Vue component
+          grid.removeWidget(gridItemEl as any); // div.grid-stack-item
+        },
       },
-    });
+      {
+        default: props.innerComponent
+      }
+    );
     shadowDom[itemId as any] = el;
     render(widgetNode, el); // Render Vue component into the GridStack-created element
   };
 
-  grid.load(widgetItems.value as any);
+  /**
+   * When you used slot you see this Wran
+   * Wrapper.vue:55 
+    [Vue warn]: Slot "default" invoked outside of the render function: 
+    this will not track dependencies used in the slot. 
+    Invoke the slot function inside the render function instead. 
+   * Is mean you use h render only GridStack.renderCB 
+   * renderCB outside can't dependencies h components
+   */
+  // grid.load(widgetItems.value as any);
 });
 
 onBeforeUnmount(() => {
@@ -92,6 +97,11 @@ onBeforeUnmount(() => {
     render(null, el);
   });
 });
+
+// watchEffect(() => addNewWidget())
+watch(addWidgetTrigger, () => {
+  addNewWidget()
+})
 
 function addNewWidget() {
   if(!grid) throw Error('null grid object')
@@ -104,7 +114,6 @@ function addNewWidget() {
   };
   node.id = count.value++
   grid.addWidget(node as any);
-  info.value = `Widget ${node.id} added`;
 }
 </script>
 

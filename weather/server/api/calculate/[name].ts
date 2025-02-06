@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
       `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')} ${isEndDate ? '23:59:59' : '00:00:00'}`
 
   try{
-    return await $fetch<CalculateTypes>(`${config.apiBase}/weather/${param}`, { 
+    const cal = await $fetch<CalculateTypes>(`${config.apiBase}/weather/${param}`, { 
       method: 'get', 
       query: {
         startDate: formatDate(startDate),
@@ -51,6 +51,8 @@ export default defineEventHandler(async (event) => {
         locationId: locationId.id
       }
     })
+
+    return removePrefixKeys(cal, param)
   }
   catch(e){
     console.error(e)
@@ -61,3 +63,20 @@ export default defineEventHandler(async (event) => {
     })
   }
 })
+
+/**
+ * @description - maxPerceivedTemperature: 6 => PerceivedTemperature: 6
+ * @param obj 
+ * @param prefix 
+ * @returns 
+ */
+function removePrefixKeys<T extends object>(obj: T, prefix: string): Partial<T> {
+  const result: Partial<T> = {};
+
+  for (const key in obj) {
+    const newKey = key.startsWith(prefix) ? key.slice(prefix.length) : key;
+    result[newKey as keyof T] = obj[key];
+  }
+
+  return result;
+}

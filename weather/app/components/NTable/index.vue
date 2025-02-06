@@ -57,7 +57,8 @@ const props = withDefaults(defineProps< Props >(), {
         <TableCell>{{ data.weather_date }}</TableCell>
         <TableCell>{{ data.weather_time }}</TableCell>
         <TableCell>
-          <Icon size="25" :name="weatherWindIcons[data.weather_wind as WeatherWind ?? '']"  />
+          <!-- <Icon size="25" :name="weatherWindIcons[data.weather_wind as WeatherWind ?? '']"  /> -->
+          {{ weatherWindIcons[data.weather_wind as WeatherWind] }}
         </TableCell>
         <TableCell>
           {{ weatherConditionIconMap[data.weather_weather_condition as WeatherCondition] }}
