@@ -12,7 +12,17 @@
     <Button @click="execute">조회</Button>
     <!-- data: {{ data }} -->
 
-    <NuxtErrorBoundary>
+    <Button @click="addComponent = comps[0], trigger++">NLine</Button>
+    <Button @click="addComponent = comps[1], trigger++">NArea</Button>
+    <Button @click="addComponent = comps[2], trigger++">Calculate</Button>
+    <Button @click="addComponent = comps[3], trigger++">NTable</Button>
+
+    {{ trigger }}
+
+    <NGridArea :inner-component="addComponent" :addWidgetTrigger="trigger"/>
+    <!-- <NGridArea :addWidgetTrigger="trigger"/> -->
+
+    <!-- <NuxtErrorBoundary>
       <NCard>
         <NLine 
           :data="data ?? []"
@@ -61,7 +71,7 @@
       <template #error="{ error }">
         <p>An error occurred: {{ error }}</p>
       </template>
-    </NuxtErrorBoundary>
+    </NuxtErrorBoundary> -->
 
   </div>
 </template>
@@ -76,6 +86,8 @@ const endDate = ref()
 // ref를 사용해도 상관없지만 useState를 한번 사용해봤음
 const currentLocation = useState<Regional | null>('regional', () => null)
 
+const trigger = useState('grid-trigger', () => 0)
+
 const { data, execute } = await useFetch<WeatherData[]>(
   '/api/weather',
   {
@@ -88,16 +100,45 @@ const { data, execute } = await useFetch<WeatherData[]>(
 )
 
 const { data: calculates, execute: maxExecute } = await useFetch<CalculateWeather>(() => `/api/calculate/max`,
-{
-  query: {
-    startDate: startDate,
-    endDate: endDate,
-    locationId: currentLocation
+  {
+    query: {
+      startDate: startDate,
+      endDate: endDate,
+      locationId: currentLocation
+    }
   }
-}
 )
 
 const { data: allUseLocations, error } = await useFetch<Gus[]>('/api/locations')
+
+
+const comps = [
+  () => h(
+    resolveComponent('NLine'),
+    {
+      data: data.value ?? [],
+      keys: [
+        "weather_perceived_temperature",
+        "weather_precipitation",
+        "weather_precipitation_probability",
+      ],
+    }
+  ),
+  () => h(resolveComponent("NArea"), {
+    data: data ?? [],
+    keys: ["weather_humidity"],
+  }),
+  () => h(resolveComponent("Calculate"), {
+    calculates: calculates,
+  }),
+  () => h(resolveComponent("NTable"), {
+    "table-data": data ?? [],
+  }),
+  () => h(resolveComponent('NEmpty'))
+]
+
+const addComponent = ref<any>(comps[4])
+
 
 const testShowThrow = () => {
   throw showError({

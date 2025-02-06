@@ -4,7 +4,7 @@
       <button @click="handleRemove">X</button>
     </div>
     <div>
-      <slot/>
+      <slot></slot>
     </div>
   </NCard>
 </template>

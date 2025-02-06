@@ -69,6 +69,7 @@ onMounted(() => {
 
     // Create Vue component for the widget content
     const itemId = widget.id;
+    console.log(widget, 'widget!!!!!!!!!!')
     const widgetNode = h(GridItem, {
       itemId: itemId as any,
       onRemove: () => {
