@@ -97,6 +97,7 @@
             hover:bg-green-600
             rounded-3xl hover:rounded-xl
             transition-all duration-300 ease-linear;
+    background-color: var(--background);
   }
 
   .sidebar-tooltip {

@@ -1,11 +1,12 @@
 <template>
   <div class="sidebar transition-all duration-300" :class="{ 'left-[-4rem]': !isOpen, 'left-0': isOpen }">
-    <div class="bg-gray-900 flex justify-end items-center 
-      rounded-r-full text-black absolute w-6 h-6 left-[4rem] top-[16px] 
-      border-t-2 border-r-2 border-b-2 border-transparent dark:border-gray-600">
+    <div class="flex justify-end items-center 
+      rounded-r-full absolute w-6 h-6 left-[4rem] top-[16px] 
+      border-t-2 border-r-2 border-b-2
+      background">
       <Icon 
       @click="isOpen = !isOpen" 
-      class="mr-1 text-white cursor-pointer" 
+      class="mr-1 text-black dark:text-white cursor-pointer" 
       size="15" 
       :name="isOpen ? 'line-md:chevron-double-left' : 'line-md:chevron-double-right'"/>
     </div>
