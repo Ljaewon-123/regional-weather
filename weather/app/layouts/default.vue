@@ -1,7 +1,10 @@
 <template>
-  <div class="h-screen dark:text-white">
-    <NHeader />
-    <slot></slot>
+  <div>
+    <NSidebar />
+    <div class="h-screen dark:text-white">
+      <NHeader />
+      <slot></slot>
+    </div>
   </div>
 </template>
 

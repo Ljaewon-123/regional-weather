@@ -76,6 +76,7 @@
     --border:217.2 32.6% 17.5%;
     --input:217.2 32.6% 17.5%;
     --ring:224.3 76.3% 48%;
+
   }
 }
 
@@ -86,5 +87,30 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .sidebar-icon {
+    @apply relative flex items-center justify-center
+            h-12 w-12 mt-2 mb-2 mx-auto shadow-lg
+            bg-[hsl(var(--primary-foreground))] 
+            text-[hsl(var(--primary))] 
+            hover:text-[hsl(var(--primary-foreground))] 
+            hover:bg-[hsl(var(--primary))] 
+            rounded-3xl hover:rounded-xl
+            transition-all duration-300 ease-linear;
+  }
+
+  .sidebar-tooltip {
+    @apply absolute w-auto p-2 m-2 min-w-max left-14
+    rounded-md shadow-md text-white bg-gray-900
+    text-xs font-bold transition-all duration-100 scale-0 origin-left;
+  }
+
+  .sidebar {
+    @apply fixed top-0 left-[0] h-screen z-50 w-16 m-0
+    flex flex-col shadow-2xl rounded-lg border
+    bg-[hsl(var(--background))] ;
   }
 }
