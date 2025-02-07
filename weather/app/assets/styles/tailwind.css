@@ -98,4 +98,16 @@
             rounded-3xl hover:rounded-xl
             transition-all duration-300 ease-linear;
   }
+
+  .sidebar-tooltip {
+    @apply absolute w-auto p-2 m-2 min-w-max left-14
+    rounded-md shadow-md text-white bg-gray-900
+    text-xs font-bold transition-all duration-100 scale-0 origin-left;
+  }
+
+  .sidebar {
+    @apply fixed top-0 left-[0] h-screen z-50 w-16 m-0
+    flex flex-col bg-gray-900 text-white shadow-2xl rounded-lg
+    ;
+  }
 }
