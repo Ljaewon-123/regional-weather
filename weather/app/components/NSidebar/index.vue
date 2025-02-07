@@ -1,9 +1,9 @@
 <template>
   <div class="sidebar transition-all duration-300" :class="{ 'left-[-4rem]': !isOpen, 'left-0': isOpen }">
     <div class="flex justify-end items-center 
-      rounded-r-full absolute w-6 h-6 left-[4rem] top-[16px] 
+      rounded-r-full absolute w-6 h-6 left-[60px] top-[16px] 
       border-t-2 border-r-2 border-b-2
-      background">
+      bg-background">
       <Icon 
       @click="isOpen = !isOpen" 
       class="mr-1 text-black dark:text-white cursor-pointer" 
