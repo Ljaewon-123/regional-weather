@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
     return {} as CalculateTypes
   }
 
-  console.log(query)
+  // console.log(query)
 
   const startDate: QueryDate = JSON.parse(query.startDate as string)
   const endDate: QueryDate = JSON.parse(query.endDate as string)

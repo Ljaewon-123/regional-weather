@@ -1,11 +1,10 @@
 <template>
-  <div class="sidebar transition-all duration-300" :class="{ 'left-[-4rem]': !isOpen, 'left-0': isOpen }">
+  <div v-click-outside="closeMenu" class="sidebar transition-all duration-300" :class="{ 'left-[-4rem]': !isOpen, 'left-0': isOpen }">
     <div class="flex justify-end items-center 
       rounded-r-full absolute w-6 h-6 left-[60px] top-[16px] 
       border-t-2 border-r-2 border-b-2
       bg-background">
       <Icon 
-      v-click-outside="closeMenu"
       @click="isOpen = !isOpen" 
       class="mr-1 text-black dark:text-white cursor-pointer" 
       size="15" 
@@ -58,7 +57,7 @@ const wrappingItems = [
     icon: "majesticons:data-line", 
     size: 30, 
     name: 'Average', 
-    itemKey: 'Calculate' ,
+    itemKey: 'averageCalculate' ,
     widget: { x: 1, y: 1, w: 5, h: 3 }
   },
   { 
@@ -66,7 +65,7 @@ const wrappingItems = [
     icon: "majesticons:data-minus-line", 
     size: 30, 
     name: 'Max', 
-    itemKey: 'Calculate' ,
+    itemKey: 'maxCalculate' ,
     widget: { x: 1, y: 1, w: 5, h: 3 }
   },
   { 
@@ -74,7 +73,7 @@ const wrappingItems = [
     icon: "majesticons:data-plus-line", 
     size: 30, 
     name: 'Median', 
-    itemKey: 'Calculate' ,
+    itemKey: 'medianCalculate' ,
     widget: { x: 1, y: 1, w: 5, h: 3 }
   },
 ]

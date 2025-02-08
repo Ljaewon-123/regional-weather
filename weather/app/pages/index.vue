@@ -58,7 +58,7 @@ const { data, execute } = await useFetch<WeatherData[]>(
   }
 )
 
-const { data: calculates } = await useFetch<CalculateWeather>(() => `/api/calculate/max`,
+const { data: maxCalculates } = await useFetch<CalculateWeather>(() => `/api/calculate/max`,
   {
     query: {
       startDate: startDate,
@@ -67,6 +67,42 @@ const { data: calculates } = await useFetch<CalculateWeather>(() => `/api/calcul
     }
   }
 )
+const { data: averageCalculates } = await useFetch<CalculateWeather>(() => `/api/calculate/average`,
+  {
+    query: {
+      startDate: startDate,
+      endDate: endDate,
+      locationId: currentLocation
+    }
+  }
+)
+const { data: medianCalculates } = await useFetch<CalculateWeather>(() => `/api/calculate/median`,
+  {
+    query: {
+      startDate: startDate,
+      endDate: endDate,
+      locationId: currentLocation
+    }
+  }
+)
+
+// why not working?? 
+// const { data: calculates } = await useAsyncData("calculates", async () => {
+//   const types = ["max", "average", "median"];
+//   const [max, average, median] = await Promise.all(
+//     types.map((type) =>
+//       $fetch<CalculateWeather>(`/api/calculate/${type}`, {
+//         query: {
+//           startDate,
+//           endDate,
+//           locationId: currentLocation,
+//         },
+//       })
+//     )
+//   );
+
+//   return { max, average, median };
+// });
 
 const { data: allUseLocations, error } = await useFetch<Gus[]>('/api/locations')
 
@@ -86,8 +122,14 @@ const comps: Record<KindofComponents, () => VNode> = {
     data: data.value ?? [],
     keys: ["weather_humidity"],
   }),
-  Calculate: () => h(resolveComponent("Calculate"), {
-    calculates: calculates.value,
+  maxCalculate: () => h(resolveComponent("Calculate"), {
+    calculates: maxCalculates.value,
+  }),
+  averageCalculate: () => h(resolveComponent("Calculate"), {
+    calculates: averageCalculates.value,
+  }),
+  medianCalculate: () => h(resolveComponent("Calculate"), {
+    calculates: medianCalculates.value,
   }),
   NTable: () => h(resolveComponent("NTable"), {
     "table-data": data.value ?? [],
