@@ -12,10 +12,12 @@
     <Button @click="execute">조회</Button>
     <!-- data: {{ data }} -->
 
-    <Button @click="addComponent = comps[0], newGridWidget()">NLine</Button>
-    <Button @click="addComponent = comps[1], newGridWidget()">NArea</Button>
-    <Button @click="addComponent = comps[2], newGridWidget()">Calculate</Button>
-    <Button @click="addComponent = comps[3], newGridWidget()">NTable</Button>
+    <DevOnly>
+      <Button @click="addComponent = comps[0], newGridWidget()">NLine</Button>
+      <Button @click="addComponent = comps[1], newGridWidget()">NArea</Button>
+      <Button @click="addComponent = comps[2], newGridWidget()">Calculate</Button>
+      <Button @click="addComponent = comps[3], newGridWidget()">NTable</Button>
+    </DevOnly>
 
     <NGridArea :inner-component="addComponent" ref="gridarea" />
 
@@ -26,7 +28,6 @@
 import type { CalculateWeather } from '~/interface/calculate.interface'
 import type { Gus, Regional } from '~/interface/regional.interface'
 import type { WeatherData } from '~/interface/weather.interface'
-import type { ComponentPublicInstance } from 'vue'
 
 const startDate = ref()
 const endDate = ref()
@@ -38,7 +39,7 @@ interface GridAreaExposed {
 }
 
 // const trigger = useState('grid-trigger', () => 0)
-const gridarea = useState<ComponentPublicInstance<GridAreaExposed> | null>('grid-area', () => null)
+const gridarea = useState<GridAreaExposed | null>('grid-area', () => null)
 const newGridWidget = async() => {
   if(!gridarea.value) return
   // console.log(gridarea.value)
