@@ -58,51 +58,55 @@ const { data, execute } = await useFetch<WeatherData[]>(
   }
 )
 
-const { data: maxCalculates } = await useFetch<CalculateWeather>(() => `/api/calculate/max`,
-  {
-    query: {
-      startDate: startDate,
-      endDate: endDate,
-      locationId: currentLocation
-    }
-  }
-)
-const { data: averageCalculates } = await useFetch<CalculateWeather>(() => `/api/calculate/average`,
-  {
-    query: {
-      startDate: startDate,
-      endDate: endDate,
-      locationId: currentLocation
-    }
-  }
-)
-const { data: medianCalculates } = await useFetch<CalculateWeather>(() => `/api/calculate/median`,
-  {
-    query: {
-      startDate: startDate,
-      endDate: endDate,
-      locationId: currentLocation
-    }
-  }
-)
+// const { data: maxCalculates } = await useFetch<CalculateWeather>(() => `/api/calculate/max`,
+//   {
+//     query: {
+//       startDate: startDate,
+//       endDate: endDate,
+//       locationId: currentLocation
+//     }
+//   }
+// )
+// const { data: averageCalculates } = await useFetch<CalculateWeather>(() => `/api/calculate/average`,
+//   {
+//     query: {
+//       startDate: startDate,
+//       endDate: endDate,
+//       locationId: currentLocation
+//     }
+//   }
+// )
+// const { data: medianCalculates } = await useFetch<CalculateWeather>(() => `/api/calculate/median`,
+//   {
+//     query: {
+//       startDate: startDate,
+//       endDate: endDate,
+//       locationId: currentLocation
+//     }
+//   }
+// )
 
 // why not working?? 
-// const { data: calculates } = await useAsyncData("calculates", async () => {
-//   const types = ["max", "average", "median"];
-//   const [max, average, median] = await Promise.all(
-//     types.map((type) =>
-//       $fetch<CalculateWeather>(`/api/calculate/${type}`, {
-//         query: {
-//           startDate,
-//           endDate,
-//           locationId: currentLocation,
-//         },
-//       })
-//     )
-//   );
+const { data: calculates } = await useAsyncData("calculates", async () => {
+    const types = ["max", "average", "median"];
+    const [max, average, median] = await Promise.all(
+      types.map((type) =>
+        $fetch<CalculateWeather>(`/api/calculate/${type}`, {
+          query: {
+            startDate: startDate.value,
+            endDate: endDate.value,
+            locationId: currentLocation.value,
+          },
+        })
+      )
+    );
 
-//   return { max, average, median };
-// });
+    return { max, average, median };
+  },
+  {
+    watch: [startDate, endDate, currentLocation], // 값 변경 시 재실행 AsyncData는 있어야함
+  }
+);
 
 const { data: allUseLocations, error } = await useFetch<Gus[]>('/api/locations')
 
@@ -123,13 +127,13 @@ const comps: Record<KindofComponents, () => VNode> = {
     keys: ["weather_humidity"],
   }),
   maxCalculate: () => h(resolveComponent("Calculate"), {
-    calculates: maxCalculates.value,
+    calculates: calculates.value?.max // maxCalculates.value,
   }),
   averageCalculate: () => h(resolveComponent("Calculate"), {
-    calculates: averageCalculates.value,
+    calculates: calculates.value?.average // averageCalculates.value,
   }),
   medianCalculate: () => h(resolveComponent("Calculate"), {
-    calculates: medianCalculates.value,
+    calculates: calculates.value?.median // medianCalculates.value,
   }),
   NTable: () => h(resolveComponent("NTable"), {
     "table-data": data.value ?? [],

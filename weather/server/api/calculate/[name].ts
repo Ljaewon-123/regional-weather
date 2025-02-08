@@ -29,6 +29,8 @@ export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig(event)
   const query = getQuery(event)
 
+  // console.log('run method', query)
+
   if (!query.startDate || !query.endDate || !query.locationId) {
     return {} as CalculateTypes
   }
