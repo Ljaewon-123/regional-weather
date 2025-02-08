@@ -5,6 +5,7 @@
       border-t-2 border-r-2 border-b-2
       bg-background">
       <Icon 
+      v-click-outside="closeMenu"
       @click="isOpen = !isOpen" 
       class="mr-1 text-black dark:text-white cursor-pointer" 
       size="15" 
@@ -37,7 +38,7 @@ const wrappingItems = [
 const isOpen = ref(false)
 
 // 필요한거는 그냥 현재 선택된 컴포넌트임 
-// 근데 이게 hash-key로 놓고 하면 될거같은데??
+// 근데 이게 hash-key로 놓고 하면 될거같은데?? It works
 const addComponent = useState<KindofComponents>('grid-item-key', () => 'NEmpty')
 
 const gridarea = useState<GridAreaExposed | null>('grid-area', () => null)
@@ -47,6 +48,10 @@ const newGridWidget = async(key: KindofComponents) => {
   await nextTick()
   gridarea.value?.addNewWidget()
 }
+
+const closeMenu = () => {
+  isOpen.value = false;
+};
 // setTimeout(() => {
 //   gridarea.value?.addNewWidget()
 // }, 50000)
