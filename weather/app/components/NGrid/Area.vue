@@ -29,9 +29,13 @@ const shadowDom:any = {};
 
 interface Props {
   innerComponent: () => void
-  addWidgetTrigger: number // 상위보다 먼(헤더, 사이드바)에서 특정 내부 컴포넌트를 트리거할 방법??
+  addWidgetTrigger?: number // 상위보다 먼(헤더, 사이드바)에서 특정 내부 컴포넌트를 트리거할 방법??
   // defineExpose이거는 바로 상위에서만, 보장될때는 확실하게 유용함 
 }
+
+defineExpose({
+  addNewWidget
+})
 
 const props = defineProps<Props>()
 
