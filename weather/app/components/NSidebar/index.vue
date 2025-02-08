@@ -11,7 +11,8 @@
       :name="isOpen ? 'line-md:chevron-double-left' : 'line-md:chevron-double-right'"/>
     </div>
     <div v-for="item in wrappingItems" :key="item.id"
-    class="sidebar-icon group">
+    @click="newGridWidget(item.itemKey as KindofComponents)"
+    class="sidebar-icon group cursor-pointer">
       <Icon size="30" :name="item.icon"/>
 
       <span class="sidebar-tooltip group-hover:scale-100">
@@ -22,16 +23,33 @@
 </template>
 
 <script setup lang="ts">
+import type { GridAreaExposed, KindofComponents } from '~/interface/grid-area-exposted.interface';
+
 const wrappingItems = [
-  { id: 1, icon: "ic:baseline-area-chart", size: 30, name: 'Area Chart' },
-  { id: 2, icon: "ic:baseline-auto-graph", size: 30, name: 'Line Chart' },
-  { id: 3, icon: "ic:outline-table-rows", size: 30, name: 'Table' },
-  { id: 4, icon: "majesticons:data-line", size: 30, name: 'Average' },
-  { id: 5, icon: "majesticons:data-minus-line", size: 30, name: 'Max' },
-  { id: 6, icon: "majesticons:data-plus-line", size: 30, name: 'Median' },
+  { id: 1, icon: "ic:baseline-area-chart", size: 30, name: 'Area Chart', itemKey: 'NArea' },
+  { id: 2, icon: "ic:baseline-auto-graph", size: 30, name: 'Line Chart', itemKey: 'NLine' },
+  { id: 3, icon: "ic:outline-table-rows", size: 30, name: 'Table', itemKey: 'NTable' },
+  { id: 4, icon: "majesticons:data-line", size: 30, name: 'Average', itemKey: 'Calculate' },
+  { id: 5, icon: "majesticons:data-minus-line", size: 30, name: 'Max', itemKey: 'Calculate' },
+  { id: 6, icon: "majesticons:data-plus-line", size: 30, name: 'Median', itemKey: 'Calculate' },
 ]
 
 const isOpen = ref(false)
+
+// 필요한거는 그냥 현재 선택된 컴포넌트임 
+// 근데 이게 hash-key로 놓고 하면 될거같은데??
+const addComponent = useState<KindofComponents>('grid-item-key', () => 'NEmpty')
+
+const gridarea = useState<GridAreaExposed | null>('grid-area', () => null)
+
+const newGridWidget = async(key: KindofComponents) => {
+  addComponent.value = key
+  await nextTick()
+  gridarea.value?.addNewWidget()
+}
+// setTimeout(() => {
+//   gridarea.value?.addNewWidget()
+// }, 50000)
 
 // ic:baseline-area-chart
 // ic:baseline-auto-graph

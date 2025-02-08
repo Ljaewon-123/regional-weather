@@ -13,19 +13,20 @@
     <!-- data: {{ data }} -->
 
     <DevOnly>
-      <Button @click="addComponent = comps[0], newGridWidget()">NLine</Button>
-      <Button @click="addComponent = comps[1], newGridWidget()">NArea</Button>
-      <Button @click="addComponent = comps[2], newGridWidget()">Calculate</Button>
-      <Button @click="addComponent = comps[3], newGridWidget()">NTable</Button>
+      <Button @click="addComponent = 'NLine', newGridWidget()">NLine</Button>
+      <Button @click="addComponent = 'NArea', newGridWidget()">NArea</Button>
+      <Button @click="addComponent = 'Calculate', newGridWidget()">Calculate</Button>
+      <Button @click="addComponent = 'NTable', newGridWidget()">NTable</Button>
     </DevOnly>
 
-    <NGridArea :inner-component="addComponent" ref="gridarea" />
+    <NGridArea :inner-component="comps[addComponent]" ref="gridarea" />
 
   </div>
 </template>
 
 <script setup lang="ts">
 import type { CalculateWeather } from '~/interface/calculate.interface'
+import type { GridAreaExposed, KindofComponents } from '~/interface/grid-area-exposted.interface'
 import type { Gus, Regional } from '~/interface/regional.interface'
 import type { WeatherData } from '~/interface/weather.interface'
 
@@ -34,11 +35,9 @@ const endDate = ref()
 // ref를 사용해도 상관없지만 useState를 한번 사용해봤음
 const currentLocation = useState<Regional | null>('regional', () => null)
 
-interface GridAreaExposed {
-  addNewWidget: () => void
-}
-
 // const trigger = useState('grid-trigger', () => 0)
+
+// 어? state니까 그냥 써도 되지않나????
 const gridarea = useState<GridAreaExposed | null>('grid-area', () => null)
 const newGridWidget = async() => {
   if(!gridarea.value) return
@@ -70,9 +69,8 @@ const { data: calculates, execute: maxExecute } = await useFetch<CalculateWeathe
 
 const { data: allUseLocations, error } = await useFetch<Gus[]>('/api/locations')
 
-
-const comps = [
-  () => h(
+const comps: Record<KindofComponents, () => VNode> = {
+  NLine:() => h(
     resolveComponent('NLine'),
     {
       data: data.value ?? [],
@@ -83,20 +81,20 @@ const comps = [
       ],
     }
   ),
-  () => h(resolveComponent("NArea"), {
+  NArea: () => h(resolveComponent("NArea"), {
     data: data.value ?? [],
     keys: ["weather_humidity"],
   }),
-  () => h(resolveComponent("Calculate"), {
+  Calculate: () => h(resolveComponent("Calculate"), {
     calculates: calculates.value,
   }),
-  () => h(resolveComponent("NTable"), {
+  NTable: () => h(resolveComponent("NTable"), {
     "table-data": data.value ?? [],
   }),
-  () => h(resolveComponent('NEmpty'))
-]
+  NEmpty: () => h(resolveComponent('NEmpty'))
+}
 
-const addComponent = ref<any>(comps[4])
+const addComponent = useState<KindofComponents>('grid-item-key', () => 'NEmpty')
 
 
 const testShowThrow = () => {
