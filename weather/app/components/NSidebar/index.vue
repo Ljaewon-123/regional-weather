@@ -58,7 +58,7 @@ const wrappingItems = [
     size: 30, 
     name: 'Average', 
     itemKey: 'averageCalculate' ,
-    widget: { x: 1, y: 1, w: 5, h: 3 }
+    widget: { x: 1, y: 1, w: 4, h: 3 }
   },
   { 
     id: 5, 
@@ -66,7 +66,7 @@ const wrappingItems = [
     size: 30, 
     name: 'Max', 
     itemKey: 'maxCalculate' ,
-    widget: { x: 1, y: 1, w: 5, h: 3 }
+    widget: { x: 1, y: 1, w: 4, h: 3 }
   },
   { 
     id: 6, 
@@ -74,7 +74,7 @@ const wrappingItems = [
     size: 30, 
     name: 'Median', 
     itemKey: 'medianCalculate' ,
-    widget: { x: 1, y: 1, w: 5, h: 3 }
+    widget: { x: 1, y: 1, w: 4, h: 3 }
   },
 ]
 

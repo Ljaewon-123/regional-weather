@@ -127,12 +127,15 @@ const comps: Record<KindofComponents, () => VNode> = {
     keys: ["weather_humidity"],
   }),
   maxCalculate: () => h(resolveComponent("Calculate"), {
+    title: 'max',
     calculates: calculates.value?.max // maxCalculates.value,
   }),
   averageCalculate: () => h(resolveComponent("Calculate"), {
+    title: 'average',
     calculates: calculates.value?.average // averageCalculates.value,
   }),
   medianCalculate: () => h(resolveComponent("Calculate"), {
+    title: 'median',
     calculates: calculates.value?.median // medianCalculates.value,
   }),
   NTable: () => h(resolveComponent("NTable"), {
