@@ -12,7 +12,7 @@
       :name="isOpen ? 'line-md:chevron-double-left' : 'line-md:chevron-double-right'"/>
     </div>
     <div v-for="item in wrappingItems" :key="item.id"
-    @click="newGridWidget(item.itemKey as KindofComponents)"
+    @click="newGridWidget(item.itemKey as KindofComponents, item.widget)"
     class="sidebar-icon group cursor-pointer">
       <Icon size="30" :name="item.icon"/>
 
@@ -26,13 +26,57 @@
 <script setup lang="ts">
 import type { GridAreaExposed, KindofComponents } from '~/interface/grid-area-exposted.interface';
 
+interface WidgetItem { id?: number, x: number, y: number, w: number, h: number }
+
 const wrappingItems = [
-  { id: 1, icon: "ic:baseline-area-chart", size: 30, name: 'Area Chart', itemKey: 'NArea' },
-  { id: 2, icon: "ic:baseline-auto-graph", size: 30, name: 'Line Chart', itemKey: 'NLine' },
-  { id: 3, icon: "ic:outline-table-rows", size: 30, name: 'Table', itemKey: 'NTable' },
-  { id: 4, icon: "majesticons:data-line", size: 30, name: 'Average', itemKey: 'Calculate' },
-  { id: 5, icon: "majesticons:data-minus-line", size: 30, name: 'Max', itemKey: 'Calculate' },
-  { id: 6, icon: "majesticons:data-plus-line", size: 30, name: 'Median', itemKey: 'Calculate' },
+  { 
+    id: 1, 
+    icon: "ic:baseline-area-chart", 
+    size: 30, 
+    name: 'Area Chart', 
+    itemKey: 'NArea' ,
+    widget: { x: 2, y: 1, w: 7, h: 8 }
+  },
+  { 
+    id: 2, 
+    icon: "ic:baseline-auto-graph", 
+    size: 30, 
+    name: 'Line Chart', 
+    itemKey: 'NLine' ,
+    widget: { x: 2, y: 1, w: 7, h: 8 }
+  },
+  { 
+    id: 3, 
+    icon: "ic:outline-table-rows", 
+    size: 30, 
+    name: 'Table', 
+    itemKey: 'NTable' ,
+    widget: { x: 2, y: 1, w: 10, h: 10 }
+  },
+  { 
+    id: 4, 
+    icon: "majesticons:data-line", 
+    size: 30, 
+    name: 'Average', 
+    itemKey: 'Calculate' ,
+    widget: { x: 1, y: 1, w: 5, h: 3 }
+  },
+  { 
+    id: 5, 
+    icon: "majesticons:data-minus-line", 
+    size: 30, 
+    name: 'Max', 
+    itemKey: 'Calculate' ,
+    widget: { x: 1, y: 1, w: 5, h: 3 }
+  },
+  { 
+    id: 6, 
+    icon: "majesticons:data-plus-line", 
+    size: 30, 
+    name: 'Median', 
+    itemKey: 'Calculate' ,
+    widget: { x: 1, y: 1, w: 5, h: 3 }
+  },
 ]
 
 const isOpen = ref(false)
@@ -42,8 +86,10 @@ const isOpen = ref(false)
 const addComponent = useState<KindofComponents>('grid-item-key', () => 'NEmpty')
 
 const gridarea = useState<GridAreaExposed | null>('grid-area', () => null)
+const widgetConfg = useState('grid-widget', () => ({ x: 1, y: 1, w: 5, h: 5 }))
 
-const newGridWidget = async(key: KindofComponents) => {
+const newGridWidget = async(key: KindofComponents, widget: WidgetItem) => {
+  widgetConfg.value = widget
   addComponent.value = key
   await nextTick()
   gridarea.value?.addNewWidget()

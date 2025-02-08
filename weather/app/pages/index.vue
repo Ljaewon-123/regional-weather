@@ -19,7 +19,7 @@
       <Button @click="addComponent = 'NTable', newGridWidget()">NTable</Button>
     </DevOnly>
 
-    <NGridArea :inner-component="comps[addComponent]" ref="gridarea" />
+    <NGridArea :inner-component="comps[addComponent]" :widget-config="widgetConfg" ref="gridarea" />
 
   </div>
 </template>
@@ -36,6 +36,7 @@ const endDate = ref()
 const currentLocation = useState<Regional | null>('regional', () => null)
 
 // const trigger = useState('grid-trigger', () => 0)
+const widgetConfg = useState('grid-widget', () => ({ x: 1, y: 1, w: 5, h: 5 }))
 
 // 어? state니까 그냥 써도 되지않나????
 const gridarea = useState<GridAreaExposed | null>('grid-area', () => null)
@@ -57,7 +58,7 @@ const { data, execute } = await useFetch<WeatherData[]>(
   }
 )
 
-const { data: calculates, execute: maxExecute } = await useFetch<CalculateWeather>(() => `/api/calculate/max`,
+const { data: calculates } = await useFetch<CalculateWeather>(() => `/api/calculate/max`,
   {
     query: {
       startDate: startDate,
