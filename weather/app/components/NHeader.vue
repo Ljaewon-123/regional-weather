@@ -2,9 +2,11 @@
   <header class="flex justify-between items-center px-8 p-2 sticky z-40 top-0 bg-background/80 backdrop-blur-lg border-b border-border">
     <div>{{ 'Current Weather Icon Need' }} 🌦 Regional Weather</div>
     <div class="flex items-center gap-x-32">
-      <NuxtLink :to="localePath('/')" >Main</NuxtLink>
-      <NuxtLink :to="localePath('grid')" >Grid</NuxtLink>
-      <NuxtLink :to="localePath('test')" >Test</NuxtLink>
+      <DevOnly>
+        <NuxtLink :to="localePath('/')" >Main</NuxtLink>
+        <NuxtLink :to="localePath('grid')" >Grid</NuxtLink>
+        <NuxtLink :to="localePath('test')" >Test</NuxtLink>
+      </DevOnly>
     </div>
     <div class="flex items-center gap-4">
       <NLang/>
