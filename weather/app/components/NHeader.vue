@@ -6,6 +6,7 @@
         <NuxtLink :to="localePath('/')" >Main</NuxtLink>
         <NuxtLink :to="localePath('grid')" >Grid</NuxtLink>
         <NuxtLink :to="localePath('test')" >Test</NuxtLink>
+        <NuxtLink :to="localePath('validate')" >Validate</NuxtLink>
       </DevOnly>
     </div>
     <div class="flex items-center gap-4">

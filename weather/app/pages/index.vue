@@ -162,13 +162,13 @@ const testCreateThrow = () => {
   })
 }
 
-const localeRoute = useLocaleRoute()
-function onClick() {
-  const route = localeRoute({ name: 'grid', query: { foo: '1' } })
-  if (route) {
-    return navigateTo(route.fullPath)
-  }
-}
+// const localeRoute = useLocaleRoute()
+// function onClick() {
+//   const route = localeRoute({ name: 'grid', query: { foo: '1' } })
+//   if (route) {
+//     return navigateTo(route.fullPath)
+//   }
+// }
 
 </script>
 
