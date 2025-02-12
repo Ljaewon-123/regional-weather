@@ -21,6 +21,13 @@ services:
     networks:
       - app_network
 
+  front:
+    build: ./weather
+    ports:
+      - '3003:3003'  # 프론트 엔드 포트 설정
+    networks:
+      - app_network
+
 volumes:
   redis-data:
 
