@@ -24,7 +24,7 @@ services:
   front:
     build: ./weather
     ports:
-      - '3003:3003'  # 프론트 엔드 포트 설정
+      - '3003:3000'  # 프론트 엔드 포트 설정
     networks:
       - app_network
 
