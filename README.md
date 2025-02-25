@@ -24,6 +24,3 @@
 
 ![alt text](readmeassets/color.gif)
 
-end 
-
-save
