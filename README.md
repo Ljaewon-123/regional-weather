@@ -12,31 +12,17 @@
 - ✅ Nodejs 크롤링 
 - ✅ nginx server블록 여러개...? (기록할 필요있나 )
 
-
-
-
-
 ### 기본 기능 화면
 
-
-
-![render_function.gif](C:\Work_spaces\regional-weather\readmeassets\render_function.gif)
-
-
+![alt text](readmeassets/render_function.gif)
 
 ### ERD
 
-
-
-![erd.png](C:\Work_spaces\regional-weather\readmeassets\erd.png)
-
-
+![alt text](readmeassets/erd.png)
 
 ### color 번외
 
-![color.gif](C:\Work_spaces\regional-weather\readmeassets\color.gif)
-
-
+![alt text](readmeassets/color.gif)
 
 end 
 
