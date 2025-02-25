@@ -13,10 +13,10 @@
     <!-- data: {{ data }} -->
 
     <DevOnly>
-      <Button @click="addComponent = 'NLine', newGridWidget()">NLine</Button>
+      <!-- <Button @click="addComponent = 'NLine', newGridWidget()">NLine</Button>
       <Button @click="addComponent = 'NArea', newGridWidget()">NArea</Button>
       <Button @click="addComponent = 'Calculate', newGridWidget()">Calculate</Button>
-      <Button @click="addComponent = 'NTable', newGridWidget()">NTable</Button>
+      <Button @click="addComponent = 'NTable', newGridWidget()">NTable</Button> -->
     </DevOnly>
 
     <NGridArea :inner-component="comps[addComponent]" :widget-config="widgetConfg" ref="gridarea" />
@@ -40,12 +40,14 @@ const widgetConfg = useState('grid-widget', () => ({ x: 1, y: 1, w: 5, h: 5 }))
 
 // 어? state니까 그냥 써도 되지않나????
 const gridarea = useState<GridAreaExposed | null>('grid-area', () => null)
-const newGridWidget = async() => {
-  if(!gridarea.value) return
-  // console.log(gridarea.value)
-  await nextTick()
-  gridarea.value.addNewWidget()
-}
+
+// sidebar로 이동
+// const newGridWidget = async() => {
+//   if(!gridarea.value) return
+//   // console.log(gridarea.value)
+//   await nextTick()
+//   gridarea.value.addNewWidget()
+// }
 
 const { data, execute } = await useFetch<WeatherData[]>(
   '/api/weather',

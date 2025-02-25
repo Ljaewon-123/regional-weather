@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- <button type="button" @click="addNewWidget">Add Widget</button>  -->
+    <button type="button" @click="addNewWidget">Add Widget</button> 
     <div class="grid-stack"></div>
   </div>
 </template>
@@ -112,6 +112,9 @@ function addNewWidget() {
     h: 5,
   };
   node.id = count.value++
+
+  // node가 프록시면 안되거든? 일단?? 근데 애는 프록시임 그래서 생긴문제같은데 
+  console.log(node, '@@node')
   grid.addWidget(node as any);
 }
 </script>
