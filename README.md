@@ -14,7 +14,7 @@
 
 ### 기본 기능 화면
 
-![alt text](readmeassets/render_function.gif)
+![alt text](readmeassets/function-refilming.gif)
 
 ### ERD
 
@@ -23,4 +23,3 @@
 ### color 번외
 
 ![alt text](readmeassets/color.gif)
-
