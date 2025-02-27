@@ -5,8 +5,8 @@
       <NLocations v-model:location="currentLocation" :all-user-locations="allUseLocations" />
     </div>
     <div>
-      <Button @click="testShowThrow">Throw show</Button>
-      <Button @click="testCreateThrow">Throw create</Button>
+      <!-- <Button @click="testShowThrow">Throw show</Button>
+      <Button @click="testCreateThrow">Throw create</Button> -->
     </div>
     <NDateRange v-model:start-date="startDate" v-model:end-date="endDate" />
     <Button @click="execute">조회</Button>
