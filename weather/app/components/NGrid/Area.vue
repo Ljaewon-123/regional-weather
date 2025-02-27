@@ -104,7 +104,7 @@ watch(addWidgetTrigger, () => {
 
 function addNewWidget() {
   if(!grid) throw Error('null grid object')
-  const node = props.widgetConfig || {
+  const node = toRaw(props.widgetConfig) || {
     id: null,
     x: 1,
     y: 1,
@@ -112,6 +112,9 @@ function addNewWidget() {
     h: 5,
   };
   node.id = count.value++
+
+  // node가 프록시면 안되거든? 일단?? 근데 애는 프록시임 그래서 생긴문제같은데 => 해결함 
+  // console.log(node, '@@node')
   grid.addWidget(node as any);
 }
 </script>

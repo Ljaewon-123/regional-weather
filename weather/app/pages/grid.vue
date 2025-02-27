@@ -103,6 +103,7 @@ function addNewWidget() {
     h: Math.round(1 + 3 * Math.random()),
   };
   node.id = count.value++
+  console.log(node, 'node @@')
   grid.addWidget(node as any);
   info.value = `Widget ${node.id} added`;
 }
